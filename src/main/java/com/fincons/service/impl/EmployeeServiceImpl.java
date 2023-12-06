@@ -4,20 +4,14 @@ import com.fincons.entity.Employee;
 import com.fincons.entity.Project;
 import com.fincons.repository.EmployeeRepository;
 import com.fincons.repository.ProjectRepository;
-import com.fincons.service.EmployeeProjectService;
 import com.fincons.service.EmployeeService;
-import com.fincons.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
-public class EmployeeServiceImpl implements EmployeeService, EmployeeProjectService {
+public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -46,12 +40,20 @@ public class EmployeeServiceImpl implements EmployeeService, EmployeeProjectServ
     }
 
     @Override
-    public Employee employeeAddProject(@RequestParam long id, @RequestBody Project projectRequest) {
-        Employee employee = employeeRepository.findById(id);
-        Set<Project> projects = employee.getProject(); // Ottenere i progetti attuali del dipendente
-        projects.add(projectRequest);  // Aggiungere il nuovo progetto
-        employee.setProject(projects); // Impostare la collezione aggiornata di progetti
+    public Employee addEmployeeProject(long idEmployee, long idProject) {
+        Employee employee = employeeRepository.findById(idEmployee);
+        Project project = projectRepository.findById(idProject);
+        employee.getProject().add(project);
         return employeeRepository.save(employee);
 
     }
+
+    @Override
+    public Employee deleteEmployeeProject(long idEmployee, long idProject) {
+        Employee employee = employeeRepository.findById(idEmployee);
+        Project project = projectRepository.findById(idProject);
+        employee.getProject().remove(project);
+        return employeeRepository.save(employee);
+    }
+
 }

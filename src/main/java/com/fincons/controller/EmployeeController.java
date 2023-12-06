@@ -1,13 +1,10 @@
 package com.fincons.controller;
 
 import com.fincons.entity.Employee;
-import com.fincons.entity.Employee;
 import com.fincons.entity.Project;
-import com.fincons.service.EmployeeProjectService;
 import com.fincons.service.EmployeeService;
 import com.fincons.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,8 +38,13 @@ public class EmployeeController {
     }
 
     @PostMapping(value= "/create/employee-project")
-    public Employee addProject(@RequestParam long id, @RequestBody Project projectRequest) {
-        return employeeService.employeeAddProject(id, projectRequest);
+    public Employee createEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
+        return employeeService.addEmployeeProject(idEmployee, idProject);
+    }
+
+    @DeleteMapping(value= "/delete/employee-project")
+    public Employee deleteEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
+        return employeeService.deleteEmployeeProject(idEmployee, idProject);
     }
 
 

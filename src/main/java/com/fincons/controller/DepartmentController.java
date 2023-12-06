@@ -1,17 +1,23 @@
 package com.fincons.controller;
 
 import com.fincons.entity.Department;
+import com.fincons.entity.dto.DepartmentEmployeesDTO;
 import com.fincons.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * RestController viene utilizzato per creare servizi web che restituiscono dati JSON o XML
+ */
 @RestController
 @RequestMapping("/api/v1/department")
 public class DepartmentController {
 
+    /**
+     * Cerca il Bean di tipo DepartmentService e lo innietta nel controller
+     */
     @Autowired
     private DepartmentService departmentService;
 
@@ -28,8 +34,14 @@ public class DepartmentController {
     public Department createDepartment(@RequestBody Department department){
         return departmentService.saveDepartment(department);
     }
+    @GetMapping(value = "/find-employees")
+    public List<DepartmentEmployeesDTO> getDepartmentFindEmployee(@RequestParam long idDepartment){
+        return departmentService.getDepartmentEmployeesFindByIdDepartment(idDepartment);
+    }
+
 
 
 
 
 }
+

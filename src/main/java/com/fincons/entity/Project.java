@@ -22,7 +22,7 @@ public class Project {
     private String priority;
 
     @JsonBackReference(value= "employee-project")
-    @ManyToMany(mappedBy = "project", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "project")
     private Set<Employee> employee;
 
     public Project() {

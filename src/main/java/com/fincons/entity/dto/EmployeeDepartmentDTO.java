@@ -1,13 +1,12 @@
 package com.fincons.entity.dto;
 
-import org.springframework.beans.factory.annotation.Autowired;
-public class DepartmentEmployees {
+public class FindByIdEmployeeForProjectDTO {
 
 
     private String departmentName;
     private String employeeName;
 
-    public DepartmentEmployees(String departmentName, String employeeName) {
+    public FindByIdEmployeeForProjectDTO(String departmentName, String employeeName) {
         this.departmentName = departmentName;
         this.employeeName = employeeName;
     }
@@ -20,11 +19,11 @@ public class DepartmentEmployees {
         this.departmentName = departmentName;
     }
 
-    public String getemployeeName() {
+    public String getEmployeeName() {
         return employeeName;
     }
 
-    public void setemployeeName(String employeeName) {
+    public void setEmployeeName(String employeeName) {
         this.employeeName = employeeName;
     }
 }

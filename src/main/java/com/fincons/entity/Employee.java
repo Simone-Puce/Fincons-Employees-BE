@@ -51,7 +51,7 @@ public class Employee {
     @JoinColumn(name = "id_role")
     private Role role;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     //JsonManagedReference(value= "employee-project")
     @JsonIgnore
     @JoinTable(name = "employee_project",

@@ -2,14 +2,13 @@ package com.fincons.service.impl;
 
 import com.fincons.entity.Project;
 import com.fincons.repository.ProjectRepository;
-import com.fincons.service.EmployeeProjectService;
 import com.fincons.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
-public class ProjectServiceImpl implements ProjectService, EmployeeProjectService {
+public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private ProjectRepository projectRepository;
