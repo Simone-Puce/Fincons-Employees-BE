@@ -31,6 +31,11 @@ public class RoleController {
         return roleService.saveRole(role);
     }
 
+    @DeleteMapping(value = "/delete")
+    public void deleteRoleById(@RequestParam long id){
+        roleService.deleteById(id);
+    }
+
     
     
 }

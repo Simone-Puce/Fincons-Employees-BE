@@ -33,11 +33,16 @@ public class EmployeeController {
     public Employee createEmployee(@RequestBody Employee employee){
         return employeeService.saveEmployee(employee);
     }
+
+    @DeleteMapping(value = "/delete")
+    public void deleteEmployeeById(@RequestParam long id){
+        employeeService.deleteEmployeeById(id);
+    }
+
     @GetMapping(value = "/find/employee-project")
     public List<Project> getAllEmployeesProjects(@RequestParam long id){
         return employeeService.findAllEmployeeProjects(id);
     }
-
     @GetMapping(value = "/list/employee-project")
     public List<EmployeeProjectDTO> getAllEmployeeProject(){
         return employeeService.getAllEmployeeProject();

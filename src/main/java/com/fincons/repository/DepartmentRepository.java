@@ -18,7 +18,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
     /**
      * Quando usi NEW nella query JPA, stai dicendo al sistema di creare oggetti direttamente dalla tupla restituita, piuttosto che restituire una lista di tuple.
-     * Il costrutture deve esser
+     * I parametri che passo nel costruttore del DTO sono esattamente con l'ordine della select
      */
 
     @Query(

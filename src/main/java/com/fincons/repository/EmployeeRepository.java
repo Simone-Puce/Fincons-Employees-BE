@@ -14,7 +14,7 @@ public interface EmployeeRepository extends JpaRepository <Employee, Long> {
 
     Employee findById(long id);
 
-    @Query("SELECT e.project FROM Employee e WHERE e.id = :employeeId")
+    @Query("SELECT e.projects FROM Employee e WHERE e.id = :employeeId")
     List<Project> findProjectByEmployeeId(long employeeId);
 
     @Query(

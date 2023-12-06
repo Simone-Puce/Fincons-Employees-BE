@@ -36,7 +36,9 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentRepository.getDepartmentEmployeesFindByIdDepartment(idDepartment);
     }
 
-
-
+    @Override
+    public void deleteDepartmentById(long id) {
+        departmentRepository.deleteById(id);
+    }
 
 }

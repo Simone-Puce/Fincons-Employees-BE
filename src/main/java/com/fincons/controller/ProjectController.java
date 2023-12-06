@@ -30,6 +30,11 @@ public class ProjectController {
     public Project createProject(@RequestBody Project project){
         return projectService.saveProject(project);
     }
+
+    @DeleteMapping(value = "/delete")
+    public void deleteProjectById(@RequestParam long id){
+        projectService.deleteById(id);
+    }
     
     
 }

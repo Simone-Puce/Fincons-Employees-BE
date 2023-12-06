@@ -63,7 +63,7 @@ public class Employee {
             }
     )
 
-    private Set<Project> project; //Lui punta alla tabella project
+    private Set<Project> projects; //Lui punta alla tabella project
 
 
     public Employee() {
@@ -142,15 +142,15 @@ public class Employee {
         this.role = role;
     }
 
-    public Set<Project> getProject() {
-        return project;
+    public Set<Project> getProjects() {
+        return projects;
     }
 
-    public void setProject(Set<Project> project) {
-        this.project = project;
+    public void setProjects(Set<Project> projects) {
+        this.projects = projects;
     }
 
-    public Employee(Long id, String firstName, String lastName, String gender, Date birthDate, Date startDate, Date endDate, Department department, Role role, Set<Project> project) {
+    public Employee(Long id, String firstName, String lastName, String gender, Date birthDate, Date startDate, Date endDate, Department department, Role role, Set<Project> projects) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -160,6 +160,6 @@ public class Employee {
         this.endDate = endDate;
         this.department = department;
         this.role = role;
-        this.project = project;
+        this.projects = projects;
     }
 }

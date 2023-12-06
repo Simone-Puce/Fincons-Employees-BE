@@ -12,4 +12,5 @@ public interface ProjectService {
 
     Project saveProject(Project project);
 
+    void deleteById(long id);
 }

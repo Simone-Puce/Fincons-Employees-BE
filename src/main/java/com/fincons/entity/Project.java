@@ -22,8 +22,8 @@ public class Project {
     private String priority;
 
     @JsonBackReference(value= "employee-project")
-    @ManyToMany(mappedBy = "project")
-    private Set<Employee> employee;
+    @ManyToMany(mappedBy = "projects")
+    private Set<Employee> employees;
 
     public Project() {
     }
@@ -59,11 +59,11 @@ public class Project {
         this.priority = priority;
     }
 
-    public Set<Employee> getEmployee() {
-        return employee;
+    public Set<Employee> getEmployees() {
+        return employees;
     }
 
-    public void setEmployee(Set<Employee> employee) {
-        this.employee = employee;
+    public void setEmployees(Set<Employee> employees) {
+        this.employees = employees;
     }
 }

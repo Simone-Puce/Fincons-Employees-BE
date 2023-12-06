@@ -14,6 +14,7 @@ public interface EmployeeService {
     Employee saveEmployee(Employee employee);
 
     Employee findById(long id);
+    void deleteEmployeeById(long id);
 
     List<Project> findAllEmployeeProjects(long id);
 
@@ -23,5 +24,6 @@ public interface EmployeeService {
 
 
     Employee deleteEmployeeProject(long idEmployee, long idProject);
+
 
 }

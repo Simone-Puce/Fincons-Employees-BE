@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * RestController viene utilizzato per creare servizi web che restituiscono dati JSON o XML
+ * @RestController viene utilizzato per creare servizi web che restituiscono dati JSON o XML
  */
 @RestController
 @RequestMapping("/api/v1/department")
@@ -38,10 +38,10 @@ public class DepartmentController {
     public List<EmployeeDepartmentDTO> getDepartmentFindEmployee(@RequestParam long idDepartment){
         return departmentService.getDepartmentEmployeesFindByIdDepartment(idDepartment);
     }
-
-
-
-
+    @DeleteMapping(value = "/delete")
+    public void deleteDepartmentById(@RequestParam long id){
+        departmentService.deleteDepartmentById(id);
+    }
 
 }
 

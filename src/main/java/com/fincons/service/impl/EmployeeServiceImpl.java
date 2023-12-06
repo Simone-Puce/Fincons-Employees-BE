@@ -36,6 +36,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public void deleteEmployeeById(long id) {
+        employeeRepository.deleteById(id);
+    }
+
+    @Override
     public List<Project> findAllEmployeeProjects(long id) {
         return employeeRepository.findProjectByEmployeeId(id);
     }
@@ -49,7 +54,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee addEmployeeProject(long idEmployee, long idProject) {
         Employee employee = employeeRepository.findById(idEmployee);
         Project project = projectRepository.findById(idProject);
-        employee.getProject().add(project);
+        employee.getProjects().add(project);
         return employeeRepository.save(employee);
 
     }
@@ -58,8 +63,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee deleteEmployeeProject(long idEmployee, long idProject) {
         Employee employee = employeeRepository.findById(idEmployee);
         Project project = projectRepository.findById(idProject);
-        employee.getProject().remove(project);
+        employee.getProjects().remove(project);
         return employeeRepository.save(employee);
     }
+
 
 }
