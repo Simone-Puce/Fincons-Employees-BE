@@ -8,7 +8,6 @@ public class FinconsEmployeesBeApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(FinconsEmployeesBeApplication.class, args);
-		System.out.println("Primo push");
 	}
 
 }

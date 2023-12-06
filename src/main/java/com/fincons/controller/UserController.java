@@ -11,7 +11,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/company-employee-managment")
 public class UserController {
     @Autowired
     UserService userService;
@@ -32,14 +32,14 @@ public class UserController {
         return "User!";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @PostMapping("${login.uri}")
     public String login() {
         // your code goes here
         return "login";
     }
 
 
-    @PostMapping("/register")
+    @PostMapping("${register.uri}")
     public ResponseEntity<?> register(
             @RequestBody UserDTO userDTO,
             @RequestParam(name = "admin", required = false) String passwordForAdmin) {

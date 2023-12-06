@@ -32,16 +32,16 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/api/v1/home").permitAll()
-                        .requestMatchers("/api/v1/register").permitAll()
-                        .requestMatchers("/api/v1/registered-users").permitAll()
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/company-employee-managment/v1/home").permitAll()
+                        .requestMatchers("/company-employee-managment/v1/register").permitAll()
+                        .requestMatchers("/company-employee-managment/v1/registered-users").permitAll()
+                        .requestMatchers("/company-employee-managment/v1/admin/**").hasRole("ADMIN")
                 );
         http
                 .formLogin(form -> form
-                        .loginPage("/api/v1/login")
-                        .loginProcessingUrl("/api/v1/login")
-                        .defaultSuccessUrl("/api/v1/home").permitAll());
+                        .loginPage("/company-employee-managment/v1/login")
+                        .loginProcessingUrl("/company-employee-managment/v1/login")
+                        .defaultSuccessUrl("/company-employee-managment/v1/home").permitAll());
         http
                 .logout((logout) -> logout.logoutUrl("/my/logout/uri")
                         .logoutSuccessUrl("/login")
