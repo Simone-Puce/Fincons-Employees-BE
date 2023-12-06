@@ -9,7 +9,7 @@ public interface DepartmentService {
 
     List<Department> findAll();
 
-    Department saveDepartment(Department department);
+    Department save(Department department);
 
     Department findById(long id);
 

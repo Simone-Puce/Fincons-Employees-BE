@@ -12,7 +12,7 @@ import java.util.List;
  * @RestController viene utilizzato per creare servizi web che restituiscono dati JSON o XML
  */
 @RestController
-@RequestMapping("/api/v1/department")
+@RequestMapping("${department.uri}")
 public class DepartmentController {
 
     /**
@@ -32,7 +32,7 @@ public class DepartmentController {
     }
     @PostMapping(value = "/create")
     public Department createDepartment(@RequestBody Department department){
-        return departmentService.saveDepartment(department);
+        return departmentService.save(department);
     }
     @GetMapping(value = "/find-employees")
     public List<EmployeeDepartmentDTO> getDepartmentFindEmployee(@RequestParam long idDepartment){
