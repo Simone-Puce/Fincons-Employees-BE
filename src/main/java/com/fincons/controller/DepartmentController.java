@@ -1,7 +1,7 @@
 package com.fincons.controller;
 
 import com.fincons.entity.Department;
-import com.fincons.entity.dto.DepartmentEmployeesDTO;
+import com.fincons.dto.EmployeeDepartmentDTO;
 import com.fincons.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ import java.util.List;
 public class DepartmentController {
 
     /**
-     * Cerca il Bean di tipo DepartmentService e lo innietta nel controller
+     * Cerca il Bean di tipo DepartmentService e lo innietta nel controller creando un'istanza
      */
     @Autowired
     private DepartmentService departmentService;
@@ -35,7 +35,7 @@ public class DepartmentController {
         return departmentService.saveDepartment(department);
     }
     @GetMapping(value = "/find-employees")
-    public List<DepartmentEmployeesDTO> getDepartmentFindEmployee(@RequestParam long idDepartment){
+    public List<EmployeeDepartmentDTO> getDepartmentFindEmployee(@RequestParam long idDepartment){
         return departmentService.getDepartmentEmployeesFindByIdDepartment(idDepartment);
     }
 

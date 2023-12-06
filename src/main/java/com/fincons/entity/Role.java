@@ -22,10 +22,10 @@ public class Role {
             mappedBy = "role",
             fetch = FetchType.LAZY)
     @JsonManagedReference(value = "role-employee")
-    private List<Employee> employee;
+    private List<Employee> employees;
 
-    public List<Employee> getEmployee() {
-        return employee;
+    public List<Employee> getEmployees() {
+        return employees;
     }
 
     public Double getSalary() {
@@ -36,8 +36,8 @@ public class Role {
         this.salary = salary;
     }
 
-    public void setEmployee(List<Employee> employee) {
-        this.employee = employee;
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
     }
 
     public Role() {

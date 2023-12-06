@@ -2,6 +2,7 @@ package com.fincons.controller;
 
 import com.fincons.entity.Employee;
 import com.fincons.entity.Project;
+import com.fincons.dto.EmployeeProjectDTO;
 import com.fincons.service.EmployeeService;
 import com.fincons.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,11 @@ public class EmployeeController {
         return employeeService.findAllEmployeeProjects(id);
     }
 
+    @GetMapping(value = "/list/employee-project")
+    public List<EmployeeProjectDTO> getAllEmployeeProject(){
+        return employeeService.getAllEmployeeProject();
+    }
+
     @PostMapping(value= "/create/employee-project")
     public Employee createEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
         return employeeService.addEmployeeProject(idEmployee, idProject);
@@ -46,6 +52,7 @@ public class EmployeeController {
     public Employee deleteEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
         return employeeService.deleteEmployeeProject(idEmployee, idProject);
     }
+
 
 
 }

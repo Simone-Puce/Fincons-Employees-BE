@@ -1,7 +1,7 @@
 package com.fincons.service;
 
 import com.fincons.entity.Department;
-import com.fincons.entity.dto.DepartmentEmployeesDTO;
+import com.fincons.dto.EmployeeDepartmentDTO;
 
 import java.util.List;
 
@@ -13,5 +13,5 @@ public interface DepartmentService {
 
     Department findById(long id);
 
-    List<DepartmentEmployeesDTO> getDepartmentEmployeesFindByIdDepartment(long idDepartment);
+    List<EmployeeDepartmentDTO> getDepartmentEmployeesFindByIdDepartment(long idDepartment);
 }

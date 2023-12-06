@@ -24,16 +24,16 @@ public class Department {
             mappedBy = "department",
             fetch = FetchType.LAZY)
     @JsonManagedReference(value = "department-employee")
-    private List<Employee> employee;
+    private List<Employee> employees;
     public Department() {
     }
 
-    public List<Employee> getEmployee() {
-        return employee;
+    public List<Employee> getEmployees() {
+        return employees;
     }
 
-    public void setEmployee(List<Employee> employee) {
-        this.employee = employee;
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
     }
 
     public Long getId() {

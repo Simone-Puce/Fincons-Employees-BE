@@ -1,7 +1,7 @@
 package com.fincons.service.impl;
 
 import com.fincons.entity.Department;
-import com.fincons.entity.dto.DepartmentEmployeesDTO;
+import com.fincons.dto.EmployeeDepartmentDTO;
 import com.fincons.repository.DepartmentRepository;
 import com.fincons.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public List<DepartmentEmployeesDTO> getDepartmentEmployeesFindByIdDepartment(long idDepartment) {
+    public List<EmployeeDepartmentDTO> getDepartmentEmployeesFindByIdDepartment(long idDepartment) {
         return departmentRepository.getDepartmentEmployeesFindByIdDepartment(idDepartment);
     }
 

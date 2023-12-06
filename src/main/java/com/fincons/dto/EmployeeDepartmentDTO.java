@@ -1,12 +1,12 @@
-package com.fincons.entity.dto;
+package com.fincons.dto;
 
-public class FindByIdEmployeeForProjectDTO {
+public class EmployeeDepartmentDTO {
 
 
     private String departmentName;
     private String employeeName;
 
-    public FindByIdEmployeeForProjectDTO(String departmentName, String employeeName) {
+    public EmployeeDepartmentDTO(String departmentName, String employeeName) {
         this.departmentName = departmentName;
         this.employeeName = employeeName;
     }

@@ -2,9 +2,8 @@ package com.fincons.service;
 
 import com.fincons.entity.Employee;
 import com.fincons.entity.Project;
+import com.fincons.dto.EmployeeProjectDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 @Service
@@ -16,11 +15,13 @@ public interface EmployeeService {
 
     Employee findById(long id);
 
-
     List<Project> findAllEmployeeProjects(long id);
+
+    List<EmployeeProjectDTO> getAllEmployeeProject();
 
     Employee addEmployeeProject(long idEmployee,long idProject);
 
 
     Employee deleteEmployeeProject(long idEmployee, long idProject);
+
 }

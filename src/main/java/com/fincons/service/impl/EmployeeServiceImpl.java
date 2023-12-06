@@ -2,6 +2,7 @@ package com.fincons.service.impl;
 
 import com.fincons.entity.Employee;
 import com.fincons.entity.Project;
+import com.fincons.dto.EmployeeProjectDTO;
 import com.fincons.repository.EmployeeRepository;
 import com.fincons.repository.ProjectRepository;
 import com.fincons.service.EmployeeService;
@@ -37,6 +38,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<Project> findAllEmployeeProjects(long id) {
         return employeeRepository.findProjectByEmployeeId(id);
+    }
+
+    @Override
+    public List<EmployeeProjectDTO> getAllEmployeeProject() {
+        return employeeRepository.getAllEmployeeProject();
     }
 
     @Override
