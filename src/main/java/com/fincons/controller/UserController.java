@@ -11,6 +11,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/company-employee-managment")
 public class UserController {
     @Autowired
@@ -39,7 +40,7 @@ public class UserController {
     }
 
 
-    @PostMapping("${register.uri}")
+    @PostMapping(value = "${register.uri}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> register(
             @RequestBody UserDTO userDTO,
             @RequestParam(name = "admin", required = false) String passwordForAdmin) {
