@@ -26,10 +26,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     https://www.baeldung.com/spring-enablemethodsecurity   To SEE !!!
      */
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         // upload user from repo thanks to email
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(username);
 
         // if not exist generates an exception
         if(user == null){

@@ -12,28 +12,38 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin("*")
-@RequestMapping("/company-employee-managment")
+@RequestMapping("/company-employee-management")
 public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/home")
+    @GetMapping("/v1/home")
     public String home(){
         return "You are on the home page";
     }
 
-    @GetMapping("/admin")
+    @GetMapping("/v1/admin")
     public String adminEndpoint() {
         return "Admin!";
     }
 
 
-    @GetMapping("/user")
+    @GetMapping("/v1/user")
     public String userEndpoint() {
         return "User!";
     }
 
-    @PostMapping("${login.uri}")
+    @GetMapping("/v1/error")
+    public String errorEndpoint() {
+        return "Error!";
+    }
+
+    @GetMapping("/v1/employees")
+    public String employeesEndPoint() {
+        return "employees!";
+    }
+
+    @PostMapping(value = "${login.uri}")
     public String login() {
         // your code goes here
         return "login";
