@@ -28,11 +28,11 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-       // http.cors(AbstractHttpConfigurer::disable);
+        //http.cors(AbstractHttpConfigurer::disable);
         http.csrf(AbstractHttpConfigurer::disable);
         http
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/company-employee-management/v1/home").permitAll()
+                        .requestMatchers("/company-employee-management/v1/home").hasRole("ADMIN")
                         .requestMatchers("/company-employee-management/v1/register").permitAll()
                         .requestMatchers("/company-employee-management/v1/employees").permitAll()
                         .requestMatchers("/company-employee-management/v1/error").permitAll()
@@ -41,13 +41,15 @@ public class SecurityConfiguration {
                 );
         http
                 .formLogin(form -> form
-                        .loginPage("/company-employee-management/v1/login")
+                        .loginPage("http://localhost:3000/login")
                         .loginProcessingUrl("/company-employee-management/v1/login")
                         .failureUrl("/company-employee-management/v1/error")
                         .defaultSuccessUrl("/company-employee-management/v1/employees").permitAll());
         http
-                .logout((logout) -> logout.logoutUrl("/my/logout/uri")
+                .logout((logout) -> logout
+                        .logoutUrl("/company-employee-management/v1/logout")
                         .logoutSuccessUrl("/login")
+                        .deleteCookies()
                         .permitAll());
         return http.build();
     }

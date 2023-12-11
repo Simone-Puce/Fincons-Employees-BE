@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/company-employee-management")
 public class UserController {
     @Autowired
@@ -40,6 +40,12 @@ public class UserController {
     @GetMapping("${employees.uri}")
     public String employeesEndPoint() {
         return "employees!";
+    }
+
+
+    @GetMapping("${logout.uri}")
+    public String logoutEmployee() {
+        return "logout!";
     }
 
     @PostMapping(value = "${login.uri}")
