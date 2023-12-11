@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,28 +16,28 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/v1/home")
+    @GetMapping("${home.uri}")
     public String home(){
         return "You are on the home page";
     }
 
-    @GetMapping("/v1/admin")
+    @GetMapping("${admin.uri}")
     public String adminEndpoint() {
         return "Admin!";
     }
 
 
-    @GetMapping("/v1/user")
+    @GetMapping("${user.uri}")
     public String userEndpoint() {
         return "User!";
     }
 
-    @GetMapping("/v1/error")
+    @GetMapping("${error.uri}")
     public String errorEndpoint() {
         return "Error!";
     }
 
-    @GetMapping("/v1/employees")
+    @GetMapping("${employees.uri}")
     public String employeesEndPoint() {
         return "employees!";
     }
