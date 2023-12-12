@@ -32,25 +32,27 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/company-employee-management/v1/home").hasRole("ADMIN")
+                        .requestMatchers("/company-employee-management/v1/home").permitAll()
                         .requestMatchers("/company-employee-management/v1/register").permitAll()
-                        .requestMatchers("/company-employee-management/v1/employees").permitAll()
+                        .requestMatchers("/company-employee-management/v1/employees").authenticated() //working
+                        .requestMatchers("/company-employee-management/v1/login").permitAll()
+                        .requestMatchers("/company-employee-management/v1/logout").permitAll()
                         .requestMatchers("/company-employee-management/v1/error").permitAll()
-                        .requestMatchers("/registered-users").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/company-employee-management/v1/registered-users").hasRole("USER")
+                        .requestMatchers("/company-employee-management/v1/admin/**").hasRole("ADMIN")
                 );
         http
                 .formLogin(form -> form
-                        .loginPage("http://localhost:3000/login")
+                        .loginPage("/company-employee-management/v1/login")
                         .loginProcessingUrl("/company-employee-management/v1/login")
-                        .failureUrl("/company-employee-management/v1/error")
-                        .defaultSuccessUrl("/company-employee-management/v1/employees").permitAll());
+                        .failureUrl("/company-employee-management/v1/error") //pagine di errore
+                        .defaultSuccessUrl("/company-employee-management/v1/home").permitAll());
         http
-                .logout((logout) -> logout
+                .logout(logout -> logout
                         .logoutUrl("/company-employee-management/v1/logout")
-                        .logoutSuccessUrl("/login")
-                        .deleteCookies()
-                        .permitAll());
+                        .logoutSuccessUrl("/company-employee-management/v1/home")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID").permitAll());
         return http.build();
     }
 

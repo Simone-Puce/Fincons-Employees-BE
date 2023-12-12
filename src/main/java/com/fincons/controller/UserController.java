@@ -21,6 +21,11 @@ public class UserController {
         return "You are on the home page";
     }
 
+    @GetMapping("${registered.users.uri}")
+    public String registeredUsers(){
+        return "Registered users";
+    }
+
     @GetMapping("${admin.uri}")
     public String adminEndpoint() {
         return "Admin!";
@@ -43,7 +48,7 @@ public class UserController {
     }
 
 
-    @GetMapping("${logout.uri}")
+    @PostMapping("${logout.uri}")
     public String logoutEmployee() {
         return "logout!";
     }
