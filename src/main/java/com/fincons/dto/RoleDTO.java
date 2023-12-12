@@ -1,5 +1,6 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fincons.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +16,7 @@ public class RoleDTO {
 
     private String name;
 
+    @JsonIgnore
     private List<User> users;
 
     public long getId() {

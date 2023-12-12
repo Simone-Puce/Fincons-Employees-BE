@@ -50,11 +50,8 @@ public class UserServiceImpl  implements UserService{
                 role = roleToAssign("ROLE_USER");
             }
             userToSave.setRoles(List.of(role));
-            User userDaSalvare = userRepo.save(userToSave);
-            RoleDTO roleDto = entityToRoleDto(role);
-            UserDTO userDto = entityToDTO(userDaSalvare);
-            userDto.setRoles(List.of(roleDto));//added
-            return entityToDTO(userDaSalvare);
+            User userSaved = userRepo.save(userToSave);
+            return userToUserDto(userSaved);
         } else {
             // L'indirizzo email non è valido o esiste già nella repository
             throw new DuplicateEmailException("Invalid or existing email!!");
@@ -67,7 +64,7 @@ public class UserServiceImpl  implements UserService{
         if(users.isEmpty()){
             return List.of();
         }else{
-            return users.stream().map(this::entityToDTO).toList();
+            return users.stream().map(this::userToUserDto).toList();
         }
     }
 
@@ -77,10 +74,10 @@ public class UserServiceImpl  implements UserService{
         return userToSave;
     }
 
-    public UserDTO entityToDTO(User user) {
+    public UserDTO userToUserDto(User user) {
 
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
-        userDTO.setRoles(user.getRoles().stream().map(this::entityToRoleDto).toList());
+        userDTO.setRoles(user.getRoles().stream().map(this::roleToRoleDto).toList());
         return userDTO;
     }
 
@@ -94,7 +91,7 @@ public class UserServiceImpl  implements UserService{
         return role;
     }
 
-    public RoleDTO entityToRoleDto(Role role) {
+    public RoleDTO roleToRoleDto(Role role) {
         return this.modelMapper.map(role, RoleDTO.class);
     }
 

@@ -3,6 +3,7 @@ package com.fincons.controller;
 import com.fincons.dto.UserDTO;
 import com.fincons.exception.DuplicateEmailException;
 import com.fincons.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -73,4 +74,10 @@ public class UserController {
             return ResponseEntity.status(409).body("Invalid or existing email!!");
         }
     }
+
+    @GetMapping("${session.uri}")
+    public String session(HttpSession session){
+        return session.getId();
+    }
+
 }
