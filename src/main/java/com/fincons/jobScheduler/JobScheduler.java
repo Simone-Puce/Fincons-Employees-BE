@@ -25,7 +25,7 @@ public class JobScheduler {
 
     @Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderBirth}")
     @SchedulerLock(name = "birthEmailScheduler", lockAtLeastFor = "PT1M", lockAtMostFor = "PT5M")
-    @Retryable(retryFor = RuntimeException.class, maxAttempts = 4, backoff = @Backoff(delay = 1000))
+    @Retryable(retryFor = RuntimeException.class, backoff = @Backoff(delay = 1800000))
     public void emailSenderBirth() throws RuntimeException{
             System.out.println("Sto cercando Compleanni");
             emailService.sendGreetingsToEmployeesBirth();
@@ -34,7 +34,7 @@ public class JobScheduler {
 
     @Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderHire}")
     @SchedulerLock(name = "hireEmailScheduler",lockAtLeastFor = "PT1M",lockAtMostFor = "PT5M")
-    @Retryable(retryFor = RuntimeException.class, maxAttempts = 4, backoff = @Backoff(delay = 1000))
+    @Retryable(retryFor = RuntimeException.class, backoff = @Backoff(delay = 1800000))
     public void emailSenderHire() throws RuntimeException{
         System.out.println("Sto cercando Anniversari");
         emailService.sendGreetingsToEmployeesHire();

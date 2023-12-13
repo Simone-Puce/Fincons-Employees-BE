@@ -35,7 +35,7 @@ public class EmailBirthDate {
         return employee -> {
             Map<String, Object> emailContent = new HashMap<>();
             emailContent.put("name", employee.getFirstName());
-            emailContent.put("lastName", null);
+            emailContent.put("lastName", employee.getLastName());
             emailContent.put("personalizedText", EMAIL_CONTENT_BIRTHDATE);
             String htmlContent = emailContentBuilder.buildEmailContent(emailContent);
             emailSend.sendEmail(employee.getEmail(), EMAIL_SUBJECT_BIRTHDATE, htmlContent, IMG_BIRTHDATE);
