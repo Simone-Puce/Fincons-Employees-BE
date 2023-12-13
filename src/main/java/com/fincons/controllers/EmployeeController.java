@@ -32,7 +32,6 @@ public class EmployeeController {
         return employeeServiceApi.createEmployee(employeeDTO);
     }
 
-
     //get employee by id rest api
     @GetMapping("/employees/{id}")
     public EmployeeDTO getEmployeeById(@PathVariable Long id) {

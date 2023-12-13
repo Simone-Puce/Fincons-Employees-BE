@@ -23,12 +23,10 @@ public class EmployeeServiceImpl implements EmployeeServiceApi {
     @Autowired
     EmployeeMapper employeeMapper;
 
-
     @Override
-    public Employee createEmployee(EmployeeDTO employeeDto){
-        Employee employee =  employeeMapper.mapEmployeeDtoToEmployee(employeeDto);
-        Employee newEmployee = employeeRepository.save(employee);
-        return employeeRepository.save(newEmployee);
+    public Employee createEmployee(EmployeeDTO newEmployee){
+        Employee employee =  employeeMapper.mapEmployeeDtoToEmployee(newEmployee);
+        return employeeRepository.save(employee);
     }
 
     @Override

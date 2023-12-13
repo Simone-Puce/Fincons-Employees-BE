@@ -9,8 +9,7 @@ public class File {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
+    private Long id;
 
     @Column(name = "file64")
     private String file64;
@@ -21,28 +20,29 @@ public class File {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
 
-    public File(String file64, String name, String description) {
+
+
+
+    public File() {}
+
+
+    public File( String file64, String name, String description, Employee employee) {
         this.file64 = file64;
         this.name = name;
         this.description = description;
-
+        this.employee = employee;
     }
 
-
-    public File() {
-
-    }
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

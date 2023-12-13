@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class EmployeeDTO {
 
-    private long id;
+    private Long id;
 
     private String firstName;
 
@@ -17,7 +17,7 @@ public class EmployeeDTO {
     private String employeeId;
 
     @JsonCreator
-    public EmployeeDTO(@JsonProperty("id") long id, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("email") String email, @JsonProperty("employeeId") String employeeId) {
+    public EmployeeDTO(@JsonProperty("id") Long id, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("email") String email, @JsonProperty("employeeId") String employeeId) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -25,11 +25,11 @@ public class EmployeeDTO {
         this.employeeId = employeeId;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -56,7 +56,6 @@ public class EmployeeDTO {
     public void setEmailId(String emailId) {
         this.email = email;
     }
-
 
 
     @Override

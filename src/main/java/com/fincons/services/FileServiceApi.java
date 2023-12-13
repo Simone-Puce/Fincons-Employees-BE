@@ -7,16 +7,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public interface FileServiceApi {
 
-    FileDTO getFileById(long id);
+    FileDTO getFileById(Long id);
 
-    FileDTO createFile(FileDTO fileDto);
+    File uploadFile(FileDTO newFile);
 
-    FileDTO updateFile(long id, FileDTO fileDto);
-
-    void deleteFile(long id);
 
     List<FileDTO> getAllFiles();
 
@@ -27,6 +25,4 @@ public interface FileServiceApi {
     //Decoding a string from a base64 into a string
     String decodeString() throws IOException;
 
-  
-    ResponseEntity<File> uploadFile(@RequestBody String filePath) throws IOException;
 }
