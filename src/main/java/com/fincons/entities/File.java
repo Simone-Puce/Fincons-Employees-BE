@@ -33,11 +33,6 @@ public class File {
 
     }
 
-    public File(Long fileId, String file64) {
-    }
-
-    public File(Long fileId, String file64, String name, String description) {
-    }
 
     public File() {
 

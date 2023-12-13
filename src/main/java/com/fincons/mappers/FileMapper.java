@@ -1,11 +1,8 @@
 package com.fincons.mappers;
 
-
-
 import com.fincons.entities.File;
 import com.fincons.models.FileDTO;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 
@@ -13,7 +10,7 @@ import java.util.List;
 public class FileMapper {
 
     public File mapFileDtotoFile(FileDTO fileDto) {
-        return new File(fileDto.getFileId(), fileDto.getFile64(), fileDto.getName(), fileDto.getDescription());
+        return new File(fileDto.getFile64(), fileDto.getName(), fileDto.getDescription());
     }
 
     public FileDTO mapFileToFileDto(File file) {

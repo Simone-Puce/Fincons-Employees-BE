@@ -1,6 +1,5 @@
 package com.fincons.services;
 
-
 import com.fincons.entities.Employee;
 import com.fincons.exceptions.ResourceNotFoundException;
 import com.fincons.mappers.EmployeeMapper;
@@ -9,7 +8,6 @@ import com.fincons.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +25,9 @@ public class EmployeeServiceImpl implements EmployeeServiceApi {
 
 
     @Override
-    public EmployeeDTO createEmployee(Employee employee) {
-        return null;
-    }
-
-    @Override
     public Employee createEmployee(EmployeeDTO employeeDto){
-        Employee newEmployee =  employeeMapper.mapEmployeeDtoToEmployee(employeeDto);
+        Employee employee =  employeeMapper.mapEmployeeDtoToEmployee(employeeDto);
+        Employee newEmployee = employeeRepository.save(employee);
         return employeeRepository.save(newEmployee);
     }
 
@@ -61,7 +55,7 @@ public class EmployeeServiceImpl implements EmployeeServiceApi {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Employee not exixst with id: " + id));
         employee.setFirstName(employeeDetails.getFirstName());
         employee.setLastName(employeeDetails.getLastName());
-        employee.setEmailId(employeeDetails.getEmailId());
+        employee.setEmailId(employeeDetails.getEmail());
         Employee updateEmployee = employeeRepository.save(employee);
         return ResponseEntity.ok(updateEmployee);
     }
@@ -75,9 +69,5 @@ public class EmployeeServiceImpl implements EmployeeServiceApi {
         return ResponseEntity.ok(response);
     }
 
-    @Override
-    public Employee createEmployee() {
-        return null;
-    }
 }
 

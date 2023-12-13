@@ -6,7 +6,9 @@ import com.fincons.mappers.FileMapper;
 import com.fincons.models.FileDTO;
 import com.fincons.repositories.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+
 
 @Service
 public class FileServiceImpl implements FileServiceApi {
@@ -71,17 +74,22 @@ public class FileServiceImpl implements FileServiceApi {
 
     //Encoding a file into a base64 string
     @Override
-    public String encodeFile() throws IOException {
+    public String encodeFile(String filePath) throws IOException {
         Base64.Encoder encoder = Base64.getEncoder();
         //Take a file from a local folder and encode it
-        byte[] bytes = Files.readAllBytes(Paths.get("C://Users//michelangelo.masiell//Desktop//project-fincons//Fincons-Employees-BE//src//main//resources//uploaded//docTest.docx")); //file from local folder
-
+        byte[] bytes = Files.readAllBytes(Paths.get(filePath));
         //System.out.println(encodedFile);  //print the encoded file
        return (Base64.getMimeEncoder().encodeToString(bytes));
     }
 
 
     //Decoding a string from a base64 into a string
+
+    /**
+     *
+     * @return
+     * @throws IOException
+     */
     @Override
     public String decodeString() throws IOException {
         Base64.Decoder decoder = Base64.getDecoder(); //decoder for strings
@@ -91,12 +99,28 @@ public class FileServiceImpl implements FileServiceApi {
 
         byte[] stringDecoded = decoder.decode(stringToDecode);
 
-        byte[] decodedBytes = decoder1.decode(encodeFile());
+        byte[] decodedBytes = decoder1.decode(encodeFile(stringToDecode));
 
         System.out.println("******** " + new String (stringDecoded) + " ********");
         //System.out.println(new String (decodedBytes));
         return (Arrays.toString(decodedBytes));
 
     }
+
+
+    @Override
+    public ResponseEntity<File> uploadFile(@RequestBody String filePath) throws IOException {
+
+        filePath = "Here goes the path of the file uploaded(?)";
+        String encodedFile = encodeFile(filePath);
+        String nameFile = "test1";
+        String descriptionFile = "test file encoded";
+        File file = new File(encodedFile, nameFile, descriptionFile);
+        fileRepository.save(file);
+
+        return ResponseEntity.ok(file);
+    }
+
+
 
 }

@@ -2,7 +2,6 @@ package com.fincons.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Objects;
 
 public class EmployeeDTO {
@@ -13,16 +12,16 @@ public class EmployeeDTO {
 
     private String lastName;
 
-    private String emailId;
+    private String email;
 
     private String employeeId;
 
     @JsonCreator
-    public EmployeeDTO(@JsonProperty("id") long id, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("emailId") String emailId, @JsonProperty("employeeId") String employeeId) {
+    public EmployeeDTO(@JsonProperty("id") long id, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("email") String email, @JsonProperty("employeeId") String employeeId) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.emailId = emailId;
+        this.email = email;
         this.employeeId = employeeId;
     }
 
@@ -50,19 +49,19 @@ public class EmployeeDTO {
         this.lastName = lastName;
     }
 
-    public String getEmailId() {
-        return emailId;
+    public String getEmail() {
+        return email;
     }
 
     public void setEmailId(String emailId) {
-        this.emailId = emailId;
+        this.email = email;
     }
 
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, emailId);
+        return Objects.hash(id, firstName, lastName, email);
     }
 
     @Override
@@ -71,7 +70,7 @@ public class EmployeeDTO {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", emailId='" + emailId + '\'' +
+                ", emailId='" + email + '\'' +
                 '}';
     }
 }

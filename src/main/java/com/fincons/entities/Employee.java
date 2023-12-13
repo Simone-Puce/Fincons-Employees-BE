@@ -1,7 +1,6 @@
 package com.fincons.entities;
 
 import jakarta.persistence.*;
-
 import java.util.List;
 
 @Entity
@@ -19,8 +18,8 @@ public class Employee {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "email_id")
-    private String emailId;
+    @Column(name = "email")
+    private String email;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.REMOVE)
     private List<File> fileList;
@@ -29,10 +28,10 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, String emailId) {
+    public Employee(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.emailId = emailId;
+        this.email = email;
     }
 
     public long getId() {
@@ -59,12 +58,12 @@ public class Employee {
         this.lastName = lastName;
     }
 
-    public String getEmailId() {
-        return emailId;
+    public String getEmail() {
+        return email;
     }
 
-    public void setEmailId(String emailId) {
-        this.emailId = emailId;
+    public void setEmailId(String email) {
+        this.email = email;
     }
 
     public List<File> getFileList() {

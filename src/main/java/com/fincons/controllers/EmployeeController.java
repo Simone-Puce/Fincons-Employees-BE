@@ -1,6 +1,5 @@
 package com.fincons.controllers;
 
-
 import com.fincons.entities.Employee;
 import com.fincons.models.EmployeeDTO;
 import com.fincons.services.EmployeeServiceApi;
@@ -9,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -28,8 +28,8 @@ public class EmployeeController {
 
     // create employee rest api
     @PostMapping("/employees")
-    public Employee createEmployee(@RequestBody Employee employee) {
-        return employeeServiceApi.createEmployee();
+    public Employee createEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        return employeeServiceApi.createEmployee(employeeDTO);
     }
 
 

@@ -1,14 +1,14 @@
 package com.fincons.controllers;
 
-
 import com.fincons.entities.File;
 import com.fincons.repositories.FileRepository;
 import com.fincons.services.FileServiceApi;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+import java.io.IOException;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -28,22 +28,19 @@ public class FileController {
         return fileRepository.findAll();
     }
 
-    @PostMapping("/file")
-    public File uploadFile(@RequestBody File file) {
-        //TODO
-
-
-        return null;
+    @PostMapping("/upload-file")
+    public ResponseEntity<File> uploadFile(@RequestBody String filePath) throws IOException {
+        return fileServiceApi.uploadFile(filePath);
     }
 
-    @GetMapping("/file/{id}")
+    @GetMapping("/view-file/{id}")
     public ResponseEntity<File> viewFile (@PathVariable Long id) {
         //TODO
 
         return null;
     }
 
-    @GetMapping("file/download/{id}")
+    @GetMapping("file-download/{id}")
     public ResponseEntity<File> downloadFile(@PathVariable Long id){
         //TODO
         return null;
