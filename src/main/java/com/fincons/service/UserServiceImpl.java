@@ -68,6 +68,12 @@ public class UserServiceImpl  implements UserService{
         }
     }
 
+    @Override
+    public UserDTO getUserDtoByEmail(String email) {
+        User userFounded = userRepo.findByEmail(email);
+        return userToUserDto(userFounded);
+    }
+
     public User dtoToUser(UserDTO userDTO) {
         User userToSave = modelMapper.map(userDTO, User.class);
         userToSave.setPassword(passwordEncoder.encode(userDTO.getPassword()));

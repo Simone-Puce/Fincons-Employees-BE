@@ -80,4 +80,8 @@ public class UserController {
         return session.getId();
     }
 
+    @GetMapping("${detail.userdto.uri}")
+    public UserDTO userDetails( @RequestParam String email){
+        return userService.getUserDtoByEmail(email);
+    }
 }
