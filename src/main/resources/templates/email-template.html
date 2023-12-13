@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="">
+<head>
+    <title>Email Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 70%;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ccc;
+            position: relative;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        p {
+            color: #555555;
+            text-align: center;
+        }
+        .logo {
+            position: absolute;
+            max-width: 30%;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="content">
+        <h1 th:disabled="${personalizedText == null}" th:text="${personalizedText}">Default Message</h1>
+        <div style="display: flex; flex-direction: column;">
+            <h2 style="margin: 0.3em" th:disabled="${name == null}" th:text="${name}"> </h2>
+            <h2 th:disabled="${lastName == null}" style="margin: 0.3em" th:text="${lastName}"></h2>
+        </div>
+        <img th:src="'cid:img'" alt="Alt text for the image">
+    </div>
+    <img th:src="'cid:logo'" class="logo" alt="Logo">
+</div>
+</body>
+</html>
