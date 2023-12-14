@@ -11,11 +11,20 @@ import java.util.stream.Collectors;
 public class FileMapper {
 
     public File mapFileDtotoFile(FileDTO fileDto) {
-        return new File(fileDto.getFile64(), fileDto.getName(), fileDto.getDescription(), fileDto.getEmployeeId() );
+        File file = new File();
+        file.setName(fileDto.getName());
+        file.setDescription(fileDto.getDescription());
+        file.setFile64(fileDto.getFile64());
+        return file;
     }
 
     public FileDTO mapFileToFileDto(File file) {
-        return new FileDTO(file.getFile64(), file.getName(), file.getDescription(), file.getEmployee());
+        FileDTO fileDTO = new FileDTO();
+        fileDTO.setName(file.getName());
+        fileDTO.setDescription(file.getDescription());
+        fileDTO.setFile64(file.getFile64());
+        fileDTO.setEmployeeId(file.getEmployee().getId());
+        return fileDTO;
     }
 
     public List<FileDTO> mapFileListToFileDtoList(List<File> fileList) {

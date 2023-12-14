@@ -2,12 +2,10 @@ package com.fincons.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fincons.entities.Employee;
+
 
 
 public class FileDTO {
-
-    private Long id;
 
     private String file64;
 
@@ -15,15 +13,18 @@ public class FileDTO {
 
     private String description;
 
-    private Employee employeeId;
+    //private Employee employeeId;
+    private long employeeId;
 
+    public FileDTO() {
+    }
 
     @JsonCreator
     public FileDTO(
             @JsonProperty("file") String file64,
             @JsonProperty("name") String name,
             @JsonProperty("description") String description,
-            @JsonProperty("employeeId") Employee employeeId
+            @JsonProperty("employeeId") long employeeId
     ) {
         this.file64 = file64;
         this.name = name;
@@ -31,13 +32,6 @@ public class FileDTO {
         this.employeeId = employeeId;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getFile64() {
         return file64;
@@ -63,11 +57,11 @@ public class FileDTO {
         this.description = description;
     }
 
-    public Employee getEmployeeId() {
+    public long getEmployeeId() {
         return employeeId;
     }
 
-    public void setEmployeeId(Employee employeeId) {
+    public void setEmployeeId(long employeeId) {
         this.employeeId = employeeId;
     }
 }

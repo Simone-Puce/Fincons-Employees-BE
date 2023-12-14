@@ -6,10 +6,12 @@ import com.fincons.repositories.FileRepository;
 import com.fincons.services.FileServiceApi;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -24,8 +26,8 @@ public class FileController {
     private FileServiceApi fileServiceApi;
 
     @GetMapping("/file")
-    public List<File> getAllFiles() {
-        return fileRepository.findAll();
+    public List<FileDTO> getAllFiles() {
+        return fileServiceApi.getAllFiles();
     }
 
     @PostMapping(value = "/upload-file", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -34,16 +36,13 @@ public class FileController {
     }
 
     @GetMapping("/view-file/{id}")
-    public ResponseEntity<File> viewFile (@PathVariable Long id) {
-        //TODO
-
-        return null;
+    public FileDTO getFileById(@PathVariable Long id){
+        return fileServiceApi.getFileById(id);
     }
 
-    @GetMapping("file-download/{id}")
-    public ResponseEntity<File> downloadFile(@PathVariable Long id){
-        //TODO
-        return null;
+    @GetMapping("/download-file/{id}")
+    public String downloadFile(@PathVariable Long id) throws IOException {
+        return fileServiceApi.downloadFile(id);
     }
 
 }

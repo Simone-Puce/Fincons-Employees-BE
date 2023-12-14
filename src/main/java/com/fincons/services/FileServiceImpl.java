@@ -1,6 +1,5 @@
 package com.fincons.services;
 
-import com.fincons.entities.Employee;
 import com.fincons.entities.File;
 import com.fincons.exceptions.ResourceNotFoundException;
 import com.fincons.mappers.FileMapper;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -28,6 +28,13 @@ public class FileServiceImpl implements FileServiceApi {
 
 
     @Override
+    public File uploadFile(FileDTO fileDto) {
+
+        File file = fileMapper.mapFileDtotoFile(fileDto);
+        return fileRepository.save(file);
+    }
+
+    @Override
     public FileDTO getFileById(Long id) {
         File file = fileRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("File not exist with id: " + id));
@@ -35,12 +42,12 @@ public class FileServiceImpl implements FileServiceApi {
     }
 
     @Override
-    public File uploadFile(FileDTO fileDto) {
-
-        File file = fileMapper.mapFileDtotoFile(fileDto);
-        return fileRepository.save(file);
+    public String downloadFile(Long id) throws IOException {
+        File file = fileRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("File not exist with id: " + id));
+        //TODO save the string obtained into a local storage(?)
+        return decodeString(fileMapper.mapFileToFileDto(file).getFile64());
     }
-
 
     @Override
     public List<FileDTO> getAllFiles() {
@@ -50,27 +57,20 @@ public class FileServiceImpl implements FileServiceApi {
 
 
     //Encoding a file into a base64 string
-    @Override
     public String encodeFile(String filePath) throws IOException {
         Base64.Encoder encoder = Base64.getEncoder();
-        //Take a file from a local folder and encode it
         byte[] bytes = Files.readAllBytes(Paths.get(filePath));
-        //System.out.println(encodedFile);  //print the encoded file
        return (Base64.getMimeEncoder().encodeToString(bytes));
     }
 
 
     //Decoding a string from a base64 into a string
 
-    @Override
-    public String decodeString() throws IOException {
+    public String decodeString(String encodedFile) throws IOException {
         Base64.Decoder decoder = Base64.getDecoder(); //decoder for strings
         Base64.Decoder decoder1 = Base64.getMimeDecoder(); //decoder for files
-        String stringToDecode = "SGVsbG8gV29ybGQh";
-        byte[] stringDecoded = decoder.decode(stringToDecode);
-        byte[] decodedBytes = decoder1.decode(encodeFile(stringToDecode));
-        return (Arrays.toString(decodedBytes));
-
+        byte[] stringDecoded = decoder.decode(encodedFile);
+        return (new String(stringDecoded, StandardCharsets.UTF_8));
     }
 
 }
