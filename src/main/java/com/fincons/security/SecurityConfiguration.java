@@ -1,5 +1,6 @@
 package com.fincons.security;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
+
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -32,7 +34,7 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/company-employee-management/v1/email").authenticated()//
+                        .requestMatchers("/company-employee-management/v1/email").permitAll()//
                         .requestMatchers("/company-employee-management/v1/session-value").permitAll()
                         .requestMatchers("/company-employee-management/v1/home").permitAll()
                         .requestMatchers("/company-employee-management/v1/register").permitAll()
