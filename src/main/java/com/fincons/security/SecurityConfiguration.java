@@ -1,6 +1,5 @@
 package com.fincons.security;
 
-
 import com.fincons.auth.CustomAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -57,23 +57,20 @@ public class SecurityConfiguration {
 
                         //Auth for Login/Reg
                         .requestMatchers("/company-employee-management/v1/email").permitAll()
+                        .requestMatchers("/company-employee-management/v1/email").permitAll()//
                         .requestMatchers("/company-employee-management/v1/session-value").permitAll()
                         .requestMatchers("/company-employee-management/v1/home").permitAll()
                         .requestMatchers("/company-employee-management/v1/register").permitAll()
                         .requestMatchers("/company-employee-management/v1/employees").authenticated()
                         .requestMatchers("/company-employee-management/v1/error").permitAll()
                         .requestMatchers("/company-employee-management/v1/registered-users").hasAnyRole("ADMIN","USER")
-
-                        .requestMatchers("/company-employee-management/v1/login").permitAll()
-                        .requestMatchers("/company-employee-management/v1/logout").permitAll().anyRequest().authenticated()
-
-
+                        .requestMatchers("/company-employee-management/v1/admin/**").hasRole("ADMIN")
                 );
         http
                 .formLogin(form -> form
                         .loginPage("/company-employee-management/v1/login")
                         .loginProcessingUrl("/company-employee-management/v1/login")
-                        .failureUrl("/company-employee-management/v1/error")
+                        .failureUrl("/company-employee-management/v1/error") //pagine di errore
                         .defaultSuccessUrl("/company-employee-management/v1/home").permitAll());
         http
                 .logout(logout -> logout
@@ -89,11 +86,5 @@ public class SecurityConfiguration {
         auth.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
-    //per inserire il provider di autenticazione
-    @Autowired
-    public void configure (AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider((AuthenticationProvider) customAuthenticationProvider);
-    }
- */
 
 }
