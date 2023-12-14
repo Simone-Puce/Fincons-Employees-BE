@@ -1,4 +1,4 @@
-package com.fincons.service;
+package com.fincons.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
