@@ -1,5 +1,6 @@
 package com.fincons.controller;
 
+import com.fincons.entity.Department;
 import com.fincons.entity.Employee;
 import com.fincons.entity.Project;
 import com.fincons.dto.EmployeeProjectDTO;
@@ -31,12 +32,17 @@ public class EmployeeController {
     }
     @PostMapping(value = "/create")
     public Employee createEmployee(@RequestBody Employee employee){
-        return employeeService.saveEmployee(employee);
+        return employeeService.save(employee);
+    }
+
+    @PutMapping(value = "/update")
+    public Employee updateEmployeeById(@RequestParam long id, @RequestBody Employee employee){
+        return employeeService.update(id, employee);
     }
 
     @DeleteMapping(value = "/delete")
     public void deleteEmployeeById(@RequestParam long id){
-        employeeService.deleteEmployeeById(id);
+        employeeService.deleteById(id);
     }
 
     @GetMapping(value = "/find/employee-project")

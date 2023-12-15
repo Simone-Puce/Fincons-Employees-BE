@@ -1,5 +1,6 @@
 package com.fincons.controller;
 
+import com.fincons.entity.Project;
 import com.fincons.entity.Role;
 import com.fincons.entity.Role;
 import com.fincons.service.RoleService;
@@ -28,7 +29,11 @@ public class RoleController {
     }
     @PostMapping(value = "/create")
     public Role createRole(@RequestBody Role role){
-        return roleService.saveRole(role);
+        return roleService.save(role);
+    }
+    @PutMapping(value = "/update")
+    public Role updateRoleById(@RequestParam long id, @RequestBody Role role){
+        return roleService.update(id, role);
     }
 
     @DeleteMapping(value = "/delete")

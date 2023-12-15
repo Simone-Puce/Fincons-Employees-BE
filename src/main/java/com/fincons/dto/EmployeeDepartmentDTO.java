@@ -4,11 +4,11 @@ public class EmployeeDepartmentDTO {
 
 
     private String departmentName;
-    private String employeeName;
+    private String employeeLastName;
 
-    public EmployeeDepartmentDTO(String departmentName, String employeeName) {
+    public EmployeeDepartmentDTO(String departmentName, String employeeLastName) {
         this.departmentName = departmentName;
-        this.employeeName = employeeName;
+        this.employeeLastName = employeeLastName;
     }
 
     public String getDepartmentName() {
@@ -19,11 +19,11 @@ public class EmployeeDepartmentDTO {
         this.departmentName = departmentName;
     }
 
-    public String getEmployeeName() {
-        return employeeName;
+    public String getEmployeeLastName() {
+        return employeeLastName;
     }
 
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
+    public void setEmployeeLastName(String employeeLastName) {
+        this.employeeLastName = employeeLastName;
     }
 }

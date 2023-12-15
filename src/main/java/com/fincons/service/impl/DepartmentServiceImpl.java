@@ -2,6 +2,7 @@ package com.fincons.service.impl;
 
 import com.fincons.entity.Department;
 import com.fincons.dto.EmployeeDepartmentDTO;
+import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.repository.DepartmentRepository;
 import com.fincons.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,20 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public void deleteDepartmentById(long id) {
+    public Department update(long id, Department department) {
+        Department existingDepartment = departmentRepository.findById(id);
+        if (existingDepartment == null) {
+            throw new ResourceNotFoundException("Dipartimento con ID " + id + " non trovato");
+        } else {
+            existingDepartment.setName(department.getName());
+            existingDepartment.setAddress(department.getAddress());
+            existingDepartment.setCity(department.getCity());
+        }
+        return departmentRepository.save(existingDepartment);
+    }
+
+    @Override
+    public void deleteById(long id) {
         departmentRepository.deleteById(id);
     }
 

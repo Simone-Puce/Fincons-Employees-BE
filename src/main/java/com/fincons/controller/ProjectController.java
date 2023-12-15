@@ -1,5 +1,6 @@
 package com.fincons.controller;
 
+import com.fincons.entity.Employee;
 import com.fincons.entity.Project;
 import com.fincons.entity.Project;
 import com.fincons.entity.Project;
@@ -28,9 +29,12 @@ public class ProjectController {
     }
     @PostMapping(value = "/create")
     public Project createProject(@RequestBody Project project){
-        return projectService.saveProject(project);
+        return projectService.save(project);
     }
-
+    @PutMapping(value = "/update")
+    public Project updateProjectById(@RequestParam long id, @RequestBody Project project){
+        return projectService.update(id, project);
+    }
     @DeleteMapping(value = "/delete")
     public void deleteProjectById(@RequestParam long id){
         projectService.deleteById(id);

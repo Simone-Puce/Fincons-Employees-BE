@@ -1,6 +1,8 @@
 package com.fincons.service.impl;
 
 import com.fincons.entity.Project;
+import com.fincons.entity.Project;
+import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.repository.ProjectRepository;
 import com.fincons.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +26,23 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project saveProject(Project project) {
+    public Project save(Project project) {
         return projectRepository.save(project);
     }
+
+    @Override
+    public Project update(long id, Project project) {
+        Project existingProject = projectRepository.findById(id);
+        if (existingProject == null) {
+            throw new ResourceNotFoundException("Dipartimento con ID " + id + " non trovato");
+        } else {
+            existingProject.setName(project.getName());
+            existingProject.setArea(project.getArea());
+            existingProject.setPriority(project.getPriority());
+        }
+        return projectRepository.save(existingProject);
+    }
+    
 
     @Override
     public void deleteById(long id) {

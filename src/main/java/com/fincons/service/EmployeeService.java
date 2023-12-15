@@ -1,5 +1,6 @@
 package com.fincons.service;
 
+import com.fincons.entity.Department;
 import com.fincons.entity.Employee;
 import com.fincons.entity.Project;
 import com.fincons.dto.EmployeeProjectDTO;
@@ -11,10 +12,11 @@ public interface EmployeeService {
 
     List<Employee> findAll();
 
-    Employee saveEmployee(Employee employee);
+    Employee save(Employee employee);
 
     Employee findById(long id);
-    void deleteEmployeeById(long id);
+    Employee update(long id, Employee employee);
+    void deleteById(long id);
 
     List<Project> findAllEmployeeProjects(long id);
 
@@ -24,6 +26,7 @@ public interface EmployeeService {
 
 
     Employee deleteEmployeeProject(long idEmployee, long idProject);
+
 
 
 }

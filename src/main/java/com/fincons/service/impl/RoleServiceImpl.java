@@ -1,6 +1,8 @@
 package com.fincons.service.impl;
 
 import com.fincons.entity.Role;
+import com.fincons.entity.Role;
+import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.repository.RoleRepository;
 import com.fincons.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +26,21 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role saveRole(Role role) {
+    public Role save(Role role) {
         return roleRepository.save(role);
+    }
+
+
+    @Override
+    public Role update(long id, Role role) {
+        Role existingRole = roleRepository.findById(id);
+        if (existingRole == null) {
+            throw new ResourceNotFoundException("Dipartimento con ID " + id + " non trovato");
+        } else {
+            existingRole.setName(role.getName());
+            existingRole.setSalary(role.getSalary());
+        }
+        return roleRepository.save(existingRole);
     }
 
     @Override

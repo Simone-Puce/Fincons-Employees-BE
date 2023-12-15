@@ -34,13 +34,18 @@ public class DepartmentController {
     public Department createDepartment(@RequestBody Department department){
         return departmentService.save(department);
     }
-    @GetMapping(value = "/find-employees")
-    public List<EmployeeDepartmentDTO> getDepartmentFindEmployee(@RequestParam long idDepartment){
-        return departmentService.getDepartmentEmployeesFindByIdDepartment(idDepartment);
+    @PutMapping(value = "/update")
+    public Department updateDepartmentById(@RequestParam long id, @RequestBody Department department){
+        return departmentService.update(id, department);
     }
     @DeleteMapping(value = "/delete")
     public void deleteDepartmentById(@RequestParam long id){
-        departmentService.deleteDepartmentById(id);
+        departmentService.deleteById(id);
+    }
+
+    @GetMapping(value = "/find-employees")
+    public List<EmployeeDepartmentDTO> getDepartmentFindEmployee(@RequestParam long idDepartment){
+        return departmentService.getDepartmentEmployeesFindByIdDepartment(idDepartment);
     }
 
 }
