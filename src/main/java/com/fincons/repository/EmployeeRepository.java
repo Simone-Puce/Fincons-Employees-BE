@@ -19,9 +19,12 @@ public interface EmployeeRepository extends JpaRepository <Employee, Long> {
 
     @Query(
             "SELECT NEW com.fincons.dto.EmployeeProjectDTO(e.lastName, e.id, p.name, p.id)" +
-            "FROM Employee e " +
-            "INNER JOIN Project p ON e.department.id = p.id")
+                    "FROM Employee e " +
+                    "JOIN e.projects p"
+    )
     List<EmployeeProjectDTO> getAllEmployeeProject();
+
+
 
 
 

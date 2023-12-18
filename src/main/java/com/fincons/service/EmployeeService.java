@@ -24,9 +24,7 @@ public interface EmployeeService {
 
     Employee addEmployeeProject(long idEmployee,long idProject);
 
-
     Employee deleteEmployeeProject(long idEmployee, long idProject);
 
-
-
+    EmployeeProjectDTO updateEmployeeProject(long idEmployee, long idProject, EmployeeProjectDTO employeeProjectDTO);
 }

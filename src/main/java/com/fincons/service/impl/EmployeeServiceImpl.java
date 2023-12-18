@@ -30,7 +30,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee update(long id, Employee employee) {
         Employee existingEmployee = employeeRepository.findById(id);
         if (existingEmployee == null) {
-            throw new ResourceNotFoundException("Dipartimento con ID " + id + " non trovato");
+            throw new ResourceNotFoundException("Employee with ID: " + id + " not found");
         } else {
             existingEmployee.setFirstName(employee.getFirstName());
             existingEmployee.setLastName(employee.getLastName());
@@ -86,5 +86,41 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.save(employee);
     }
 
+    @Override
+    public EmployeeProjectDTO updateEmployeeProject(long idEmployee, long idProject, EmployeeProjectDTO employeeProjectDTO) {
+
+        List<EmployeeProjectDTO> employeesProjects = employeeRepository.getAllEmployeeProject();
+        for (EmployeeProjectDTO employeeProject : employeesProjects) {
+            if (employeeProject.getIdEmployee() == idEmployee && employeeProject.getIdProject() == idProject) {
+
+                Employee oldEmployee = employeeRepository.findById(idEmployee);
+                Project oldProject = projectRepository.findById(idProject);
+                oldEmployee.getProjects().remove(oldProject);
+                Employee deleteEmployee = employeeRepository.save(oldEmployee);
+
+
+                Employee newEmployee = employeeRepository.findById(employeeProjectDTO.getIdEmployee())
+                        .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + employeeProjectDTO.getIdEmployee()));
+                Project newProject = projectRepository.findById(employeeProjectDTO.getIdProject())
+                        .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + employeeProjectDTO.getIdProject()));;
+                newEmployee.getProjects().add(newProject);
+                Employee savedEmployee = employeeRepository.save(newEmployee);
+                break;
+            }
+            else
+            {
+                throw new ResourceNotFoundException("Employee or Project not found");
+
+            }
+        }
+        return mapEmployeeToDTO(employeeProjectDTO);
+    }
+
+
+    // Metodo per la mappatura dell'Employee a EmployeeProjectDTO
+    private EmployeeProjectDTO mapEmployeeToDTO(EmployeeProjectDTO targetDTO) {
+        EmployeeProjectDTO employeeDTO = new EmployeeProjectDTO(targetDTO.getIdEmployee(), targetDTO.getIdProject());
+        return employeeDTO;
+    }
 
 }

@@ -63,6 +63,10 @@ public class EmployeeController {
     public Employee deleteEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
         return employeeService.deleteEmployeeProject(idEmployee, idProject);
     }
+    @PutMapping(value ="/update/employee-project")
+    public EmployeeProjectDTO updateEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject, @RequestBody EmployeeProjectDTO employeeProjectDTO){
+        return employeeService.updateEmployeeProject(idEmployee, idProject, employeeProjectDTO);
+    }
 
 
 

@@ -34,7 +34,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Project update(long id, Project project) {
         Project existingProject = projectRepository.findById(id);
         if (existingProject == null) {
-            throw new ResourceNotFoundException("Dipartimento con ID " + id + " non trovato");
+            throw new ResourceNotFoundException("Project with ID: " + id + " not found");
         } else {
             existingProject.setName(project.getName());
             existingProject.setArea(project.getArea());

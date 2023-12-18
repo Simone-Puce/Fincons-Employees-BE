@@ -22,7 +22,6 @@ public class RoleController {
     public Role getRoleById(@RequestParam long id){
         return roleService.findById(id);
     }
-
     @GetMapping(value="/list")
     public List<Role> getAllRoles(){
         return roleService.findAll();
@@ -35,7 +34,6 @@ public class RoleController {
     public Role updateRoleById(@RequestParam long id, @RequestBody Role role){
         return roleService.update(id, role);
     }
-
     @DeleteMapping(value = "/delete")
     public void deleteRoleById(@RequestParam long id){
         roleService.deleteById(id);

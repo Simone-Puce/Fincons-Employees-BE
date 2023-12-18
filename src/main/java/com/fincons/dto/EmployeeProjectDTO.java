@@ -14,6 +14,16 @@ public class EmployeeProjectDTO {
         this.idProject = idProject;
     }
 
+
+    public EmployeeProjectDTO(Long idEmployee, Long idProject) {
+        this.idEmployee = idEmployee;
+        this.idProject = idProject;
+    }
+
+    public EmployeeProjectDTO() {
+
+    }
+
     public String getLastName() {
         return lastName;
     }

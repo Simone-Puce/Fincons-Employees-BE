@@ -35,7 +35,7 @@ public class RoleServiceImpl implements RoleService {
     public Role update(long id, Role role) {
         Role existingRole = roleRepository.findById(id);
         if (existingRole == null) {
-            throw new ResourceNotFoundException("Dipartimento con ID " + id + " non trovato");
+            throw new ResourceNotFoundException("Role with ID " + id + " not found");
         } else {
             existingRole.setName(role.getName());
             existingRole.setSalary(role.getSalary());

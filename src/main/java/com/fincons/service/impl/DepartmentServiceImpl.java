@@ -41,7 +41,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public Department update(long id, Department department) {
         Department existingDepartment = departmentRepository.findById(id);
         if (existingDepartment == null) {
-            throw new ResourceNotFoundException("Dipartimento con ID " + id + " non trovato");
+            throw new ResourceNotFoundException("Department with ID: " + id + " not found");
         } else {
             existingDepartment.setName(department.getName());
             existingDepartment.setAddress(department.getAddress());
