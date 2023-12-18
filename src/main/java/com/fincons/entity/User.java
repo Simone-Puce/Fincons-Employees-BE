@@ -31,9 +31,7 @@ public class User {
     private String password;
 
 
-
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL) // Performance
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id" ),
@@ -76,6 +74,11 @@ public class User {
         return email;
     }
 
+    // FOR authentication
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
     public void setEmail(String email) {
         this.email = email;
     }
