@@ -78,6 +78,7 @@ public class SecurityConfiguration {
                         .logoutSuccessUrl("/company-employee-management/v1/home")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID").permitAll());
+
         http        //ADDED
                 .addFilterBefore(        //ADDED
                         jwtAuthFilter,       //ADDED
