@@ -34,7 +34,7 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/company-employee-management/v1/email").permitAll()//
+                        .requestMatchers("/company-employee-management/v1/email").authenticated()//
                         .requestMatchers("/company-employee-management/v1/session-value").permitAll()
                         .requestMatchers("/company-employee-management/v1/home").permitAll()
                         .requestMatchers("/company-employee-management/v1/register").permitAll()
