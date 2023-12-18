@@ -40,4 +40,9 @@ public class User {
     private List<Role> roles;
 
 
+    // FOR authentication
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }
