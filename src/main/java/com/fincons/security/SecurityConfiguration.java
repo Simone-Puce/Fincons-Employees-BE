@@ -5,9 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -18,12 +15,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
-
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -33,6 +30,9 @@ public class SecurityConfiguration {
     UserDetailsService userDetailsService;
     @Autowired
     CustomAuthenticationProvider customAuthenticationProvider;
+
+    @Autowired
+    JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -78,6 +78,10 @@ public class SecurityConfiguration {
                         .logoutSuccessUrl("/company-employee-management/v1/home")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID").permitAll());
+        http        //ADDED
+                .addFilterBefore(        //ADDED
+                        jwtAuthFilter,       //ADDED
+                        UsernamePasswordAuthenticationFilter.class);         //ADDED
         return http.build();
     }
 /*
