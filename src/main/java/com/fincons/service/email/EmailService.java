@@ -1,4 +1,4 @@
-package com.fincons.service;
+package com.fincons.service.email;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

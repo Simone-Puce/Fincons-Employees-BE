@@ -1,4 +1,4 @@
-package com.fincons.service;
+package com.fincons.service.email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

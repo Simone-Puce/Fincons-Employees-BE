@@ -1,6 +1,5 @@
 package com.fincons.mapper;
 
-
 import com.fincons.entity.Employee;
 import com.fincons.model.EmployeeDto;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ public class EmployeeMapper {
     }
 
     public EmployeeDto mapEmployeeToEmployeeDto(Employee employee) {
-        return new EmployeeDto(employee.getId(), employee.getFirstName(), employee.getLastName(), employee.getEmail(), employee.getImg(), employee.getAgency().getName(), employee.getBirthDate(), employee.getHireDate());
+        return new EmployeeDto(employee.getId(), employee.getFirstName(), employee.getLastName(), employee.getEmail(), employee.getImg(), employee.getBirthDate(), employee.getHireDate());
     }
 
     public List<EmployeeDto> mapEmployeeListToEmployeeDtoList(List<Employee> employeeList) {

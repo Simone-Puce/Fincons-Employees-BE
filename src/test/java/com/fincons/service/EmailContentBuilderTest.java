@@ -1,6 +1,7 @@
 package com.fincons.service;
 
 import com.fincons.entity.Employee;
+import com.fincons.service.email.EmailContentBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

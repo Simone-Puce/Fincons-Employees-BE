@@ -33,10 +33,6 @@ public class Employee {
     @Column(name="hire_date")
     private LocalDate hireDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "agency_id")
-    private Agency agency;
-
     public Employee(String firstName, String lastName, String email, String img, LocalDate birthDate, LocalDate hireDate) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -105,11 +101,4 @@ public class Employee {
         this.hireDate = hireDate;
     }
 
-    public Agency getAgency() {
-        return agency;
-    }
-
-    public void setAgency(Agency agency) {
-        this.agency = agency;
-    }
 }

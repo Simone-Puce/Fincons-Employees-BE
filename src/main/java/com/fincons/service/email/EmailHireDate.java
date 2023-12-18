@@ -1,4 +1,4 @@
-package com.fincons.service;
+package com.fincons.service.email;
 
 import com.fincons.entity.Employee;
 import com.fincons.repository.EmployeeRepository;
@@ -12,11 +12,11 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @Component
-public class EmailBirthDate {
+public class EmailHireDate {
     public static final Predicate<Employee> emailNotEmpty = employee -> !employee.getEmail().isEmpty();
-    public static final String EMAIL_SUBJECT_BIRTHDATE = "Buon Compleanno!";
-    public static final String EMAIL_CONTENT_BIRTHDATE = "Ti auguriamo un fantastico compleanno pieno di gioia!";
-    private static final String IMG_BIRTHDATE = "images/happyBirthday.png";
+    public static final String EMAIL_SUBJECT_HIREDATE = "Buon Anniversario!";
+    public static final String EMAIL_CONTENT_HIREDATE = "Congratulazioni per esserti unito al nostro team!";
+    public static final String IMG_HIREDATE = "images/happyAnniversary.png";
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -25,20 +25,19 @@ public class EmailBirthDate {
     @Autowired
     private EmailContentBuilder emailContentBuilder;
 
-    public void sendBirthdayGreetings() throws RuntimeException {
-        employeeRepository.findEmployeesByTodayBirthday(LocalDate.now()).stream()
+    public void sendAnniversaryGreetings() throws RuntimeException{
+       employeeRepository.findEmployeesByTodayHireDate(LocalDate.now()).stream()
                 .filter(emailNotEmpty)
-                .forEach(getEmployeeConsumer());
+                .forEach(getEmployeeConsumer);
     }
 
-    private Consumer<Employee> getEmployeeConsumer() {
-        return employee -> {
+    private final Consumer<Employee> getEmployeeConsumer = employee -> {
             Map<String, Object> emailContent = new HashMap<>();
             emailContent.put("name", employee.getFirstName());
             emailContent.put("lastName", employee.getLastName());
-            emailContent.put("personalizedText", EMAIL_CONTENT_BIRTHDATE);
+            emailContent.put("personalizedText", EMAIL_CONTENT_HIREDATE);
             String htmlContent = emailContentBuilder.buildEmailContent(emailContent);
-            emailSend.sendEmail(employee.getEmail(), EMAIL_SUBJECT_BIRTHDATE, htmlContent, IMG_BIRTHDATE);
-        };
-    }
+            emailSend.sendEmail(employee.getEmail(), EMAIL_SUBJECT_HIREDATE, htmlContent, IMG_HIREDATE);
+    };
+
 }

@@ -1,14 +1,13 @@
 package com.fincons.controller;
 
-
+import com.fincons.entity.Employee;
 import com.fincons.model.EmployeeDto;
-import com.fincons.service.EmployeeServiceApi;
+import com.fincons.service.employee.EmployeeServiceApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -16,43 +15,33 @@ import java.util.Optional;
 public class EmployeeController {
 
     @Autowired
-    private final EmployeeServiceApi employeeServiceApi;
+    private EmployeeServiceApi employeeServiceApi;
 
-    @Autowired
-    public EmployeeController(EmployeeServiceApi employeeServiceApi) {
-        this.employeeServiceApi = employeeServiceApi;
-    }
-
-    @GetMapping
+    @GetMapping("/all")
     public List<EmployeeDto> getAllEmployees() {
         return employeeServiceApi.getAllEmployee();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id) {
-        Optional<EmployeeDto> employee = employeeServiceApi.getEmployeeById(id);
-        return employee.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/find/{id}")
+    public EmployeeDto getEmployeeById(@PathVariable Long id) {
+        return employeeServiceApi.getEmployeeById(id);
     }
 
     @PostMapping
-    public ResponseEntity<EmployeeDto> createEmployee(@RequestBody EmployeeDto employeeDto) throws Exception {
-        Optional<EmployeeDto> createdEmployee = employeeServiceApi.createEmployee(employeeDto);
-        System.out.println(employeeDto);
-        return createdEmployee.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+    public Employee createEmployee(@RequestBody EmployeeDto employeeDto) throws Exception {
+        return employeeServiceApi.createEmployee(employeeDto);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDto employeeDto) {
-        Optional<EmployeeDto> updatedEmployee = employeeServiceApi.updateEmployee(id, employeeDto);
-        return updatedEmployee.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employeeDetails) {
+        return employeeServiceApi.updateEmployee(id, employeeDetails);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Employee> deleteEmployee(@PathVariable Long id) {
         employeeServiceApi.deleteEmployee(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }

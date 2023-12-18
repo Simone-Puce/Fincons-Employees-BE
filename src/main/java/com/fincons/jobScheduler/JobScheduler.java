@@ -1,10 +1,11 @@
 package com.fincons.jobScheduler;
 
-import com.fincons.service.EmailService;
+import com.fincons.service.email.EmailService;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Recover;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 
 @Component
 @EnableRetry
+@PropertySource(value = "email.properties")
 public class JobScheduler {
 
     Logger logger = LoggerFactory.getLogger(RuntimeException.class);

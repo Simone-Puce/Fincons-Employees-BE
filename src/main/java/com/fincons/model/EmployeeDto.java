@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 public class EmployeeDto {
 
-    private long id;
+    private Long id;
 
     private String firstName;
 
@@ -17,29 +17,29 @@ public class EmployeeDto {
 
     private String img;
 
-    private String agency;
-
     private LocalDate birthDate;
 
     private LocalDate hireDate;
 
     @JsonCreator
-    public EmployeeDto(@JsonProperty("id") long id,@JsonProperty("firstName") String firstName,@JsonProperty("lastName") String lastName,@JsonProperty("email") String email, @JsonProperty("img") String img, @JsonProperty("agency") String agency, @JsonProperty("birthDate") LocalDate birthDate, @JsonProperty("hireDate") LocalDate hireDate) {
+    public EmployeeDto(@JsonProperty("id") Long id, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("email") String email, @JsonProperty("img") String img, @JsonProperty("birthDate") LocalDate birthDate, @JsonProperty("hireDate") LocalDate hireDate) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.img = img;
-        this.agency = agency;
         this.birthDate = birthDate;
         this.hireDate = hireDate;
     }
 
-    public long getId() {
+    public EmployeeDto() {
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -73,14 +73,6 @@ public class EmployeeDto {
 
     public void setImg(String img) {
         this.img = img;
-    }
-
-    public String getAgency() {
-        return agency;
-    }
-
-    public void setAgency(String agency) {
-        this.agency = agency;
     }
 
     public LocalDate getBirthDate() {
