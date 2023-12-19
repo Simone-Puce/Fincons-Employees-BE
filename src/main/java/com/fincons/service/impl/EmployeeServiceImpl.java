@@ -1,16 +1,24 @@
 package com.fincons.service.impl;
 
+import com.fincons.dto.EmployeeDTO;
 import com.fincons.entity.Employee;
 import com.fincons.entity.Project;
 import com.fincons.dto.EmployeeProjectDTO;
+import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.mapper.EmployeeMapper;
 import com.fincons.repository.EmployeeRepository;
 import com.fincons.repository.ProjectRepository;
 import com.fincons.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -21,9 +29,68 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private ProjectRepository projectRepository;
 
+    @Autowired
+    private EmployeeMapper employeeMapper;
+
     @Override
-    public Employee findById(long id) {
-        return employeeRepository.findById(id);
+    public ResponseEntity<EmployeeDTO> findById(long id) {
+        Employee employee = employeeRepository.findById(id);
+        //Check if employee not found
+        if (employee != null) {
+            EmployeeDTO employeeDTO = employeeMapper.mapEmployee(employee);
+            return ResponseEntity.ok(employeeDTO);
+        } else {
+            throw new ResourceNotFoundException("Employee not found with id: " + id);
+        }
+    }
+    @Override
+    public ResponseEntity<List<EmployeeDTO>> findAll() {
+        List<Employee> employees = employeeRepository.findAll();
+        List<EmployeeDTO> newListEmployee = new ArrayList<>();
+        //Check if the list of employee is empty
+        for (Employee employee : employees) {
+            if (employee != null) {
+                EmployeeDTO employeeDTO = employeeMapper.mapEmployee(employee);
+                newListEmployee.add(employeeDTO);
+            } else {
+                throw new IllegalArgumentException("There aren't Employees");
+            }
+        }
+        return ResponseEntity.ok(newListEmployee);
+    }
+    @Override
+    public ResponseEntity<EmployeeDTO> save(Employee employee) {
+
+        //Condition for not have null attributes
+        //In this conditional miss "endDate" because can be null
+        if (
+                employee.getFirstName() != null && !employee.getFirstName().isEmpty() &&
+                        employee.getLastName() != null && !employee.getLastName().isEmpty() &&
+                        employee.getGender() != null && !employee.getGender().isEmpty() &&
+                        Objects.nonNull(employee.getBirthDate()) &&
+                        Objects.nonNull(employee.getStartDate()) &&
+                        Objects.nonNull(employee.getDepartment()) &&
+                        Objects.nonNull(employee.getRole())) {
+
+            List<Employee> employees = employeeRepository.findAll();
+            //Condition if there are employee with same firstName && lastName && birthDate
+            for (Employee employee1 : employees){
+                String pattern = "EEE MMM dd HH:mm:ss zzz yyyy";
+                SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+                if(employee1.getFirstName().equals(employee.getFirstName())&&
+                        employee1.getLastName().equals(employee.getLastName())&&
+                        employee1.getBirthDate().equals(employee.getBirthDate())
+                ){
+                    throw new IllegalArgumentException("FirstName, LastName and BirthDate can't be same");
+                }
+            }
+
+        } else {
+            throw new IllegalArgumentException("The fields of employee can't be null or empty");
+        }
+        EmployeeDTO employeeDTO = employeeMapper.mapEmployee(employee);
+        employeeRepository.save(employee);
+        return ResponseEntity.ok(employeeDTO);
     }
 
     @Override
@@ -44,15 +111,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.save(existingEmployee);
     }
 
-    @Override
-    public List<Employee> findAll() {
-        return employeeRepository.findAll();
-    }
-
-    @Override
-    public Employee save(Employee employee) {
-        return employeeRepository.save(employee);
-    }
 
     @Override
     public void deleteById(long id) {
@@ -110,13 +168,10 @@ public class EmployeeServiceImpl implements EmployeeService {
             else
             {
                 throw new ResourceNotFoundException("Employee or Project not found");
-
             }
         }
         return mapEmployeeToDTO(employeeProjectDTO);
     }
-
-
     // Metodo per la mappatura dell'Employee a EmployeeProjectDTO
     private EmployeeProjectDTO mapEmployeeToDTO(EmployeeProjectDTO targetDTO) {
         EmployeeProjectDTO employeeDTO = new EmployeeProjectDTO(targetDTO.getIdEmployee(), targetDTO.getIdProject());

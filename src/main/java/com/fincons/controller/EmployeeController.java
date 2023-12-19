@@ -1,5 +1,6 @@
 package com.fincons.controller;
 
+import com.fincons.dto.EmployeeDTO;
 import com.fincons.entity.Department;
 import com.fincons.entity.Employee;
 import com.fincons.entity.Project;
@@ -7,6 +8,7 @@ import com.fincons.dto.EmployeeProjectDTO;
 import com.fincons.service.EmployeeService;
 import com.fincons.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,15 +25,15 @@ public class EmployeeController {
 
 
     @GetMapping(value = "/find")
-    public Employee getEmployeeById(@RequestParam long id){
+    public ResponseEntity<EmployeeDTO> getEmployeeById(@RequestParam long id){
         return employeeService.findById(id);
     }
     @GetMapping(value="/list")
-    public List<Employee> getAllEmployees(){
+    public ResponseEntity<List<EmployeeDTO>> getAllEmployees(){
         return employeeService.findAll();
     }
     @PostMapping(value = "/create")
-    public Employee createEmployee(@RequestBody Employee employee){
+    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody Employee employee){
         return employeeService.save(employee);
     }
 

@@ -1,22 +1,21 @@
 package com.fincons.service;
 
+import com.fincons.dto.DepartmentDTO;
 import com.fincons.entity.Department;
 import com.fincons.dto.EmployeeDepartmentDTO;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface DepartmentService {
+    ResponseEntity<DepartmentDTO> findById(long id);
+    ResponseEntity<List<DepartmentDTO>> findAll();
+    ResponseEntity<DepartmentDTO> save(Department department);
+    ResponseEntity<DepartmentDTO> update(long id, Department department);
+    ResponseEntity<DepartmentDTO> deleteById(long id);
 
-    List<Department> findAll();
+    ResponseEntity<List<EmployeeDepartmentDTO>> getDepartmentEmployeesFindByIdDepartment(long idDepartment);
 
-    Department save(Department department);
-
-    Department findById(long id);
-
-    List<EmployeeDepartmentDTO> getDepartmentEmployeesFindByIdDepartment(long idDepartment);
-    Department update(long id, Department department);
-
-    void deleteById(long id);
 
 
 }

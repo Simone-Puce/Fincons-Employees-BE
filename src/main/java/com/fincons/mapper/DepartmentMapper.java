@@ -5,7 +5,7 @@ import com.fincons.entity.Department;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmployeeMapper {
+public class DepartmentMapper {
     public DepartmentDTO mapDepartment(Department department){
         return new DepartmentDTO(
                 department.getName(),

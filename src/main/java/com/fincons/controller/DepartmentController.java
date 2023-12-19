@@ -1,9 +1,12 @@
 package com.fincons.controller;
 
+import com.fincons.dto.DepartmentDTO;
 import com.fincons.entity.Department;
 import com.fincons.dto.EmployeeDepartmentDTO;
 import com.fincons.service.DepartmentService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,29 +25,29 @@ public class DepartmentController {
     private DepartmentService departmentService;
 
     @GetMapping(value = "/find")
-    public Department getDepartmentById(@RequestParam long id){
+    public ResponseEntity<DepartmentDTO> getDepartmentById(@RequestParam long id){
         return departmentService.findById(id);
     }
 
     @GetMapping(value="/list")
-    public List<Department> getAllDepartment(){
+    public ResponseEntity<List<DepartmentDTO>> getAllDepartment(){
         return  departmentService.findAll();
     }
     @PostMapping(value = "/create")
-    public Department createDepartment(@RequestBody Department department){
+    public ResponseEntity<DepartmentDTO> createDepartment(@RequestBody Department department){
         return departmentService.save(department);
     }
     @PutMapping(value = "/update")
-    public Department updateDepartmentById(@RequestParam long id, @RequestBody Department department){
+    public ResponseEntity<DepartmentDTO> updateDepartmentById(@RequestParam long id, @RequestBody Department department){
         return departmentService.update(id, department);
     }
     @DeleteMapping(value = "/delete")
-    public void deleteDepartmentById(@RequestParam long id){
-        departmentService.deleteById(id);
+    public ResponseEntity<DepartmentDTO> deleteDepartmentById(@RequestParam long id){
+       return departmentService.deleteById(id);
     }
 
     @GetMapping(value = "/find-employees")
-    public List<EmployeeDepartmentDTO> getDepartmentFindEmployee(@RequestParam long idDepartment){
+    public ResponseEntity<List<EmployeeDepartmentDTO>> getDepartmentFindEmployee(@RequestParam long idDepartment){
         return departmentService.getDepartmentEmployeesFindByIdDepartment(idDepartment);
     }
 
