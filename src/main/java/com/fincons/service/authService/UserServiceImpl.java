@@ -5,8 +5,17 @@ import com.fincons.dto.UserDTO;
 import com.fincons.entity.Role;
 import com.fincons.entity.User;
 import com.fincons.exception.DuplicateEmailException;
+import com.fincons.jwt.JwtTokenProvider;
+import com.fincons.jwt.LoginDto;
+import com.fincons.service.authService.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import com.fincons.repository.RoleRepository;
 import com.fincons.repository.UserRepository;
 import com.fincons.utility.EmailValidator;
@@ -16,23 +25,34 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserServiceImpl  implements UserService{
+public class UserServiceImpl  implements UserService {
+
+    public UserServiceImpl(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
+        this.roleRepo = roleRepo;
+        this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
     private RoleRepository roleRepo;
 
     private UserRepository userRepo;
 
     private PasswordEncoder passwordEncoder;
 
-    ModelMapper modelMapper = new ModelMapper();
+    private AuthenticationManager authenticationManager;
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+
+    private JwtTokenProvider jwtTokenProvider;
+
 
     @Value("${admin.password}")
-    private String passwordAmministratore;
-
-    public UserServiceImpl(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder) {
-        this.roleRepo = roleRepo;
-        this.userRepo = userRepo;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private String passwordAdmin;
 
 
     @Override
@@ -44,7 +64,7 @@ public class UserServiceImpl  implements UserService{
         if (!emailDto.isEmpty() && EmailValidator.isValidEmail(emailDto) && !userRepo.existsByEmail(emailDto)) {
             User userToSave = dtoToUser(userDTO);
             Role role;
-            if (passwordForAdmin != null && passwordForAdmin.equals(passwordAmministratore)) {
+            if (passwordForAdmin != null && passwordForAdmin.equals(passwordAdmin)) {
                 role = roleToAssign("ROLE_ADMIN");
             } else {
                 role = roleToAssign("ROLE_USER");
@@ -56,6 +76,24 @@ public class UserServiceImpl  implements UserService{
             // L'indirizzo email non è valido o esiste già nella repository
             throw new DuplicateEmailException("Invalid or existing email!!");
         }
+    }
+
+    @Override
+    public String login(LoginDto loginDto) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginDto.getEmail(),
+                loginDto.getPassword()
+        ));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String token = jwtTokenProvider.generateToken(authentication);
+
+        return token;
+    }
+
+    @Override
+    public UserDTO updateUser(String email, UserDTO userModified) throws Exception {
+        return null;
     }
 
     @Override
@@ -74,13 +112,17 @@ public class UserServiceImpl  implements UserService{
         return userToUserDto(userFounded);
     }
 
+
+
     public User dtoToUser(UserDTO userDTO) {
+        ModelMapper modelMapper = new ModelMapper();
         User userToSave = modelMapper.map(userDTO, User.class);
         userToSave.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         return userToSave;
     }
 
     public UserDTO userToUserDto(User user) {
+        ModelMapper modelMapper = new ModelMapper();
 
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
         userDTO.setRoles(user.getRoles().stream().map(this::roleToRoleDto).toList());
@@ -98,11 +140,13 @@ public class UserServiceImpl  implements UserService{
     }
 
     public RoleDTO roleToRoleDto(Role role) {
-        return this.modelMapper.map(role, RoleDTO.class);
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(role, RoleDTO.class);
     }
 
     public Role dtoToRole(RoleDTO roleDTO) {
-        return this.modelMapper.map(roleDTO, Role.class);
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(roleDTO, Role.class);
     }
 
 
