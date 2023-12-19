@@ -2,6 +2,8 @@ package com.fincons.controller;
 
 import com.fincons.dto.UserDTO;
 import com.fincons.exception.DuplicateEmailException;
+import com.fincons.jwt.JwtAuthResponse;
+import com.fincons.jwt.LoginDto;
 import com.fincons.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +56,16 @@ public class UserController {
         return "logout!";
     }
 
+    // Login
     @PostMapping(value = "${login.uri}")
-    public String login() {
+    public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto) {
         // your code goes here
-        return "login";
+        String token = userService.login(loginDto);
+
+        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+        jwtAuthResponse.setAccessToken(token);
+
+        return new ResponseEntity<>(jwtAuthResponse, HttpStatus.OK);
     }
 
 
