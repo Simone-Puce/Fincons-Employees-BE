@@ -1,11 +1,10 @@
 package com.fincons.controller;
 
-import com.fincons.entity.Project;
-import com.fincons.entity.Role;
+import com.fincons.dto.RoleDTO;
 import com.fincons.entity.Role;
 import com.fincons.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,24 +18,24 @@ public class RoleController {
     RoleService roleService;
 
     @GetMapping(value = "/find")
-    public Role getRoleById(@RequestParam long id){
+    public ResponseEntity<RoleDTO> getRoleById(@RequestParam long id){
         return roleService.findById(id);
     }
     @GetMapping(value="/list")
-    public List<Role> getAllRoles(){
+    public ResponseEntity<List<RoleDTO>> getAllRoles(){
         return roleService.findAll();
     }
     @PostMapping(value = "/create")
-    public Role createRole(@RequestBody Role role){
+    public ResponseEntity<RoleDTO> createRole(@RequestBody Role role){
         return roleService.save(role);
     }
     @PutMapping(value = "/update")
-    public Role updateRoleById(@RequestParam long id, @RequestBody Role role){
+    public ResponseEntity<RoleDTO> updateRoleById(@RequestParam long id, @RequestBody Role role){
         return roleService.update(id, role);
     }
     @DeleteMapping(value = "/delete")
-    public void deleteRoleById(@RequestParam long id){
-        roleService.deleteById(id);
+    public ResponseEntity<RoleDTO> deleteRoleById(@RequestParam long id){
+        return roleService.deleteById(id);
     }
 
     

@@ -1,9 +1,20 @@
 package com.fincons.dto;
 
+import java.util.List;
+
 public class DepartmentDTO {
     private String name;
     private String address;
     private String city;
+    //@JsonIgnore
+    private List<EmployeeDTO> employees;
+
+    public DepartmentDTO(String name, String address, String city, List<EmployeeDTO> employees) {
+        this.name = name;
+        this.address = address;
+        this.city = city;
+        this.employees = employees;
+    }
 
     public DepartmentDTO(String name, String address, String city) {
         this.name = name;
@@ -33,5 +44,13 @@ public class DepartmentDTO {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    //Se rimuovo il get è come se scrivessi @JsonIgnore
+    public List<EmployeeDTO> getEmployees() {
+        return employees;
+    }
+    public void setEmployees(List<EmployeeDTO> employees) {
+        this.employees = employees;
     }
 }

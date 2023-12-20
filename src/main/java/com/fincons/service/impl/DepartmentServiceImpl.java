@@ -26,14 +26,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public ResponseEntity<DepartmentDTO> findById(long id) {
-        Department department = departmentRepository.findById(id);
-        //Check if department not found
-        if (department != null) {
-            DepartmentDTO departmentDTO = departmentMapper.mapDepartment(department);
-            return ResponseEntity.ok(departmentDTO);
-        } else {
-            throw new ResourceNotFoundException("Department not found with id: " + id);
-        }
+
+        Department existingDepartment = getDepartmentById(id);
+        DepartmentDTO departmentDTO = departmentMapper.mapDepartment(existingDepartment);
+        return ResponseEntity.ok(departmentDTO);
+
     }
 
     @Override
@@ -56,77 +53,79 @@ public class DepartmentServiceImpl implements DepartmentService {
     public ResponseEntity<DepartmentDTO> save(Department department) {
 
         //Condition for not have null attributes
-        if (department.getName() != null && !department.getName().isEmpty() &&
-                department.getAddress() != null && !department.getAddress().isEmpty() &&
-                department.getCity() != null && !department.getCity().isEmpty()) {
+        validateDepartmentFields(department);
 
-            List<Department> departments = departmentRepository.findAll();
-            //Condition if there are departments with name same
-            for (Department department1 : departments) {
-                if (department1.getName().equals(department.getName())) {
-                    throw new IllegalArgumentException("The names can't be the same");
-                }
-            }
-        } else {
-            throw new IllegalArgumentException("The fields of department can't be null or empty");
-        }
+        List<Department> departments = departmentRepository.findAll();
+        //Condition if there are departments with name same
+        checkForDuplicateEmployee(department, departments);
+
         DepartmentDTO departmentDTO = departmentMapper.mapDepartment(department);
         departmentRepository.save(department);
         return ResponseEntity.ok(departmentDTO);
     }
+
 
     @Override
     public ResponseEntity<DepartmentDTO> update(long id, Department department) {
 
         DepartmentDTO departmentDTO;
         //Condition for not have null attributes
-        if (department.getName() != null && !department.getName().isEmpty() &&
-                department.getAddress() != null && !department.getAddress().isEmpty() &&
-                department.getCity() != null && !department.getCity().isEmpty()) {
-            Department existingDepartment = departmentRepository.findById(id);
-            //Condition for not have null Department
-            if (existingDepartment == null) {
-                throw new ResourceNotFoundException("Department with ID: " + id + " not found");
-            } else {
-                existingDepartment.setName(department.getName());
-                existingDepartment.setAddress(department.getAddress());
-                existingDepartment.setCity(department.getCity());
-                departmentRepository.save(existingDepartment);
+        validateDepartmentFields(department);
 
-                departmentDTO = departmentMapper.mapDepartment(department);
-            }
-        } else {
-            throw new IllegalArgumentException("The fields of department can't be null or empty");
-        }
+        //Condition for not have null Department
+        Department existingDepartment = getDepartmentById(id);
+
+        existingDepartment.setName(department.getName());
+        existingDepartment.setAddress(department.getAddress());
+        existingDepartment.setCity(department.getCity());
+        departmentRepository.save(existingDepartment);
+        departmentDTO = departmentMapper.mapDepartment(department);
 
         return ResponseEntity.ok(departmentDTO);
     }
 
     @Override
     public ResponseEntity<DepartmentDTO> deleteById(long id) {
-        Department existingDepartment = departmentRepository.findById(id);
-        if (existingDepartment != null) {
-            departmentRepository.deleteById(id);
-        } else {
-            throw new ResourceNotFoundException("Department with ID: " + id + " not found");
 
-        }
+        getDepartmentById(id);
+        departmentRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @Override
-    public ResponseEntity<List<EmployeeDepartmentDTO>> getDepartmentEmployeesFindByIdDepartment(long idDepartment) {
-        Department existingDepartment = departmentRepository.findById(idDepartment);
+    public ResponseEntity<List<EmployeeDepartmentDTO>> getDepartmentEmployeesFindByIdDepartment(long id) {
+        getDepartmentById(id);
         List<EmployeeDepartmentDTO> idDepartmentForEmployee;
-        if (existingDepartment != null) {
-            idDepartmentForEmployee = departmentRepository.getDepartmentEmployeesFindByIdDepartment(idDepartment);
-            if(idDepartmentForEmployee.isEmpty()){
-                throw new IllegalArgumentException("Department with ID: " + idDepartment + " is Empty");
-            }
-        }
-        else {
-            throw new ResourceNotFoundException("Department with ID: " + idDepartment + " not found");
+
+        idDepartmentForEmployee = departmentRepository.getDepartmentEmployeesFindByIdDepartment(id);
+        if(idDepartmentForEmployee.isEmpty()){
+            throw new IllegalArgumentException("Department with ID: " + id + " is Empty");
         }
         return ResponseEntity.ok(idDepartmentForEmployee);
+    }
+
+    private Department getDepartmentById(long id){
+        Department existingDepartment = departmentRepository.findById(id);
+
+        if(existingDepartment == null){
+            throw new ResourceNotFoundException("Department with ID: " + id + " not found");
+        }
+        return existingDepartment;
+    }
+
+    private void validateDepartmentFields(Department department){
+        //If one field is true run Exception
+        if (department.getName() == null || department.getName().isEmpty() ||
+                department.getAddress() == null || department.getAddress().isEmpty() ||
+                department.getCity() == null || department.getCity().isEmpty()) {
+            throw new IllegalArgumentException("The fields of the Department can't be null or empty");
+        }
+    }
+    private void checkForDuplicateEmployee(Department department, List<Department> departments){
+        for (Department department1 : departments) {
+            if (department1.getName().equals(department.getName())) {
+                throw new IllegalArgumentException("The names can't be the same");
+            }
+        }
     }
 }

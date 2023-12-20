@@ -14,7 +14,7 @@ public interface DepartmentService {
     ResponseEntity<DepartmentDTO> update(long id, Department department);
     ResponseEntity<DepartmentDTO> deleteById(long id);
 
-    ResponseEntity<List<EmployeeDepartmentDTO>> getDepartmentEmployeesFindByIdDepartment(long idDepartment);
+    ResponseEntity<List<EmployeeDepartmentDTO>> getDepartmentEmployeesFindByIdDepartment(long id);
 
 
 

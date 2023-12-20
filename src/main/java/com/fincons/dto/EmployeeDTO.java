@@ -1,14 +1,10 @@
 package com.fincons.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fincons.entity.Department;
 import com.fincons.entity.Project;
 import com.fincons.entity.Role;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 public class EmployeeDTO {
@@ -16,14 +12,15 @@ public class EmployeeDTO {
     private String firstName;
     private String lastName;
     private String gender;
-    private Date birthDate;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate birthDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private Department department;
     private Role role;
     private Set<Project> projects;
 
-    public EmployeeDTO(String firstName, String lastName, String gender, Date birthDate, Date startDate, Date endDate, Department department, Role role, Set<Project> projects) {
+
+    public EmployeeDTO(String firstName, String lastName, String gender, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Role role, Set<Project> projects) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -36,15 +33,13 @@ public class EmployeeDTO {
     }
 
 
-    public EmployeeDTO(String firstName, String lastName, String gender, Date birthDate, Date startDate, Date endDate, Department department, Role role) {
+    public EmployeeDTO(String firstName, String lastName, String gender, LocalDate birthDate, LocalDate startDate, LocalDate endDate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.birthDate = birthDate;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.department = department;
-        this.role = role;
     }
 
     public String getFirstName() {
@@ -71,27 +66,27 @@ public class EmployeeDTO {
         this.gender = gender;
     }
 
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 

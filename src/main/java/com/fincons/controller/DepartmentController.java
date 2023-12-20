@@ -4,7 +4,6 @@ import com.fincons.dto.DepartmentDTO;
 import com.fincons.entity.Department;
 import com.fincons.dto.EmployeeDepartmentDTO;
 import com.fincons.service.DepartmentService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +27,6 @@ public class DepartmentController {
     public ResponseEntity<DepartmentDTO> getDepartmentById(@RequestParam long id){
         return departmentService.findById(id);
     }
-
     @GetMapping(value="/list")
     public ResponseEntity<List<DepartmentDTO>> getAllDepartment(){
         return  departmentService.findAll();
@@ -45,10 +43,9 @@ public class DepartmentController {
     public ResponseEntity<DepartmentDTO> deleteDepartmentById(@RequestParam long id){
        return departmentService.deleteById(id);
     }
-
     @GetMapping(value = "/find-employees")
-    public ResponseEntity<List<EmployeeDepartmentDTO>> getDepartmentFindEmployee(@RequestParam long idDepartment){
-        return departmentService.getDepartmentEmployeesFindByIdDepartment(idDepartment);
+    public ResponseEntity<List<EmployeeDepartmentDTO>> getDepartmentFindEmployee(@RequestParam long id){
+        return departmentService.getDepartmentEmployeesFindByIdDepartment(id);
     }
 
 }

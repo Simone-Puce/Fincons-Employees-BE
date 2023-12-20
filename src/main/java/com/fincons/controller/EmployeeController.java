@@ -1,9 +1,8 @@
 package com.fincons.controller;
 
 import com.fincons.dto.EmployeeDTO;
-import com.fincons.entity.Department;
+import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Employee;
-import com.fincons.entity.Project;
 import com.fincons.dto.EmployeeProjectDTO;
 import com.fincons.service.EmployeeService;
 import com.fincons.service.ProjectService;
@@ -36,38 +35,34 @@ public class EmployeeController {
     public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody Employee employee){
         return employeeService.save(employee);
     }
-
     @PutMapping(value = "/update")
-    public Employee updateEmployeeById(@RequestParam long id, @RequestBody Employee employee){
+    public ResponseEntity<EmployeeDTO> updateEmployeeById(@RequestParam long id, @RequestBody Employee employee){
         return employeeService.update(id, employee);
     }
-
     @DeleteMapping(value = "/delete")
-    public void deleteEmployeeById(@RequestParam long id){
-        employeeService.deleteById(id);
+    public ResponseEntity<EmployeeDTO> deleteEmployeeById(@RequestParam long id){
+        return employeeService.deleteById(id);
     }
 
     @GetMapping(value = "/find/employee-project")
-    public List<Project> getAllEmployeesProjects(@RequestParam long id){
+    public ResponseEntity<List<ProjectDTO>> getAllEmployeesProjects(@RequestParam long id){
         return employeeService.findAllEmployeeProjects(id);
     }
     @GetMapping(value = "/list/employee-project")
-    public List<EmployeeProjectDTO> getAllEmployeeProject(){
+    public ResponseEntity<List<EmployeeProjectDTO>> getAllEmployeeProject(){
         return employeeService.getAllEmployeeProject();
     }
-
     @PostMapping(value= "/create/employee-project")
-    public Employee createEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
+    public ResponseEntity<EmployeeProjectDTO> createEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
         return employeeService.addEmployeeProject(idEmployee, idProject);
-    }
-
-    @DeleteMapping(value= "/delete/employee-project")
-    public Employee deleteEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
-        return employeeService.deleteEmployeeProject(idEmployee, idProject);
     }
     @PutMapping(value ="/update/employee-project")
     public EmployeeProjectDTO updateEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject, @RequestBody EmployeeProjectDTO employeeProjectDTO){
         return employeeService.updateEmployeeProject(idEmployee, idProject, employeeProjectDTO);
+    }
+    @DeleteMapping(value= "/delete/employee-project")
+    public ResponseEntity<EmployeeDTO> deleteEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
+        return employeeService.deleteEmployeeProject(idEmployee, idProject);
     }
 
 

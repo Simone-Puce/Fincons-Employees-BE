@@ -1,12 +1,10 @@
 package com.fincons.controller;
 
-import com.fincons.entity.Employee;
-import com.fincons.entity.Project;
-import com.fincons.entity.Project;
+import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Project;
 import com.fincons.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,25 +17,25 @@ public class ProjectController {
     ProjectService projectService;
 
     @GetMapping(value = "/find")
-    public Project getProjectById(@RequestParam long id){
+    public ResponseEntity<ProjectDTO> getProjectById(@RequestParam long id){
         return projectService.findById(id);
     }
 
     @GetMapping(value="/list")
-    public List<Project> getAllProjects(){
+    public ResponseEntity<List<ProjectDTO>> getAllProjects(){
         return projectService.findAll();
     }
     @PostMapping(value = "/create")
-    public Project createProject(@RequestBody Project project){
+    public ResponseEntity<ProjectDTO> createProject(@RequestBody Project project){
         return projectService.save(project);
     }
     @PutMapping(value = "/update")
-    public Project updateProjectById(@RequestParam long id, @RequestBody Project project){
+    public ResponseEntity<ProjectDTO> updateProjectById(@RequestParam long id, @RequestBody Project project){
         return projectService.update(id, project);
     }
     @DeleteMapping(value = "/delete")
-    public void deleteProjectById(@RequestParam long id){
-        projectService.deleteById(id);
+    public ResponseEntity<ProjectDTO> deleteProjectById(@RequestParam long id){
+        return projectService.deleteById(id);
     }
     
     

@@ -1,12 +1,15 @@
 package com.fincons.service.impl;
 
 import com.fincons.dto.EmployeeDTO;
+import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Employee;
 import com.fincons.entity.Project;
 import com.fincons.dto.EmployeeProjectDTO;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.EmployeeMapper;
+import com.fincons.mapper.EmployeeProjectMapper;
+import com.fincons.mapper.ProjectMapper;
 import com.fincons.repository.EmployeeRepository;
 import com.fincons.repository.ProjectRepository;
 import com.fincons.service.EmployeeService;
@@ -14,9 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,17 +34,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private EmployeeMapper employeeMapper;
 
+    @Autowired
+    private ProjectMapper projectMapper;
+
+    @Autowired
+    private EmployeeProjectMapper employeeProjectMapper;
+
+    @Autowired
+    private ProjectServiceImpl projectServiceImpl;
+
+
     @Override
     public ResponseEntity<EmployeeDTO> findById(long id) {
-        Employee employee = employeeRepository.findById(id);
-        //Check if employee not found
-        if (employee != null) {
-            EmployeeDTO employeeDTO = employeeMapper.mapEmployee(employee);
-            return ResponseEntity.ok(employeeDTO);
-        } else {
-            throw new ResourceNotFoundException("Employee not found with id: " + id);
-        }
+
+        Employee existingEmployee = getEmployeeById(id);
+        EmployeeDTO employeeDTO = employeeMapper.mapEmployee(existingEmployee);
+        return ResponseEntity.ok(employeeDTO);
     }
+
     @Override
     public ResponseEntity<List<EmployeeDTO>> findAll() {
         List<Employee> employees = employeeRepository.findAll();
@@ -58,124 +67,207 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return ResponseEntity.ok(newListEmployee);
     }
+
     @Override
     public ResponseEntity<EmployeeDTO> save(Employee employee) {
-
         //Condition for not have null attributes
-        //In this conditional miss "endDate" because can be null
-        if (
-                employee.getFirstName() != null && !employee.getFirstName().isEmpty() &&
-                        employee.getLastName() != null && !employee.getLastName().isEmpty() &&
-                        employee.getGender() != null && !employee.getGender().isEmpty() &&
-                        Objects.nonNull(employee.getBirthDate()) &&
-                        Objects.nonNull(employee.getStartDate()) &&
-                        Objects.nonNull(employee.getDepartment()) &&
-                        Objects.nonNull(employee.getRole())) {
+        validateEmployeeFields(employee);
 
-            List<Employee> employees = employeeRepository.findAll();
-            //Condition if there are employee with same firstName && lastName && birthDate
-            for (Employee employee1 : employees){
-                String pattern = "EEE MMM dd HH:mm:ss zzz yyyy";
-                SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
-                if(employee1.getFirstName().equals(employee.getFirstName())&&
-                        employee1.getLastName().equals(employee.getLastName())&&
-                        employee1.getBirthDate().equals(employee.getBirthDate())
-                ){
-                    throw new IllegalArgumentException("FirstName, LastName and BirthDate can't be same");
-                }
-            }
+        List<Employee> employees = employeeRepository.findAll();
+        //Condition if there are employee with same firstName && lastName && birthDate
+        checkForDuplicateEmployee(employee, employees);
 
-        } else {
-            throw new IllegalArgumentException("The fields of employee can't be null or empty");
-        }
+
         EmployeeDTO employeeDTO = employeeMapper.mapEmployee(employee);
         employeeRepository.save(employee);
         return ResponseEntity.ok(employeeDTO);
     }
 
     @Override
-    public Employee update(long id, Employee employee) {
-        Employee existingEmployee = employeeRepository.findById(id);
-        if (existingEmployee == null) {
-            throw new ResourceNotFoundException("Employee with ID: " + id + " not found");
-        } else {
-            existingEmployee.setFirstName(employee.getFirstName());
-            existingEmployee.setLastName(employee.getLastName());
-            existingEmployee.setGender(employee.getGender());
-            existingEmployee.setBirthDate(employee.getBirthDate());
-            existingEmployee.setStartDate(employee.getStartDate());
-            existingEmployee.setEndDate(employee.getEndDate());
-            existingEmployee.setDepartment(employee.getDepartment());
-            existingEmployee.setRole(employee.getRole());
-        }
-        return employeeRepository.save(existingEmployee);
+    public ResponseEntity<EmployeeDTO> update(long id, Employee employee) {
+
+        EmployeeDTO employeeDTO;
+        Employee existingEmployee = getEmployeeById(id);
+
+        //Condition for not have null attributes
+        validateEmployeeFields(employee);
+
+        existingEmployee.setFirstName(employee.getFirstName());
+        existingEmployee.setLastName(employee.getLastName());
+        existingEmployee.setGender(employee.getGender());
+        existingEmployee.setBirthDate(employee.getBirthDate());
+        existingEmployee.setStartDate(employee.getStartDate());
+        existingEmployee.setEndDate(employee.getEndDate());
+        existingEmployee.setDepartment(employee.getDepartment());
+        existingEmployee.setRole(employee.getRole());
+
+        employeeRepository.save(existingEmployee);
+
+        employeeDTO = employeeMapper.mapEmployee(employee);
+
+        return ResponseEntity.ok(employeeDTO);
     }
 
 
     @Override
-    public void deleteById(long id) {
+    public ResponseEntity<EmployeeDTO> deleteById(long id) {
+
+        getEmployeeById(id);
         employeeRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @Override
-    public List<Project> findAllEmployeeProjects(long id) {
-        return employeeRepository.findProjectByEmployeeId(id);
+    public ResponseEntity<List<ProjectDTO>> findAllEmployeeProjects(long id) {
+
+        getEmployeeById(id);
+        List<ProjectDTO> newListProjects = new ArrayList<>();
+
+        List<Project> projects = employeeRepository.findProjectByEmployeeId(id);
+        if (projects.isEmpty()) {
+            throw new IllegalArgumentException("The id: " + id + " doesn't work in any project");
+        } else {
+            for (Project project : projects) {
+                ProjectDTO projectDTO = projectMapper.mapProjectWithoutEmployees(project);
+                newListProjects.add(projectDTO);
+            }
+        }
+        return ResponseEntity.ok(newListProjects);
     }
 
     @Override
-    public List<EmployeeProjectDTO> getAllEmployeeProject() {
-        return employeeRepository.getAllEmployeeProject();
+    public ResponseEntity<List<EmployeeProjectDTO>> getAllEmployeeProject() {
+        List<EmployeeProjectDTO> employeeProject = employeeRepository.getAllEmployeeProject();
+        if (employeeProject.isEmpty()) {
+            throw new IllegalArgumentException("The table is empty");
+        }
+        return ResponseEntity.ok(employeeProject);
     }
 
     @Override
-    public Employee addEmployeeProject(long idEmployee, long idProject) {
-        Employee employee = employeeRepository.findById(idEmployee);
-        Project project = projectRepository.findById(idProject);
-        employee.getProjects().add(project);
-        return employeeRepository.save(employee);
+    public ResponseEntity<EmployeeProjectDTO> addEmployeeProject(long idEmployee, long idProject) {
 
-    }
+        Employee existingEmployee = getEmployeeById(idEmployee);
 
-    @Override
-    public Employee deleteEmployeeProject(long idEmployee, long idProject) {
-        Employee employee = employeeRepository.findById(idEmployee);
-        Project project = projectRepository.findById(idProject);
-        employee.getProjects().remove(project);
-        return employeeRepository.save(employee);
+        Project existingProject = projectServiceImpl.getProjectById(idProject);
+
+        List<EmployeeProjectDTO> employeeProject = employeeRepository.getAllEmployeeProject();
+
+        for (EmployeeProjectDTO employeeProjectDTO : employeeProject) {
+            if (idEmployee == employeeProjectDTO.getIdEmployee() && idProject == employeeProjectDTO.getIdProject()) {
+                throw new IllegalArgumentException("The relationship already exists");
+            }
+        }
+        existingEmployee.getProjects().add(existingProject);
+        employeeRepository.save(existingEmployee);
+        EmployeeProjectDTO employeeProjectDTO = employeeProjectMapper.mapEmployeeProject(existingEmployee, existingProject);
+        return ResponseEntity.ok(employeeProjectDTO);
+
     }
 
     @Override
     public EmployeeProjectDTO updateEmployeeProject(long idEmployee, long idProject, EmployeeProjectDTO employeeProjectDTO) {
 
+        //Check if the fields are correct
+        validateEmployeeProjectFields(employeeProjectDTO);
+
+        //Check if the relationship exist
+        validateEmployeeProjectRelationship(employeeProjectDTO);
+
+        //Delete the relationship
+        Employee oldEmployee = employeeRepository.findById(idEmployee);
+        Project oldProject = projectRepository.findById(idProject);
+        oldEmployee.getProjects().remove(oldProject);
+        employeeRepository.save(oldEmployee);
+
+        //Check if exist the Employee and the Project
+        Employee newEmployee = getEmployeeById(employeeProjectDTO.getIdEmployee());
+        Project newProject = projectServiceImpl.getProjectById(employeeProjectDTO.getIdProject());
+
+        //Save the new relationship
+        newEmployee.getProjects().add(newProject);
+        employeeRepository.save(newEmployee);
+
+        return mapEmployeeToDTO(employeeProjectDTO);
+    }
+
+
+    @Override
+    public ResponseEntity<EmployeeDTO> deleteEmployeeProject(long idEmployee, long idProject) {
+
         List<EmployeeProjectDTO> employeesProjects = employeeRepository.getAllEmployeeProject();
+        boolean projectFound = false;
         for (EmployeeProjectDTO employeeProject : employeesProjects) {
             if (employeeProject.getIdEmployee() == idEmployee && employeeProject.getIdProject() == idProject) {
 
                 Employee oldEmployee = employeeRepository.findById(idEmployee);
                 Project oldProject = projectRepository.findById(idProject);
                 oldEmployee.getProjects().remove(oldProject);
-                Employee deleteEmployee = employeeRepository.save(oldEmployee);
-
-
-                Employee newEmployee = employeeRepository.findById(employeeProjectDTO.getIdEmployee())
-                        .orElseThrow(() -> new ResourceNotFoundException("Employee not found with ID: " + employeeProjectDTO.getIdEmployee()));
-                Project newProject = projectRepository.findById(employeeProjectDTO.getIdProject())
-                        .orElseThrow(() -> new ResourceNotFoundException("Project not found with ID: " + employeeProjectDTO.getIdProject()));;
-                newEmployee.getProjects().add(newProject);
-                Employee savedEmployee = employeeRepository.save(newEmployee);
+                employeeRepository.save(oldEmployee);
+                projectFound = true;
                 break;
             }
-            else
-            {
-                throw new ResourceNotFoundException("Employee or Project not found");
-            }
+        } if (projectFound) {
+            return ResponseEntity.noContent().build();
+        } else {
+            throw new ResourceNotFoundException("Relationship with ID Employee: " + idEmployee + " and ID Project: " + idProject + " not found");
         }
-        return mapEmployeeToDTO(employeeProjectDTO);
     }
+
+
     // Metodo per la mappatura dell'Employee a EmployeeProjectDTO
     private EmployeeProjectDTO mapEmployeeToDTO(EmployeeProjectDTO targetDTO) {
-        EmployeeProjectDTO employeeDTO = new EmployeeProjectDTO(targetDTO.getIdEmployee(), targetDTO.getIdProject());
-        return employeeDTO;
+        return new EmployeeProjectDTO(targetDTO.getIdEmployee(), targetDTO.getIdProject());
+    }
+
+
+    private void validateEmployeeProjectFields(EmployeeProjectDTO employeeProjectDTO){
+        if(employeeProjectDTO.getIdEmployee() == null || employeeProjectDTO.getIdProject() == null){
+            throw new IllegalArgumentException("The fields of the employee can't be null or empty");
+        }
+    }
+
+    private void validateEmployeeProjectRelationship(EmployeeProjectDTO employeeProjectDTO) {
+
+        List<EmployeeProjectDTO> employeeProjects = employeeRepository.getAllEmployeeProject();
+        for (EmployeeProjectDTO employeeProject : employeeProjects) {
+            if (Objects.equals(employeeProject.getIdEmployee(), employeeProjectDTO.getIdEmployee()) &&
+                    Objects.equals(employeeProject.getIdProject(), employeeProjectDTO.getIdProject())) {
+                throw new IllegalArgumentException("The relationship already exists");
+            }
+        }
+    }
+
+    private Employee getEmployeeById(long id){
+        Employee existingEmployee = employeeRepository.findById(id);
+
+        if (existingEmployee == null){
+            throw new ResourceNotFoundException("Employee with ID: " + id + " not found");
+        }
+        return existingEmployee;
+    }
+
+    private void validateEmployeeFields(Employee employee) {
+        //In this conditional miss "endDate" because can be null
+        //If one field is true run Exception
+        if (employee.getFirstName() == null || employee.getFirstName().isEmpty() ||
+                employee.getLastName() == null || employee.getLastName().isEmpty() ||
+                employee.getGender() == null || employee.getGender().isEmpty() ||
+                Objects.isNull(employee.getBirthDate()) ||
+                Objects.isNull(employee.getStartDate()) ||
+                Objects.isNull(employee.getDepartment()) ||
+                Objects.isNull(employee.getRole())) {
+            throw new IllegalArgumentException("The fields of the employee can't be null or empty");
+        }
+    }
+    private void checkForDuplicateEmployee(Employee employee, List<Employee> employees) {
+        for (Employee employee1 : employees) {
+            if (employee1.getFirstName().equals(employee.getFirstName()) &&
+                    employee1.getLastName().equals(employee.getLastName()) &&
+                    Objects.equals(employee1.getBirthDate(), employee.getBirthDate())) {
+                throw new IllegalArgumentException("Firstname, lastname, and birthdate can't be the same");
+            }
+        }
     }
 
 }

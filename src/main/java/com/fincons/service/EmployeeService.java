@@ -1,9 +1,8 @@
 package com.fincons.service;
 
 import com.fincons.dto.EmployeeDTO;
-import com.fincons.entity.Department;
+import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Employee;
-import com.fincons.entity.Project;
 import com.fincons.dto.EmployeeProjectDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,12 +14,12 @@ public interface EmployeeService {
     ResponseEntity<EmployeeDTO> findById(long id);
     ResponseEntity<List<EmployeeDTO>> findAll();
     ResponseEntity<EmployeeDTO> save(Employee employee);
-    Employee update(long id, Employee employee);
-    void deleteById(long id);
+    ResponseEntity<EmployeeDTO> update(long id, Employee employee);
+    ResponseEntity<EmployeeDTO> deleteById(long id);
 
-    List<Project> findAllEmployeeProjects(long id);
-    List<EmployeeProjectDTO> getAllEmployeeProject();
-    Employee addEmployeeProject(long idEmployee,long idProject);
+    ResponseEntity<List<ProjectDTO>> findAllEmployeeProjects(long id);
+    ResponseEntity<List<EmployeeProjectDTO>> getAllEmployeeProject();
+    ResponseEntity<EmployeeProjectDTO> addEmployeeProject(long idEmployee, long idProject);
     EmployeeProjectDTO updateEmployeeProject(long idEmployee, long idProject, EmployeeProjectDTO employeeProjectDTO);
-    Employee deleteEmployeeProject(long idEmployee, long idProject);
+    ResponseEntity<EmployeeDTO> deleteEmployeeProject(long idEmployee, long idProject);
 }

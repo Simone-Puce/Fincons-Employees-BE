@@ -18,5 +18,14 @@ public class EmployeeMapper {
                 employee.getRole(),
                 employee.getProjects());
     }
+    public EmployeeDTO mapEmployeeTest(Employee employee){
+        return new EmployeeDTO(
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getGender(),
+                employee.getBirthDate(),
+                employee.getStartDate(),
+                employee.getEndDate());
+    }
 
 }

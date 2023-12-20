@@ -25,8 +25,8 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
         "SELECT NEW com.fincons.dto.EmployeeDepartmentDTO(d.name, e.lastName) " +
                 "FROM Department d " +
                 "INNER JOIN Employee e ON e.department.id = d.id " +
-                "WHERE e.department.id = :idDepartment")
-    List<EmployeeDepartmentDTO> getDepartmentEmployeesFindByIdDepartment(@Param("idDepartment") long idDepartment);
+                "WHERE e.department.id = :id")
+    List<EmployeeDepartmentDTO> getDepartmentEmployeesFindByIdDepartment(@Param("id") long id);
 
 
 

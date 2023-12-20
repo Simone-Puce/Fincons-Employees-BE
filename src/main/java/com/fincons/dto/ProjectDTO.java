@@ -1,8 +1,7 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fincons.entity.Employee;
-import com.fincons.entity.Project;
-import jakarta.persistence.Column;
 
 import java.util.Set;
 
@@ -11,6 +10,7 @@ public class ProjectDTO {
     private String name;
     private String area;
     private String priority;
+    @JsonIgnore
     private Set<Employee> employees;
 
     public ProjectDTO(String name, String area, String priority, Set<Employee> employees) {
@@ -18,6 +18,12 @@ public class ProjectDTO {
         this.area = area;
         this.priority = priority;
         this.employees = employees;
+    }
+
+    public ProjectDTO(String name, String area, String priority) {
+        this.name = name;
+        this.area = area;
+        this.priority = priority;
     }
 
     public String getName() {
