@@ -6,7 +6,6 @@ import com.fincons.repositories.FileRepository;
 import com.fincons.services.FileServiceApi;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +40,7 @@ public class FileController {
     }
 
     @GetMapping("/download-file/{id}")
-    public String downloadFile(@PathVariable Long id) throws IOException {
+    public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) throws IOException {
         return fileServiceApi.downloadFile(id);
     }
 

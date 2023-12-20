@@ -2,6 +2,7 @@ package com.fincons.services;
 
 import com.fincons.entities.File;
 import com.fincons.models.FileDTO;
+import org.springframework.http.ResponseEntity;
 
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ public interface FileServiceApi {
 
     File uploadFile(FileDTO newFile);
 
-    String downloadFile(Long id) throws IOException;
+    ResponseEntity<byte[]> downloadFile(Long id) throws IOException;
 
     List<FileDTO> getAllFiles();
 

@@ -1,6 +1,7 @@
 package com.fincons.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CollectionId;
 
 @Entity
 @Table(name = "files")
@@ -11,11 +12,15 @@ public class File {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "file64")
+
+    @Column(columnDefinition = "LONGTEXT", name = "file64")
     private String file64;
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "extension")
+    private String extension;
 
     @Column(name = "description")
     private String description;
@@ -25,15 +30,13 @@ public class File {
     private Employee employee;
 
 
-
-
-
     public File() {}
 
 
-    public File( String file64, String name, String description, Employee employee) {
+    public File( String file64, String name, String extension, String description, Employee employee) {
         this.file64 = file64;
         this.name = name;
+        this.extension = extension;
         this.description = description;
         this.employee = employee;
     }
@@ -60,6 +63,14 @@ public class File {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
     public String getDescription() {
