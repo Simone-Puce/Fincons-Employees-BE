@@ -31,7 +31,7 @@ public class JobScheduler {
     @Autowired
     private ICreateNewEmployeeRandom ICreateNewEmployeeRandom;
 
-    //@Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderBirth}")
+    @Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderBirth}")
     @SchedulerLock(name = "birthEmailScheduler", lockAtLeastFor = "PT1M", lockAtMostFor = "PT5M")
     @Retryable(retryFor = RuntimeException.class, maxAttempts = 4, backoff = @Backoff(delay = 1000))
     public void emailSenderBirth() throws RuntimeException{
@@ -40,7 +40,7 @@ public class JobScheduler {
             logger.info("All emails were sent to " + LocalDate.now());
     }
 
-    //@Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderHire}")
+    @Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderHire}")
     @SchedulerLock(name = "hireEmailScheduler",lockAtLeastFor = "PT1M",lockAtMostFor = "PT5M")
     @Retryable(retryFor = RuntimeException.class, maxAttempts = 4, backoff = @Backoff(delay = 1000))
     public void emailSenderHire() throws RuntimeException{

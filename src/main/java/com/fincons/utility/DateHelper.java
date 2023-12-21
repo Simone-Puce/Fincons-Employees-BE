@@ -37,14 +37,11 @@ public class DateHelper {
     public LocalDate convertTo18(LocalDate dateToConvert) {
         return dateToConvert.plusYears(18L);
     }
-    public LocalDate convertTo60(LocalDate dateToConvert) {
-        return dateToConvert.plusYears(60L);
-    }
 
     public LocalDate createHireDay(LocalDate birtHDate) {
         Date hireDate = faker.date().between(
                 convertToDateViaInstant(convertTo18(birtHDate)),
-                convertToDateViaInstant(convertTo60(birtHDate))
+                new Date(System.currentTimeMillis())
         );
 
         LocalDate hireDay = convertToLocalDateViaInstant(hireDate);
