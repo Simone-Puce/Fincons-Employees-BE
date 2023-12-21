@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.Map;
 
-public interface GroupsService<Groups, GroupsDTO> {
+public interface GroupService<Groups, GroupsDTO> {
     Groups createGroups (GroupsDTO groupsDTO);
     List<GroupsDTO> getAllGroups();
     GroupsDTO getGroupsById (Long id);

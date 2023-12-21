@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.Map;
 
-public interface UsersService<Users, UsersDTO> {
+public interface UserService<Users, UsersDTO> {
 
     Users createUsers (UsersDTO usersDTO);
     List<UsersDTO> getAllUsers();

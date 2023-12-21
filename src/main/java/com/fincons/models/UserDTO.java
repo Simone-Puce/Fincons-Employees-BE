@@ -2,13 +2,13 @@ package com.fincons.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UsersDTO {
+public class UserDTO {
     private String first_name;
     private String last_name;
     private String email;
     private String password;
 
-    public UsersDTO(@JsonProperty("first_name") String first_name, @JsonProperty("last_name") String last_name, @JsonProperty("email") String email, @JsonProperty("password") String password) {
+    public UserDTO(@JsonProperty("first_name") String first_name, @JsonProperty("last_name") String last_name, @JsonProperty("email") String email, @JsonProperty("password") String password) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;

@@ -1,9 +1,9 @@
 package com.fincons.repository;
 
-import com.fincons.entity.Groups;
+import com.fincons.entity.Group;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GroupsRepository extends JpaRepository<Groups, Long> {
+public interface GroupRepository extends JpaRepository<Group, Long> {
 }

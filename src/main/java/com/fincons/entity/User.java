@@ -1,14 +1,12 @@
 package com.fincons.entity;
 
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Table (name = "users")
-public class Users {
+public class User {
     @Id
     @GeneratedValue
     private Long id;
@@ -27,7 +25,7 @@ public class Users {
             joinColumns = { @JoinColumn(name = "users_id", referencedColumnName = "id",table = "users")},
             inverseJoinColumns = { @JoinColumn(name = "groups_id", referencedColumnName = "id", table = "groups")}
     )
-    private List<Groups> groups = new ArrayList<Groups>() ;
+    private List<Group> groups = new ArrayList<Group>() ;
 
     public Long getId() {
         return id;
@@ -71,4 +69,11 @@ public class Users {
         this.password = password;
     }
 
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
 }

@@ -1,15 +1,13 @@
 package com.fincons.entity;
 
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 @Entity
 @Table (name = "groups")
-public class Groups {
+public class Group {
     @Id
     @GeneratedValue
     @Column
@@ -21,7 +19,7 @@ public class Groups {
 
     @ManyToMany(mappedBy = "groups",
             fetch = FetchType.LAZY)
-    private List<Users> users = new ArrayList<Users>();
+    private List<User> users = new ArrayList<User>();
 
     public Long getId() {
         return id;

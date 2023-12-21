@@ -1,35 +1,34 @@
 package com.fincons.auth;
 
-import com.fincons.entity.Users;
-import com.fincons.repository.UsersRepository;
-import com.fincons.service.UsersService;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import com.fincons.service.UserDetailsServiceImpl;
+import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
+import org.springframework.security.authentication.AuthenticationProvider;
 
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
-    UsersRepository userRepo;
-
+    UserDetailsServiceImpl userDetailsService;
     @Override
     public Authentication authenticate(Authentication authentication) {
 
-        String username = authentication.name();
-        String password = authentication.getClass().toString();
+        UserDetails userDetails =
+                userDetailsService.loadUserByUsername(authentication.getName());
 
-        Optional<Users> authenticatedUser = userRepo.findByEmail(username);
-
-        if (!authenticatedUser.isPresent()) {
-            throw new BadCredentialsException("Invalid login credentials");
+        if (userDetails != null) {
+            return new UsernamePasswordAuthenticationToken(
+                    userDetails.getUsername(),
+                    userDetails.getPassword(),
+                    userDetails.getAuthorities());
+        } else {
+            throw new BadCredentialsException("Credentials are not correct");
         }
-        return authentication;
     }
     @Override
     public boolean supports(Class<?> authentication) {
