@@ -35,8 +35,8 @@ public class FileController {
     }
 
     @GetMapping("/view-file/{id}")
-    public FileDTO getFileById(@PathVariable Long id){
-        return fileServiceApi.getFileById(id);
+    public FileDTO viewFile(@PathVariable Long id){
+        return fileServiceApi.viewFile(id);
     }
 
     @GetMapping("/download-file/{id}")

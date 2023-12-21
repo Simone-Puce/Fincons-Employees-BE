@@ -1,7 +1,7 @@
 package com.fincons.entities;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.CollectionId;
+
 
 @Entity
 @Table(name = "files")

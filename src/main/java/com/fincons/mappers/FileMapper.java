@@ -2,7 +2,6 @@ package com.fincons.mappers;
 
 import com.fincons.entities.File;
 import com.fincons.models.FileDTO;
-import org.apache.tika.Tika;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;

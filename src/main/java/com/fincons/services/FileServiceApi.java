@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface FileServiceApi {
 
-    FileDTO getFileById(Long id);
+    FileDTO viewFile(Long id);
 
     File uploadFile(FileDTO newFile);
 

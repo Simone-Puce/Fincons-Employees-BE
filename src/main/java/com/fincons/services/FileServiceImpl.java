@@ -39,11 +39,9 @@ public class FileServiceImpl implements FileServiceApi {
     }
 
     @Override
-    public FileDTO getFileById(Long id) {
+    public FileDTO viewFile(Long id) {
         File file = fileRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("File not exist with id: " + id));
-
-
         return fileMapper.mapFileToFileDto(file);
     }
 
