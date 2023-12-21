@@ -46,7 +46,7 @@ public class EmployeeController {
 
     //delete employee rest api
     @DeleteMapping("/employees/{id}")
-    public ResponseEntity<Map<String, Boolean>> deleteEmplyee(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Boolean>> deleteEmployee(@PathVariable Long id) {
         return employeeServiceApi.deleteEmployee(id);
     }
 
