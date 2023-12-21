@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @Component
-public class EmailHireDate {
+public class EmailHireDate implements IEmailHireDate {
     public static final Predicate<Employee> emailNotEmpty = employee -> !employee.getEmail().isEmpty();
     public static final String EMAIL_SUBJECT_HIREDATE = "Buon Anniversario!";
     public static final String EMAIL_CONTENT_HIREDATE = "Congratulazioni per esserti unito al nostro team!";
@@ -25,6 +25,7 @@ public class EmailHireDate {
     @Autowired
     private EmailContentBuilder emailContentBuilder;
 
+    @Override
     public void sendAnniversaryGreetings() throws RuntimeException{
        employeeRepository.findEmployeesByTodayHireDate(LocalDate.now()).stream()
                 .filter(emailNotEmpty)

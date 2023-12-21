@@ -17,19 +17,6 @@ public class EmailContentBuilder {
         Context context = new Context();
         context.setVariables(emailContent);
 
-        //1
-        //for (String key : map.keySet()) {
-        //    context.setVariable(key, map.get(key));
-        //}
-
-        //2
-        //map.forEach((key, value) -> {
-        //    context.setVariable(key, value);
-        //});
-
-        //3
-        //map.forEach(context::setVariable);
-
         return templateEngine.process("email-template", context);
     }
 }

@@ -1,6 +1,8 @@
 package com.fincons.jobScheduler;
 
-import com.fincons.service.email.EmailService;
+import com.fincons.service.email.IEmailBirthDate;
+import com.fincons.service.email.IEmailHireDate;
+import com.fincons.service.randomEmployee.ICreateNewEmployeeRandom;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,24 +25,34 @@ public class JobScheduler {
     Logger logger = LoggerFactory.getLogger(RuntimeException.class);
 
     @Autowired
-    private EmailService emailService;
+    private IEmailHireDate iEmailHireDate;
+    @Autowired
+    private IEmailBirthDate iEmailBirtheDate;
+    @Autowired
+    private ICreateNewEmployeeRandom ICreateNewEmployeeRandom;
 
-    @Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderBirth}")
+    //@Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderBirth}")
     @SchedulerLock(name = "birthEmailScheduler", lockAtLeastFor = "PT1M", lockAtMostFor = "PT5M")
-    @Retryable(retryFor = RuntimeException.class, backoff = @Backoff(delay = 1800000))
+    @Retryable(retryFor = RuntimeException.class, maxAttempts = 4, backoff = @Backoff(delay = 1000))
     public void emailSenderBirth() throws RuntimeException{
             System.out.println("Sto cercando Compleanni");
-            emailService.sendGreetingsToEmployeesBirth();
+            iEmailBirtheDate.sendBirthdayGreetings();
             logger.info("All emails were sent to " + LocalDate.now());
     }
 
-    @Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderHire}")
+    //@Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderHire}")
     @SchedulerLock(name = "hireEmailScheduler",lockAtLeastFor = "PT1M",lockAtMostFor = "PT5M")
-    @Retryable(retryFor = RuntimeException.class, backoff = @Backoff(delay = 1800000))
+    @Retryable(retryFor = RuntimeException.class, maxAttempts = 4, backoff = @Backoff(delay = 1000))
     public void emailSenderHire() throws RuntimeException{
         System.out.println("Sto cercando Anniversari");
-        emailService.sendGreetingsToEmployeesHire();
+        iEmailHireDate.sendAnniversaryGreetings();
         logger.info("All emails were sent to " + LocalDate.now());
+    }
+
+    @Scheduled(cron = "${jobScheduler.JobScheduler.newRandomEmployee}")
+    public void newEmployeeRandom() throws Exception {
+        logger.info("Sto creando nuovi Employee...");
+        ICreateNewEmployeeRandom.createNewRandomEmployee(5);
     }
 
     @Recover

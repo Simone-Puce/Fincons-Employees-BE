@@ -2,6 +2,7 @@ package com.fincons.service.employee;
 
 
 import com.fincons.entity.Employee;
+import com.fincons.exception.PersonalException;
 import com.fincons.mapper.EmployeeMapper;
 import com.fincons.model.EmployeeDto;
 import com.fincons.repository.EmployeeRepository;
@@ -9,11 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class EmployeeServiceImpl implements EmployeeServiceApi {
+public class EmployeeServiceImpl implements IEmployeeService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -35,16 +38,14 @@ public class EmployeeServiceImpl implements EmployeeServiceApi {
 
 
     @Override
-    public Employee createEmployee(EmployeeDto employeeDto) throws Exception {
-        String email = employeeDto.getEmail();
+    public Employee createEmployee(Employee employee) throws Exception {
+        String email = employee.getEmail();
 
         Optional<Employee> existingEmployeeWithEmail = employeeRepository.findByEmail(email);
         if (existingEmployeeWithEmail.isPresent()) {
             String errorMessage = "An employee with this email already exists.";
             throw new Exception(errorMessage);
         }
-
-        Employee employee = employeeMapper.mapEmployeeDtoToEmployee(employeeDto);
         return employeeRepository.save(employee);
     }
 
@@ -71,9 +72,12 @@ public class EmployeeServiceImpl implements EmployeeServiceApi {
     }
 
     @Override
-    public void deleteEmployee(Long id) {
-        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
-        optionalEmployee.ifPresent(employeeRepository::delete);
+    public ResponseEntity<Map<String, Boolean>> deleteEmployee(Long id) {
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new PersonalException("Employee non trovato con id: " + id));
+        employeeRepository.delete(employee);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("deleted", Boolean.TRUE);
+        return ResponseEntity.ok(response);
     }
 
 }
