@@ -1,8 +1,7 @@
-package com.fincons.service.randomEmployee;
+package com.fincons.service.employee;
 
 
 import com.fincons.entity.Employee;
-import com.fincons.service.employee.IEmployeeService;
 import com.fincons.utility.DateHelper;
 import com.github.javafaker.Faker;
 import org.slf4j.Logger;
@@ -29,21 +28,21 @@ public class CreateNewEmployeeRandomService implements ICreateNewEmployeeRandom 
 
 
     @Override
-    public void createNewRandomEmployee(int nEmployee) throws Exception {
+    public void createNewRandomEmployee(int nEmployee) throws IllegalArgumentException {
         Faker faker = new Faker(new Random());
         List<Employee> employeeList = new ArrayList<>();
 
         for (int i = 0; i < nEmployee; i++) {
             String name = faker.name().firstName();
             String surname = faker.name().lastName();
-            logger.info("----Employee:  " + name + " " + surname);
+            logger.info("----Employee:  {} {}", name, surname);
             String newEmail = name + "." + surname + "@gmail.com";
 
             Date dateBirth = faker.date().birthday();
             LocalDate birthDay = dateHelper.convertToLocalDateViaInstant(dateBirth);
-            logger.info("Data Compleanno: " + birthDay);
+            logger.info("Birthday Date: {}", birthDay);
             LocalDate hireDay = dateHelper.createHireDay(birthDay);
-            logger.info("Data Assunzione: " + hireDay);
+            logger.info("Assumption date: {} {}", hireDay, hireDay.getDayOfWeek().name());
 
             Employee emp = new Employee();
             emp.setFirstName(name);
@@ -55,6 +54,6 @@ public class CreateNewEmployeeRandomService implements ICreateNewEmployeeRandom 
             employeeList.add(emp);
             IEmployeeService.createEmployee(emp);
         }
-        logger.info("\u001B[36m" + "They were saved: " + employeeList.size() + " Employee." + "\u001B[0m");
+        logger.info("They were saved: {} Employee", employeeList.size());
     }
 }

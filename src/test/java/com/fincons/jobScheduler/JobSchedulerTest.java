@@ -6,32 +6,36 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 @SpringBootTest
-public class JobSchedulerTest {
+class JobSchedulerTest {
 
     @Autowired
     private JobScheduler jobScheduler;
 
     @Test
     //@Disabled
-    public void testEmailSenderBirth() throws RuntimeException{
+    void testEmailSenderBirth() throws RuntimeException{
         jobScheduler.emailSenderBirth();
     }
 
     @Test
     //@Disabled
-    public void testEmailSenderHire() throws RuntimeException{
+    void testEmailSenderHire() throws RuntimeException{
         jobScheduler.emailSenderHire();
     }
 
     @Test
     //@Disabled
-    public void testEmailSenderBirthRetry() throws RuntimeException{
+    void testEmailSenderBirthRetry() throws RuntimeException{
         assertDoesNotThrow(() -> jobScheduler.emailSenderBirth());
     }
 
     @Test
     //@Disabled
-    public void testEmailSenderHireRetry() throws RuntimeException{
+    void testEmailSenderHireRetry() throws RuntimeException{
         assertDoesNotThrow(() -> jobScheduler.emailSenderHire());
+    }
+    @Test
+    void testNewEmployeeRandom() throws Exception {
+        jobScheduler.newEmployeeRandom();
     }
 }

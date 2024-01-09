@@ -38,13 +38,13 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
 
     @Override
-    public Employee createEmployee(Employee employee) throws Exception {
+    public Employee createEmployee(Employee employee) throws IllegalArgumentException {
         String email = employee.getEmail();
 
         Optional<Employee> existingEmployeeWithEmail = employeeRepository.findByEmail(email);
         if (existingEmployeeWithEmail.isPresent()) {
             String errorMessage = "An employee with this email already exists.";
-            throw new Exception(errorMessage);
+            throw new IllegalArgumentException(errorMessage);
         }
         return employeeRepository.save(employee);
     }

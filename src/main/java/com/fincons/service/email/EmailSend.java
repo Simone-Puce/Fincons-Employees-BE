@@ -29,7 +29,7 @@ public class EmailSend {
             helper.addInline("img", image);
             emailSender.send(message);
         } catch (MessagingException e) {
-            throw new RuntimeException("Errore nell'invio dell'email: " + e.getMessage());
+            throw new IllegalArgumentException("Error sending email: " + e.getMessage());
         }
     }
 }

@@ -15,9 +15,8 @@ class EmailSendTest {
     private EmailSend emailSend;
 
     @Test
-    @Disabled
     void sendEmailOk() {
-        emailSend.sendEmail("carlovittosc@gmail.com", "test1", "<html><body><h1>Title</h1></body></html>", "images/torta.png");
+        emailSend.sendEmail("carlogffddfg.gfgdgfo@gmail.com", "test1", "<html><body><h1>Title</h1></body></html>", "images/happyBirthday.png");
         assert true;
     }
     @Test

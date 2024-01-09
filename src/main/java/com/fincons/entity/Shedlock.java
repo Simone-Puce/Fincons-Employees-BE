@@ -15,17 +15,17 @@ public class Shedlock {
     @Column(name = "name", length = 64)
     private String name;
     @Column(name = "lock_until")
-    private Timestamp lock_until;
+    private Timestamp lockUntil;
     @Column(name = "locked_at")
-    private Timestamp locked_at;
+    private Timestamp lockedAt;
     @Column(name = "locked_by")
-    private String locked_by;
+    private String lockedBy;
 
-    public Shedlock(String name, Timestamp lock_until, Timestamp locked_at, String locked_by) {
+    public Shedlock(String name, Timestamp lockUntil, Timestamp lockedAt, String lockedBy) {
         this.name = name;
-        this.lock_until = lock_until;
-        this.locked_at = locked_at;
-        this.locked_by = locked_by;
+        this.lockUntil = lockUntil;
+        this.lockedAt = lockedAt;
+        this.lockedBy = lockedBy;
     }
 
     public String getName() {
@@ -36,27 +36,27 @@ public class Shedlock {
         this.name = name;
     }
 
-    public Timestamp getLock_until() {
-        return lock_until;
+    public Timestamp getLockUntil() {
+        return lockUntil;
     }
 
-    public void setLock_until(Timestamp lock_until) {
-        this.lock_until = lock_until;
+    public void setLockUntil(Timestamp lockUntil) {
+        this.lockUntil = lockUntil;
     }
 
-    public Timestamp getLocked_at() {
-        return locked_at;
+    public Timestamp getLockedAt() {
+        return lockedAt;
     }
 
-    public void setLocked_at(Timestamp locked_at) {
-        this.locked_at = locked_at;
+    public void setLockedAt(Timestamp lockedAt) {
+        this.lockedAt = lockedAt;
     }
 
-    public String getLocked_by() {
-        return locked_by;
+    public String getLockedBy() {
+        return lockedBy;
     }
 
-    public void setLocked_by(String locked_by) {
-        this.locked_by = locked_by;
+    public void setLockedBy(String lockedBy) {
+        this.lockedBy = lockedBy;
     }
 }

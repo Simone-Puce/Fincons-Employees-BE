@@ -1,6 +1,8 @@
 package com.fincons.service.email;
 
+import com.fincons.exception.PersonalException;
+
 public interface IEmailHireDate {
 
-    void sendAnniversaryGreetings() throws RuntimeException;
+    void sendAnniversaryGreetings() throws PersonalException;
 }

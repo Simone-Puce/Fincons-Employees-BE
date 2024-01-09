@@ -19,7 +19,7 @@ class EmployeeRepositoryTest {
 
     @Test
     void testBirthDate() {
-        LocalDate birthday = LocalDate.parse("2001-10-29");
+        LocalDate birthday = LocalDate.parse("1962-05-29");
 
         List<Employee> emps = employeeRepository.findEmployeesByTodayBirthday(birthday);
         System.out.println(emps);
@@ -28,7 +28,7 @@ class EmployeeRepositoryTest {
 
     @Test
     void testHireDate() {
-        LocalDate hireDate = LocalDate.parse("2023-11-13");
+        LocalDate hireDate = LocalDate.parse("1985-02-21");
 
         List<Employee> emps = employeeRepository.findEmployeesByTodayHireDate(hireDate);
         System.out.println(emps);
@@ -37,7 +37,7 @@ class EmployeeRepositoryTest {
 
     @Test
     void testEmptyList() {
-        LocalDate hireDate = LocalDate.parse("2003-01-20");
+        LocalDate hireDate = LocalDate.parse("2004-02-20");
 
         List<Employee> emps = employeeRepository.findEmployeesByTodayHireDate(hireDate);
         System.out.println(emps);

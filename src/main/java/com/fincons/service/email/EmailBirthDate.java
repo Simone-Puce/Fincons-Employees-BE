@@ -2,6 +2,8 @@ package com.fincons.service.email;
 
 import com.fincons.entity.Employee;
 import com.fincons.repository.EmployeeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,8 +15,10 @@ import java.util.function.Predicate;
 
 @Component
 public class EmailBirthDate implements IEmailBirthDate{
+    Logger logger = LoggerFactory.getLogger(EmailBirthDate.class);
     public static final Predicate<Employee> emailNotEmpty = employee -> !employee.getEmail().isEmpty();
-    public static final String EMAIL_SUBJECT_BIRTHDATE = "Buon Compleanno!";
+    public static final Predicate<Employee> emailCorrectFormat = employee -> employee.getEmail().matches("^[a-zA-Z]+\\.[a-zA-Z]+@gmail\\.com$");
+    public static final String EMAIL_SUBJECT_BIRTHDATE = "Happy Birthdate!";
     public static final String EMAIL_CONTENT_BIRTHDATE = "Ti auguriamo un fantastico compleanno pieno di gioia!";
     private static final String IMG_BIRTHDATE = "images/happyBirthday.png";
 
@@ -26,19 +30,20 @@ public class EmailBirthDate implements IEmailBirthDate{
     private EmailContentBuilder emailContentBuilder;
 
     @Override
-    public void sendBirthdayGreetings() throws RuntimeException {
+    public void sendBirthdayGreetings() throws IllegalArgumentException {
         employeeRepository.findEmployeesByTodayBirthday(LocalDate.now()).stream()
                 .filter(emailNotEmpty)
+                .filter(emailCorrectFormat)
                 .forEach(getEmployeeConsumer);
     }
 
     private final Consumer<Employee> getEmployeeConsumer = employee -> {
-            Map<String, Object> emailContent = new HashMap<>();
-            emailContent.put("name", employee.getFirstName());
-            emailContent.put("lastName", null);
-            emailContent.put("personalizedText", EMAIL_CONTENT_BIRTHDATE);
-            String htmlContent = emailContentBuilder.buildEmailContent(emailContent);
-            emailSend.sendEmail(employee.getEmail(), EMAIL_SUBJECT_BIRTHDATE, htmlContent, IMG_BIRTHDATE);
-
+        Map<String, Object> emailContent = new HashMap<>();
+        emailContent.put("name", employee.getFirstName());
+        emailContent.put("lastName", null);
+        emailContent.put("personalizedText", EMAIL_CONTENT_BIRTHDATE);
+        String htmlContent = emailContentBuilder.buildEmailContent(emailContent);
+        emailSend.sendEmail(employee.getEmail(), EMAIL_SUBJECT_BIRTHDATE, htmlContent, IMG_BIRTHDATE);
+        logger.info("Email sent to {}", employee.getFirstName());
     };
 }

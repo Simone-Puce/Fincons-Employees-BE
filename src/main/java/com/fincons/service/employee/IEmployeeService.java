@@ -15,7 +15,7 @@ public interface IEmployeeService {
     EmployeeDto getEmployeeById(Long id);
 
 
-    Employee createEmployee(Employee employee) throws Exception;
+    Employee createEmployee(Employee employee) throws IllegalArgumentException;
 
     ResponseEntity<Employee> updateEmployee(Long id, Employee employee);
 
