@@ -162,7 +162,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.save(existingEmployee);
         EmployeeProjectDTO employeeProjectDTO = employeeProjectMapper.mapEmployeeProject(existingEmployee, existingProject);
         return ResponseEntity.ok(employeeProjectDTO);
-
     }
 
     @Override
@@ -171,8 +170,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         //Check if the fields are correct
         validateEmployeeProjectFields(employeeProjectDTO);
 
-        //Check if the relationship exist
-        validateEmployeeProjectRelationship(employeeProjectDTO);
+        //Check if the relationship idEmployee+idProject exist
+        List <EmployeeProjectDTO> employeesProjectDTOS = validateEmployeeProjectRelationship(idEmployee, idProject);
+
+        //Check if the relationship employeeProjectDTO exist
+        for(EmployeeProjectDTO employeeProject : employeesProjectDTOS){
+            if (Objects.equals(employeeProject.getIdEmployee(), employeeProjectDTO.getIdEmployee()) &&
+                    Objects.equals(employeeProject.getIdProject(), employeeProjectDTO.getIdProject())) {
+                throw new IllegalArgumentException("The relationship with ID employee: "+ employeeProjectDTO.getIdEmployee() + " and ID project: " + employeeProjectDTO.getIdProject() + " already exists");
+            }
+        }
 
         //Delete the relationship
         Employee oldEmployee = employeeRepository.findById(idEmployee);
@@ -191,35 +198,24 @@ public class EmployeeServiceImpl implements EmployeeService {
         return mapEmployeeToDTO(employeeProjectDTO);
     }
 
-
     @Override
     public ResponseEntity<EmployeeDTO> deleteEmployeeProject(long idEmployee, long idProject) {
 
-        List<EmployeeProjectDTO> employeesProjects = employeeRepository.getAllEmployeeProject();
-        boolean projectFound = false;
-        for (EmployeeProjectDTO employeeProject : employeesProjects) {
-            if (employeeProject.getIdEmployee() == idEmployee && employeeProject.getIdProject() == idProject) {
+        //Check if the relationship idEmployee+idProject exist
+        validateEmployeeProjectRelationship(idEmployee, idProject);
 
-                Employee oldEmployee = employeeRepository.findById(idEmployee);
-                Project oldProject = projectRepository.findById(idProject);
-                oldEmployee.getProjects().remove(oldProject);
-                employeeRepository.save(oldEmployee);
-                projectFound = true;
-                break;
-            }
-        } if (projectFound) {
-            return ResponseEntity.noContent().build();
-        } else {
-            throw new ResourceNotFoundException("Relationship with ID Employee: " + idEmployee + " and ID Project: " + idProject + " not found");
-        }
+        //Delete relationship
+        Employee oldEmployee = employeeRepository.findById(idEmployee);
+        Project oldProject = projectRepository.findById(idProject);
+        oldEmployee.getProjects().remove(oldProject);
+        employeeRepository.save(oldEmployee);
+        return ResponseEntity.noContent().build();
     }
-
 
     // Metodo per la mappatura dell'Employee a EmployeeProjectDTO
     private EmployeeProjectDTO mapEmployeeToDTO(EmployeeProjectDTO targetDTO) {
         return new EmployeeProjectDTO(targetDTO.getIdEmployee(), targetDTO.getIdProject());
     }
-
 
     private void validateEmployeeProjectFields(EmployeeProjectDTO employeeProjectDTO){
         if(employeeProjectDTO.getIdEmployee() == null || employeeProjectDTO.getIdProject() == null){
@@ -227,15 +223,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-    private void validateEmployeeProjectRelationship(EmployeeProjectDTO employeeProjectDTO) {
-
-        List<EmployeeProjectDTO> employeeProjects = employeeRepository.getAllEmployeeProject();
-        for (EmployeeProjectDTO employeeProject : employeeProjects) {
-            if (Objects.equals(employeeProject.getIdEmployee(), employeeProjectDTO.getIdEmployee()) &&
-                    Objects.equals(employeeProject.getIdProject(), employeeProjectDTO.getIdProject())) {
-                throw new IllegalArgumentException("The relationship already exists");
+    private List<EmployeeProjectDTO> validateEmployeeProjectRelationship(long idEmployee, long idProject) {
+        //The employeeProject must be exist
+        List<EmployeeProjectDTO> employeesProjects = employeeRepository.getAllEmployeeProject();
+        for (EmployeeProjectDTO employeeProject : employeesProjects) {
+            if (Objects.equals(employeeProject.getIdEmployee(), idEmployee) &&
+                    Objects.equals(employeeProject.getIdProject(), idProject)) {
+                return employeesProjects;
             }
         }
+        throw new IllegalArgumentException("Relationship with ID Employee: "+ idEmployee+ " and ID Project: " + idProject + " don't exists");
     }
 
     private Employee getEmployeeById(long id){
@@ -269,5 +266,4 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
         }
     }
-
 }
