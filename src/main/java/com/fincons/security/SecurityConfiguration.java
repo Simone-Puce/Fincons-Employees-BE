@@ -74,7 +74,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/company-employee-management/v1/session-value").permitAll()
                         .requestMatchers("/company-employee-management/v1/home").permitAll()
                         .requestMatchers("/company-employee-management/v1/register").permitAll()
-                        .requestMatchers("/company-employee-management/v1/employees").authenticated() //working
+                        .requestMatchers("/company-employee-management/v1/employees").hasRole("USER") //working
                         .requestMatchers("/company-employee-management/v1/login").permitAll()
                         .requestMatchers("/company-employee-management/v1/logout").permitAll()
                         .requestMatchers("/company-employee-management/v1/error").permitAll()
