@@ -183,7 +183,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee existingEmployee = validateEmployeeById(idEmployee);
 
-        Project existingProject = projectServiceImpl.getProjectById(idProject);
+        Project existingProject = projectServiceImpl.validateProjectById(idProject);
 
         List<EmployeeProjectDTO> employeeProject = employeeRepository.getAllEmployeeProject();
 
@@ -226,7 +226,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //Check if exist the Employee and the Project
         Employee newEmployee = validateEmployeeById(employeeProjectDTO.getIdEmployee());
-        Project newProject = projectServiceImpl.getProjectById(employeeProjectDTO.getIdProject());
+        Project newProject = projectServiceImpl.validateProjectById(employeeProjectDTO.getIdProject());
 
         //Save the new relationship
         newEmployee.getProjects().add(newProject);
