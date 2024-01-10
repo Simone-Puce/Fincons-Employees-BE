@@ -1,4 +1,4 @@
-package com.fincons.service.impl;
+package com.fincons.service.employeeService.impl;
 
 import com.fincons.Handler.ResponseHandler;
 import com.fincons.dto.PositionDTO;
@@ -7,7 +7,7 @@ import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.PositionMapper;
 import com.fincons.repository.PositionRepository;
-import com.fincons.service.PositionService;
+import com.fincons.service.employeeService.PositionService;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

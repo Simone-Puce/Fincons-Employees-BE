@@ -1,4 +1,4 @@
-package com.fincons.service.impl;
+package com.fincons.service.employeeService.impl;
 
 import com.fincons.Handler.ResponseHandler;
 import com.fincons.dto.DepartmentDTO;
@@ -8,15 +8,13 @@ import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.DepartmentMapper;
 import com.fincons.repository.DepartmentRepository;
-import com.fincons.service.DepartmentService;
+import com.fincons.service.employeeService.DepartmentService;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

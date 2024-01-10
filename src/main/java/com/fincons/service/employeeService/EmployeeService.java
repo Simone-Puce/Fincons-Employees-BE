@@ -1,4 +1,4 @@
-package com.fincons.service;
+package com.fincons.service.employeeService;
 
 import com.fincons.dto.EmployeeDTO;
 import com.fincons.dto.ProjectDTO;

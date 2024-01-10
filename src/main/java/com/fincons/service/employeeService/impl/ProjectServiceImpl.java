@@ -1,4 +1,4 @@
-package com.fincons.service.impl;
+package com.fincons.service.employeeService.impl;
 
 import com.fincons.Handler.ResponseHandler;
 import com.fincons.dto.ProjectDTO;
@@ -7,7 +7,7 @@ import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ProjectMapper;
 import com.fincons.repository.ProjectRepository;
-import com.fincons.service.ProjectService;
+import com.fincons.service.employeeService.ProjectService;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

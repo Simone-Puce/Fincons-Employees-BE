@@ -2,8 +2,8 @@ package com.fincons.controller;
 
 import com.fincons.entity.Employee;
 import com.fincons.dto.EmployeeProjectDTO;
-import com.fincons.service.EmployeeService;
-import com.fincons.service.ProjectService;
+import com.fincons.service.employeeService.EmployeeService;
+import com.fincons.service.employeeService.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -2,7 +2,7 @@ package com.fincons.controller;
 
 
 import com.fincons.entity.Department;
-import com.fincons.service.DepartmentService;
+import com.fincons.service.employeeService.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

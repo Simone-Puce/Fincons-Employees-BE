@@ -1,4 +1,4 @@
-package com.fincons.service.impl;
+package com.fincons.service.employeeService.impl;
 
 import com.fincons.Handler.ResponseHandler;
 import com.fincons.dto.EmployeeDTO;
@@ -13,7 +13,7 @@ import com.fincons.mapper.EmployeeProjectMapper;
 import com.fincons.mapper.ProjectMapper;
 import com.fincons.repository.EmployeeRepository;
 import com.fincons.repository.ProjectRepository;
-import com.fincons.service.EmployeeService;
+import com.fincons.service.employeeService.EmployeeService;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
