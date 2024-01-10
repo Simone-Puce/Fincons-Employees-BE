@@ -7,11 +7,8 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-
 import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 
 @Component
@@ -51,10 +48,10 @@ public class JwtTokenProvider {
     public String getEmailFromJWT(String token) {
 
        Claims claims =
-               Jwts.parserBuilder()
+               (Claims) Jwts.parserBuilder()
                 .setSigningKey(key())
                 .build()
-                .parseClaimsJwt(token)
+                .parse(token)
                 .getBody();
 
 
