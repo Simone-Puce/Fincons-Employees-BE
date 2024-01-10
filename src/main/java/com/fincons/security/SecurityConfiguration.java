@@ -1,9 +1,11 @@
 package com.fincons.security;
 
 
+import com.fincons.auth.CustomAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -27,6 +29,8 @@ public class SecurityConfiguration {
 
     @Autowired
     UserDetailsService userDetailsService;
+    @Autowired
+    CustomAuthenticationProvider customAuthenticationProvider;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -59,11 +63,17 @@ public class SecurityConfiguration {
                         .deleteCookies("JSESSIONID").permitAll());
         return http.build();
     }
-
+/*
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
+    //per inserire il provider di autenticazione
+    @Autowired
+    public void configure (AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider((AuthenticationProvider) customAuthenticationProvider);
+    }
+ */
 
 }
