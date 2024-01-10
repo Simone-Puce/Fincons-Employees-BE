@@ -1,7 +1,5 @@
 package com.fincons.controller;
 
-import com.fincons.dto.EmployeeDTO;
-import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Employee;
 import com.fincons.dto.EmployeeProjectDTO;
 import com.fincons.service.EmployeeService;
@@ -9,8 +7,6 @@ import com.fincons.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("${employee.uri}")

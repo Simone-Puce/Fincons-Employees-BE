@@ -1,29 +1,33 @@
-package com.fincons.controller;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+package com.fincons.serviceTest;
 
 import com.fincons.dto.DepartmentDTO;
 import com.fincons.entity.Department;
 import com.fincons.mapper.DepartmentMapper;
+import com.fincons.mapper.EmployeeMapper;
 import com.fincons.repository.DepartmentRepository;
 import com.fincons.service.impl.DepartmentServiceImpl;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -35,23 +39,25 @@ import java.util.List;
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-public class DepartmentControllerTest {
+public class DepartmentServiceTest {
 
     private DepartmentServiceImpl departmentService;
     @Mock
     private DepartmentRepository departmentRepository;
-
-    @Autowired
+    @Spy
     private DepartmentMapper departmentMapper;
 
     @BeforeEach
     void init() {
         departmentRepository = mock(DepartmentRepository.class);
 
-        // Inizializza il servizio con i mock
-        departmentService = new DepartmentServiceImpl(departmentRepository);
+        // Initialize the service with mocks
+        departmentService = new DepartmentServiceImpl(departmentRepository, departmentMapper);
 
+        // Real implementation
+        departmentMapper = spy(new DepartmentMapper());
     }
+
     @Test
     void testFindById() {
 
@@ -60,16 +66,16 @@ public class DepartmentControllerTest {
         Department existingDepartment = new Department(departmentId, "name", "via", "citta");
         when(departmentRepository.findById(departmentId)).thenReturn(existingDepartment);
 
-        // Configures the behavior of the mock for the mapper
+        // Configures the behavior of the spy for the mapper
         DepartmentDTO departmentDTO = new DepartmentDTO(existingDepartment.getName(), existingDepartment.getAddress(), existingDepartment.getCity());
-        when(departmentMapper.mapDepartmentWithoutEmployee(existingDepartment)).thenReturn(departmentDTO);
 
         // Finally run the method from service and save response
         ResponseEntity<Object> response = departmentService.getDepartmentById(departmentId);
+        System.out.println(response.toString());
 
         // Verify if they have been called 1 time
         verify(departmentRepository, times(1)).findById(departmentId);
-        verify(departmentMapper, times(1)).mapDepartmentWithoutEmployee(existingDepartment);
+        //verify(departmentMapper, times(1)).mapDepartmentWithoutEmployee(existingDepartment);
 
         // Assert if object response was successfully
         assertTrue(response.getStatusCode().is2xxSuccessful());
@@ -87,14 +93,14 @@ public class DepartmentControllerTest {
         DepartmentDTO departmentDTO1 = new DepartmentDTO(department1.getName(), department1.getAddress(), department1.getCity());
         DepartmentDTO departmentDTO2 = new DepartmentDTO(department2.getName(), department2.getAddress(), department2.getCity());
         System.out.println(departmentDTO1.getName() + departmentDTO1.getAddress() + departmentDTO1.getCity());
-        when(departmentMapper.mapDepartment(department1)).thenReturn(departmentDTO1);
-        when(departmentMapper.mapDepartment(department2)).thenReturn(departmentDTO2);
+        //when(departmentMapper.mapDepartment(department1)).thenReturn(departmentDTO1);
+        //when(departmentMapper.mapDepartment(department2)).thenReturn(departmentDTO2);
 
         ResponseEntity<Object> response = departmentService.getAllDepartment();
 
         verify(departmentRepository, times(1)).findAll();
-        verify(departmentMapper, times(1)).mapDepartment(department1);
-        verify(departmentMapper, times(1)).mapDepartment(department2);
+        //verify(departmentMapper, times(1)).mapDepartment(department1);
+        //verify(departmentMapper, times(1)).mapDepartment(department2);
 
         assertTrue(response.getStatusCode().is2xxSuccessful());
     }

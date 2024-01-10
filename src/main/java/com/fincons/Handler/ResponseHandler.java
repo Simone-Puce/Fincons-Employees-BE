@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 public class ResponseHandler {
     public static ResponseEntity<Object> generateResponse(LocalDateTime localDateTime, String message, HttpStatus status, Object responseObj) {
 
-
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("timestamp", localDateTime);
         map.put("message", message);
@@ -26,18 +25,14 @@ public class ResponseHandler {
 
         List<String> keys = new ArrayList<>(map.keySet());
 
-        // Ordina la lista delle chiavi in modo inverso
+        // Sort the list of keys in reverse order
         keys.sort(Collections.reverseOrder());
 
-        // Crea una nuova mappa ordinata in modo inverso utilizzando le chiavi ordinate
+        // Create a new reverse-sorted map using the sorted keys
         Map<String, Object> sortedMap = new LinkedHashMap<>();
         for (String key : keys) {
             sortedMap.put(key, map.get(key));
         }
-
-        //Map<String, Object> sortedMap = new TreeMap<>(Collections.reverseOrder());
-        //sortedMap.putAll(map);
-
         return new ResponseEntity<>(sortedMap, status);
     }
 }

@@ -8,7 +8,6 @@ public class DepartmentDTO {
     private String name;
     private String address;
     private String city;
-    //@JsonIgnore
     private List<EmployeeDTO> employees;
 
     public DepartmentDTO(String name, String address, String city, List<EmployeeDTO> employees) {
@@ -27,7 +26,6 @@ public class DepartmentDTO {
     public DepartmentDTO() {
 
     }
-
 
     public String getName() {
         return name;
@@ -52,8 +50,6 @@ public class DepartmentDTO {
     public void setCity(String city) {
         this.city = city;
     }
-
-    //Se rimuovo il get è come se scrivessi @JsonIgnore
     public List<EmployeeDTO> getEmployees() {
         return employees;
     }

@@ -11,11 +11,12 @@ public class EmployeeMapper {
                 employee.getFirstName(),
                 employee.getLastName(),
                 employee.getGender(),
+                employee.getEmail(),
                 employee.getBirthDate(),
                 employee.getStartDate(),
                 employee.getEndDate(),
                 employee.getDepartment(),
-                employee.getRole(),
+                employee.getPosition(),
                 employee.getProjects());
     }
     public EmployeeDTO mapEmployeeTest(Employee employee){
@@ -23,6 +24,7 @@ public class EmployeeMapper {
                 employee.getFirstName(),
                 employee.getLastName(),
                 employee.getGender(),
+                employee.getEmail(),
                 employee.getBirthDate(),
                 employee.getStartDate(),
                 employee.getEndDate());

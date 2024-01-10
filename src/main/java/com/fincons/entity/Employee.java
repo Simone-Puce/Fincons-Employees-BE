@@ -1,6 +1,7 @@
 package com.fincons.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -17,6 +18,7 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @Column(name = "first_name")
     private String firstName;
 
@@ -27,28 +29,31 @@ public class Employee {
     @Column(name = "gender")
     private String gender;
 
+    @Column(name="email")
+    private String email;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "birth_date"/*, nullable = false,*/)
     private LocalDate birthDate;
 
     //@DateTimeFormat(pattern = "dd-MM-yyyy") Questo è comunicante con il front-end non con il database
 
-
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "start_date")
     private LocalDate startDate;
 
-
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "end_date")
     private LocalDate endDate;
     @ManyToOne
     @JsonBackReference(value = "department-employee")
     @JoinColumn(name = "id_department") //Questa è la foreign key che verrà collegata con l'id di project, è la foreign key
-    private Department department;           //questo "project"
+    private Department department;      //questo "project"
 
     @ManyToOne
-    @JsonBackReference(value = "role-employee")
-    @JoinColumn(name = "id_role")
-    private Role role;
+    @JsonBackReference(value = "position-employee")
+    @JoinColumn(name = "id_position")
+    private Position position;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonManagedReference(value= "employee-project")
@@ -68,16 +73,17 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(Long id, String firstName, String lastName, String gender, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Role role, Set<Project> projects) {
+    public Employee(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
+        this.email = email;
         this.birthDate = birthDate;
         this.startDate = startDate;
         this.endDate = endDate;
         this.department = department;
-        this.role = role;
+        this.position = position;
         this.projects = projects;
     }
 
@@ -113,6 +119,14 @@ public class Employee {
         this.gender = gender;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public LocalDate getBirthDate() {
         return birthDate;
     }
@@ -145,12 +159,12 @@ public class Employee {
         this.department = department;
     }
 
-    public Role getRole() {
-        return role;
+    public Position getPosition() {
+        return position;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     public Set<Project> getProjects() {

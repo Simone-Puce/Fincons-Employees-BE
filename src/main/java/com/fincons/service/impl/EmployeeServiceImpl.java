@@ -116,11 +116,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         existingEmployee.setFirstName(employee.getFirstName());
         existingEmployee.setLastName(employee.getLastName());
         existingEmployee.setGender(employee.getGender());
+        existingEmployee.setEmail(employee.getEmail());
         existingEmployee.setBirthDate(employee.getBirthDate());
         existingEmployee.setStartDate(employee.getStartDate());
         existingEmployee.setEndDate(employee.getEndDate());
         existingEmployee.setDepartment(employee.getDepartment());
-        existingEmployee.setRole(employee.getRole());
+        existingEmployee.setPosition(employee.getPosition());
 
         employeeRepository.save(existingEmployee);
 
@@ -297,20 +298,22 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(Strings.isEmpty(employee.getFirstName()) ||
                 Strings.isEmpty(employee.getLastName()) ||
                 Strings.isEmpty(employee.getGender()) ||
+                Strings.isEmpty(employee.getEmail()) ||
                 Objects.isNull(employee.getBirthDate()) ||
                 Objects.isNull(employee.getStartDate()) ||
                 Objects.isNull(employee.getDepartment()) ||
-                Objects.isNull(employee.getRole())) {
+                Objects.isNull(employee.getPosition())) {
             throw new IllegalArgumentException("The fields of the employee can't be null or empty.");
         }
     }
 
     private void checkForDuplicateEmployee(Employee employee, List<Employee> employees) {
         for (Employee employee1 : employees) {
-            if (employee1.getFirstName().equals(employee.getFirstName()) &&
+            if ((employee1.getFirstName().equals(employee.getFirstName()) &&
                     employee1.getLastName().equals(employee.getLastName()) &&
-                    Objects.equals(employee1.getBirthDate(), employee.getBirthDate())) {
-                throw new IllegalArgumentException("Firstname, lastname, and birthdate can't be the same.");
+                    Objects.equals(employee1.getBirthDate(), employee.getBirthDate())) ||
+                    employee1.getEmail().equals(employee.getEmail()))  {
+                throw new IllegalArgumentException("Employee with the same name, last name, and birth date already exists, or email is already taken.");
             }
         }
     }

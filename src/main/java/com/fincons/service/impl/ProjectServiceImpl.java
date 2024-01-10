@@ -132,7 +132,7 @@ public class ProjectServiceImpl implements ProjectService {
     private void checkForDuplicateProject(Project project, List<Project> projects){
         for (Project project1 : projects){
             if(project1.getName().equals(project.getName())){
-                throw new IllegalArgumentException("The names can't be same");
+                throw new IllegalArgumentException("Project with the same name, already exists");
             }
         }
     }

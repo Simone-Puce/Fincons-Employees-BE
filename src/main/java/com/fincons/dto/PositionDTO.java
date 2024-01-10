@@ -3,19 +3,19 @@ package com.fincons.dto;
 
 import java.util.List;
 
-public class RoleDTO {
+public class PositionDTO {
     private String name;
     private Double salary;
     //@JsonIgnore
     private List<EmployeeDTO> employees;
 
-    public RoleDTO(String name, Double salary, List<EmployeeDTO> employees) {
+    public PositionDTO(String name, Double salary, List<EmployeeDTO> employees) {
         this.name = name;
         this.salary = salary;
         this.employees = employees;
     }
 
-    public RoleDTO(String name, Double salary) {
+    public PositionDTO(String name, Double salary) {
         this.name = name;
         this.salary = salary;
     }

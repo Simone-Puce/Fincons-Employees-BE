@@ -7,8 +7,8 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "role")
-public class Role {
+@Table(name = "position")
+public class Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,9 +19,9 @@ public class Role {
 
 
     @OneToMany(
-            mappedBy = "role",
+            mappedBy = "position",
             fetch = FetchType.LAZY)
-    @JsonManagedReference(value = "role-employee")
+    @JsonManagedReference(value = "position-employee")
     private List<Employee> employees;
 
     public List<Employee> getEmployees() {
@@ -40,7 +40,7 @@ public class Role {
         this.employees = employees;
     }
 
-    public Role() {
+    public Position() {
     }
 
     public Long getId() {

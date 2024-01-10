@@ -34,6 +34,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     public DepartmentServiceImpl(DepartmentRepository departmentRepository) {
         this.departmentRepository = departmentRepository;
     }
+    @Autowired
+    public DepartmentServiceImpl(DepartmentRepository departmentRepository, DepartmentMapper departmentMapper) {
+        this.departmentRepository = departmentRepository;
+        this.departmentMapper = departmentMapper;
+    }
 
     @Override
     public ResponseEntity<Object> getDepartmentById(long id) {
@@ -159,7 +164,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     private void checkForDuplicateDepartment(Department department, List<Department> departments){
         for (Department department1 : departments) {
             if (department1.getName().equals(department.getName())) {
-                throw new IllegalArgumentException("The names can't be the same");
+                throw new IllegalArgumentException("Department with the same name, already exists");
             }
         }
     }

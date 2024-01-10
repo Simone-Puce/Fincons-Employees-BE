@@ -1,8 +1,8 @@
 package com.fincons.dto;
 
 import com.fincons.entity.Department;
+import com.fincons.entity.Position;
 import com.fincons.entity.Project;
-import com.fincons.entity.Role;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -13,30 +13,33 @@ public class EmployeeDTO {
     private String lastName;
     private String gender;
     private LocalDate birthDate;
+    private String email;
     private LocalDate startDate;
     private LocalDate endDate;
     private Department department;
-    private Role role;
+    private Position position;
     private Set<Project> projects;
 
 
-    public EmployeeDTO(String firstName, String lastName, String gender, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Role role, Set<Project> projects) {
+    public EmployeeDTO(String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
+        this.email = email;
         this.birthDate = birthDate;
         this.startDate = startDate;
         this.endDate = endDate;
         this.department = department;
-        this.role = role;
+        this.position = position;
         this.projects = projects;
     }
 
 
-    public EmployeeDTO(String firstName, String lastName, String gender, LocalDate birthDate, LocalDate startDate, LocalDate endDate) {
+    public EmployeeDTO(String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
+        this.email = email;
         this.birthDate = birthDate;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -66,6 +69,12 @@ public class EmployeeDTO {
         this.gender = gender;
     }
 
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
     public LocalDate getBirthDate() {
         return birthDate;
     }
@@ -98,12 +107,12 @@ public class EmployeeDTO {
         this.department = department;
     }
 
-    public Role getRole() {
-        return role;
+    public Position getPosition() {
+        return position;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     public Set<Project> getProjects() {

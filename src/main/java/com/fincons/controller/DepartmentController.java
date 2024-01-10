@@ -4,12 +4,8 @@ package com.fincons.controller;
 import com.fincons.entity.Department;
 import com.fincons.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.print.attribute.standard.Media;
-import java.util.List;
 
 /**
  * @RestController viene utilizzato per creare servizi web che restituiscono dati JSON o XML
