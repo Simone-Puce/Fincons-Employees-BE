@@ -31,16 +31,15 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Autowired
     private DepartmentMapper departmentMapper;
 
-    public DepartmentServiceImpl(DepartmentRepository departmentRepository, DepartmentMapper departmentMapper) {
+    public DepartmentServiceImpl(DepartmentRepository departmentRepository) {
         this.departmentRepository = departmentRepository;
-        this.departmentMapper = departmentMapper;
     }
 
     @Override
-    public ResponseEntity<Object> findById(long id) {
+    public ResponseEntity<Object> getDepartmentById(long id) {
 
-        Department existingDepartment = getDepartmentById(id);
-        DepartmentDTO departmentDTO = departmentMapper.mapDepartment(existingDepartment);
+        Department existingDepartment = validateDepartmentById(id);
+        DepartmentDTO departmentDTO = departmentMapper.mapDepartmentWithoutEmployee(existingDepartment);
 
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Found department with ID " + id + ".",
@@ -49,7 +48,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ResponseEntity<Object> findAll() {
+    public ResponseEntity<Object> getAllDepartment() {
         List<Department> departments = departmentRepository.findAll();
         List<DepartmentDTO> newListDepartment = new ArrayList<>();
         //Check if the list of department is empty
@@ -69,7 +68,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ResponseEntity<Object> save(Department department) {
+    public ResponseEntity<Object> createDepartment(Department department) {
 
         //Condition for not have null attributes
         validateDepartmentFields(department);
@@ -87,7 +86,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 
     @Override
-    public ResponseEntity<Object> update(long id, Department department) {
+    public ResponseEntity<Object> updateDepartmentById(long id, Department department) {
 
 
         //Condition for not have null attributes
@@ -95,7 +94,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         DepartmentDTO departmentDTO;
         //Check if the specified ID exists
-        Department existingDepartment = getDepartmentById(id);
+        Department existingDepartment = validateDepartmentById(id);
         
         List<Department> departments = departmentRepository.findAll();
         //Condition if there are departments with same name
@@ -114,7 +113,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ResponseEntity<Object> deleteById(long id) {
+    public ResponseEntity<Object> deleteDepartmentById(long id) {
 
         getDepartmentById(id);
         departmentRepository.deleteById(id);
@@ -140,7 +139,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                 idDepartmentForEmployee);
     }
 
-    private Department getDepartmentById(long id){
+    private Department validateDepartmentById(long id){
         Department existingDepartment = departmentRepository.findById(id);
 
         if(Objects.isNull(existingDepartment)){

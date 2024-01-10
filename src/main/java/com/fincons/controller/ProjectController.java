@@ -18,24 +18,24 @@ public class ProjectController {
 
     @GetMapping(value = "/find")
     public ResponseEntity<Object> getProjectById(@RequestParam long id){
-        return projectService.findById(id);
+        return projectService.getProjectById(id);
     }
 
     @GetMapping(value="/list")
     public ResponseEntity<Object> getAllProjects(){
-        return projectService.findAll();
+        return projectService.getAllProjects();
     }
     @PostMapping(value = "/create")
     public ResponseEntity<Object> createProject(@RequestBody Project project){
-        return projectService.save(project);
+        return projectService.createProject(project);
     }
     @PutMapping(value = "/update")
     public ResponseEntity<Object> updateProjectById(@RequestParam long id, @RequestBody Project project){
-        return projectService.update(id, project);
+        return projectService.updateProjectById(id, project);
     }
     @DeleteMapping(value = "/delete")
     public ResponseEntity<Object> deleteProjectById(@RequestParam long id){
-        return projectService.deleteById(id);
+        return projectService.deleteProjectById(id);
     }
     
     

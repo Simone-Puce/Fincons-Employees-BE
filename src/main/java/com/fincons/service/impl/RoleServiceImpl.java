@@ -29,9 +29,9 @@ public class RoleServiceImpl implements RoleService {
     private RoleMapper roleMapper;
 
     @Override
-    public ResponseEntity<Object> findById(long id) {
+    public ResponseEntity<Object> getRoleById(long id) {
 
-        Role existingRole = getRoleById(id);
+        Role existingRole = validateRoleById(id);
         RoleDTO roleDTO = roleMapper.mapRole(existingRole);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Found role with ID " + id + ".",
@@ -40,7 +40,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ResponseEntity<Object> findAll() {
+    public ResponseEntity<Object> getAllRoles() {
         List<Role> roles = roleRepository.findAll();
         List<RoleDTO> newListRole = new ArrayList<>();
         //Check if the list of department is empty
@@ -60,7 +60,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ResponseEntity<Object> save(Role role) {
+    public ResponseEntity<Object> createRole(Role role) {
         //Contition for not have null attribute
         validateRoleFields(role);
 
@@ -76,14 +76,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ResponseEntity<Object> update(long id, Role role) {
+    public ResponseEntity<Object> updateRoleById(long id, Role role) {
 
         //Condition for not have null attributes
         validateRoleFields(role);
 
         RoleDTO roleDTO;
         //Check if the specified ID exists
-        Role existingRole = getRoleById(id);
+        Role existingRole = validateRoleById(id);
 
         List<Role> roles = roleRepository.findAll();
         //Condition if there are roles with same name
@@ -101,7 +101,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ResponseEntity<Object> deleteById(long id) {
+    public ResponseEntity<Object> deleteRoleById(long id) {
         getRoleById(id);
         roleRepository.deleteById(id);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
@@ -110,7 +110,7 @@ public class RoleServiceImpl implements RoleService {
                 null);
     }
 
-    private Role getRoleById(long id) {
+    private Role validateRoleById(long id) {
         Role existingRole = roleRepository.findById(id);
 
         if (existingRole == null) {

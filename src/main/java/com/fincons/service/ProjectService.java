@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
 public interface ProjectService {
-    ResponseEntity<Object> findById(long id);
-    ResponseEntity<Object> findAll();
-    ResponseEntity<Object> save(Project project);
-    ResponseEntity<Object> update(long id, Project project);
-    ResponseEntity<Object> deleteById(long id);
+    ResponseEntity<Object> getProjectById(long id);
+    ResponseEntity<Object> getAllProjects();
+    ResponseEntity<Object> createProject(Project project);
+    ResponseEntity<Object> updateProjectById(long id, Project project);
+    ResponseEntity<Object> deleteProjectById(long id);
 
 }

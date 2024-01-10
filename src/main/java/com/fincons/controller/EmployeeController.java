@@ -25,23 +25,23 @@ public class EmployeeController {
 
     @GetMapping(value = "/find")
     public ResponseEntity<Object> getEmployeeById(@RequestParam long id){
-        return employeeService.findById(id);
+        return employeeService.getEmployeeById(id);
     }
     @GetMapping(value="/list")
     public ResponseEntity<Object> getAllEmployees(){
-        return employeeService.findAll();
+        return employeeService.getAllEmployees();
     }
     @PostMapping(value = "/create")
     public ResponseEntity<Object> createEmployee(@RequestBody Employee employee){
-        return employeeService.save(employee);
+        return employeeService.createEmployee(employee);
     }
     @PutMapping(value = "/update")
     public ResponseEntity<Object> updateEmployeeById(@RequestParam long id, @RequestBody Employee employee){
-        return employeeService.update(id, employee);
+        return employeeService.updateEmployeeById(id, employee);
     }
     @DeleteMapping(value = "/delete")
     public  ResponseEntity<Object> deleteEmployeeById(@RequestParam long id){
-        return employeeService.deleteById(id);
+        return employeeService.deleteEmployeeById(id);
     }
 
     @GetMapping(value = "/find/employee-project")

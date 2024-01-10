@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
@@ -39,15 +40,16 @@ public class DepartmentControllerTest {
     private DepartmentServiceImpl departmentService;
     @Mock
     private DepartmentRepository departmentRepository;
+
+    @Autowired
     private DepartmentMapper departmentMapper;
 
     @BeforeEach
     void init() {
         departmentRepository = mock(DepartmentRepository.class);
-        departmentMapper = mock(DepartmentMapper.class);
 
         // Inizializza il servizio con i mock
-        departmentService = new DepartmentServiceImpl(departmentRepository, departmentMapper);
+        departmentService = new DepartmentServiceImpl(departmentRepository);
 
     }
     @Test
@@ -60,14 +62,14 @@ public class DepartmentControllerTest {
 
         // Configures the behavior of the mock for the mapper
         DepartmentDTO departmentDTO = new DepartmentDTO(existingDepartment.getName(), existingDepartment.getAddress(), existingDepartment.getCity());
-        when(departmentMapper.mapDepartment(existingDepartment)).thenReturn(departmentDTO);
+        when(departmentMapper.mapDepartmentWithoutEmployee(existingDepartment)).thenReturn(departmentDTO);
 
         // Finally run the method from service and save response
-        ResponseEntity<Object> response = departmentService.findById(departmentId);
+        ResponseEntity<Object> response = departmentService.getDepartmentById(departmentId);
 
         // Verify if they have been called 1 time
         verify(departmentRepository, times(1)).findById(departmentId);
-        verify(departmentMapper, times(1)).mapDepartment(existingDepartment);
+        verify(departmentMapper, times(1)).mapDepartmentWithoutEmployee(existingDepartment);
 
         // Assert if object response was successfully
         assertTrue(response.getStatusCode().is2xxSuccessful());
@@ -88,7 +90,7 @@ public class DepartmentControllerTest {
         when(departmentMapper.mapDepartment(department1)).thenReturn(departmentDTO1);
         when(departmentMapper.mapDepartment(department2)).thenReturn(departmentDTO2);
 
-        ResponseEntity<Object> response = departmentService.findAll();
+        ResponseEntity<Object> response = departmentService.getAllDepartment();
 
         verify(departmentRepository, times(1)).findAll();
         verify(departmentMapper, times(1)).mapDepartment(department1);

@@ -11,11 +11,11 @@ import java.util.List;
 @Service
 public interface EmployeeService {
 
-    ResponseEntity<Object> findById(long id);
-    ResponseEntity<Object> findAll();
-    ResponseEntity<Object> save(Employee employee);
-    ResponseEntity<Object> update(long id, Employee employee);
-    ResponseEntity<Object> deleteById(long id);
+    ResponseEntity<Object> getEmployeeById(long id);
+    ResponseEntity<Object> getAllEmployees();
+    ResponseEntity<Object> createEmployee(Employee employee);
+    ResponseEntity<Object> updateEmployeeById(long id, Employee employee);
+    ResponseEntity<Object> deleteEmployeeById(long id);
 
     ResponseEntity<Object> findAllEmployeeProjects(long id);
     ResponseEntity<Object> getAllEmployeeProject();

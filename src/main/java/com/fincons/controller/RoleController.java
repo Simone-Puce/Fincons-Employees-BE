@@ -19,23 +19,23 @@ public class RoleController {
 
     @GetMapping(value = "/find")
     public ResponseEntity<Object> getRoleById(@RequestParam long id){
-        return roleService.findById(id);
+        return roleService.getRoleById(id);
     }
     @GetMapping(value="/list")
     public ResponseEntity<Object> getAllRoles(){
-        return roleService.findAll();
+        return roleService.getAllRoles();
     }
     @PostMapping(value = "/create")
     public ResponseEntity<Object> createRole(@RequestBody Role role){
-        return roleService.save(role);
+        return roleService.createRole(role);
     }
     @PutMapping(value = "/update")
     public ResponseEntity<Object> updateRoleById(@RequestParam long id, @RequestBody Role role){
-        return roleService.update(id, role);
+        return roleService.updateRoleById(id, role);
     }
     @DeleteMapping(value = "/delete")
     public ResponseEntity<Object> deleteRoleById(@RequestParam long id){
-        return roleService.deleteById(id);
+        return roleService.deleteRoleById(id);
     }
 
     

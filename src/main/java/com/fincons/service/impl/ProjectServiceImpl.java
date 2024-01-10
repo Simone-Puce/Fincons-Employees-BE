@@ -27,8 +27,8 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectMapper projectMapper;
 
     @Override
-    public ResponseEntity<Object> findById(long id) {
-        Project existingProject = getProjectById(id);
+    public ResponseEntity<Object> getProjectById(long id) {
+        Project existingProject = validateProjectById(id);
         ProjectDTO projectDTO = projectMapper.mapProject(existingProject);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Found project with ID " + id + ".",
@@ -37,7 +37,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<Object> findAll() {
+    public ResponseEntity<Object> getAllProjects() {
         List<Project> projects = projectRepository.findAll();
         List<ProjectDTO> newListProject = new ArrayList<>();
         //Check if the list of projects is empty
@@ -57,7 +57,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<Object> save(Project project) {
+    public ResponseEntity<Object> createProject(Project project) {
 
         //Condition for not have null attributes
         validateProjectFields(project);
@@ -74,7 +74,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<Object> update(long id, Project project) {
+    public ResponseEntity<Object> updateProjectById(long id, Project project) {
         
 
         //Condition for not have null attributes
@@ -82,7 +82,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         ProjectDTO projectDTO;
         //Check if the specified ID exists
-        Project existingProject = getProjectById(id);
+        Project existingProject = validateProjectById(id);
 
         List<Project> projects = projectRepository.findAll();
         //Condition if there are projects with sane names
@@ -102,7 +102,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<Object> deleteById(long id) {
+    public ResponseEntity<Object> deleteProjectById(long id) {
 
         getProjectById(id);
         projectRepository.deleteById(id);
@@ -112,7 +112,7 @@ public class ProjectServiceImpl implements ProjectService {
                 null);
     }
 
-    public Project getProjectById(long id){
+    public Project validateProjectById(long id){
         Project existingProject = projectRepository.findById(id);
         if (existingProject == null){
             throw new ResourceNotFoundException("Project with ID: " + id + " not found");

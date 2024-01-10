@@ -51,8 +51,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
-    public ResponseEntity<Object> findById(long id) {
-        Employee existingEmployee = getEmployeeById(id);
+    public ResponseEntity<Object> getEmployeeById(long id) {
+        Employee existingEmployee = validateEmployeeById(id);
         EmployeeDTO employeeDTO = employeeMapper.mapEmployee(existingEmployee);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Found employee with ID " + id + ".",
@@ -61,7 +61,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseEntity<Object> findAll() {
+    public ResponseEntity<Object> getAllEmployees() {
         List<Employee> employees = employeeRepository.findAll();
         List<EmployeeDTO> newListEmployee = new ArrayList<>();
         //Check if the list of employee is empty
@@ -81,7 +81,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseEntity<Object> save(Employee employee) {
+    public ResponseEntity<Object> createEmployee(Employee employee) {
 
         //Condition for not have null attributes
         validateEmployeeFields(employee);
@@ -99,14 +99,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseEntity<Object> update(long id, Employee employee) {
+    public ResponseEntity<Object> updateEmployeeById(long id, Employee employee) {
 
         //Condition for not have null attributes
         validateEmployeeFields(employee);
 
         EmployeeDTO employeeDTO;
         //Check if the specified ID exists
-        Employee existingEmployee = getEmployeeById(id);
+        Employee existingEmployee = validateEmployeeById(id);
 
         List<Employee> employees = employeeRepository.findAll();
         //Condition if there are employee with same firstName && lastName && birthDate
@@ -134,7 +134,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     @Override
-    public ResponseEntity<Object> deleteById(long id) {
+    public ResponseEntity<Object> deleteEmployeeById(long id) {
 
         getEmployeeById(id);
         employeeRepository.deleteById(id);
@@ -181,7 +181,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public ResponseEntity<Object> addEmployeeProject(long idEmployee, long idProject) {
 
-        Employee existingEmployee = getEmployeeById(idEmployee);
+        Employee existingEmployee = validateEmployeeById(idEmployee);
 
         Project existingProject = projectServiceImpl.getProjectById(idProject);
 
@@ -225,7 +225,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.save(oldEmployee);
 
         //Check if exist the Employee and the Project
-        Employee newEmployee = getEmployeeById(employeeProjectDTO.getIdEmployee());
+        Employee newEmployee = validateEmployeeById(employeeProjectDTO.getIdEmployee());
         Project newProject = projectServiceImpl.getProjectById(employeeProjectDTO.getIdProject());
 
         //Save the new relationship
@@ -282,7 +282,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         throw new IllegalArgumentException("Relationship with ID Employee: "+ idEmployee+ " and ID Project: " + idProject + " don't exists.");
     }
 
-    private Employee getEmployeeById(long id){
+    private Employee validateEmployeeById(long id){
         Employee existingEmployee = employeeRepository.findById(id);
 
         if (existingEmployee == null){

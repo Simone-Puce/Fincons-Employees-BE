@@ -24,25 +24,25 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
-    @GetMapping(value = "/find", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/find")
     public ResponseEntity<Object> getDepartmentById(@RequestParam long id){
-        return departmentService.findById(id);
+        return departmentService.getDepartmentById(id);
     }
-    @GetMapping(value="/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/list")
     public ResponseEntity<Object> getAllDepartment(){
-        return  departmentService.findAll();
+        return  departmentService.getAllDepartment();
     }
     @PostMapping(value = "/create")
     public ResponseEntity<Object> createDepartment(@RequestBody Department department){
-        return departmentService.save(department);
+        return departmentService.createDepartment(department);
     }
     @PutMapping(value = "/update")
     public ResponseEntity<Object> updateDepartmentById(@RequestParam long id, @RequestBody Department department){
-        return departmentService.update(id, department);
+        return departmentService.updateDepartmentById(id, department);
     }
     @DeleteMapping(value = "/delete")
     public ResponseEntity<Object> deleteDepartmentById(@RequestParam long id){
-       return departmentService.deleteById(id);
+       return departmentService.deleteDepartmentById(id);
     }
     @GetMapping(value = "/find-employees")
     public ResponseEntity<Object> getDepartmentFindEmployee(@RequestParam long id){
