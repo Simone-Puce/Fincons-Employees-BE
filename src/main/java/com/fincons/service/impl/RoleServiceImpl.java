@@ -1,5 +1,6 @@
 package com.fincons.service.impl;
 
+import com.fincons.Handler.ResponseHandler;
 import com.fincons.dto.RoleDTO;
 import com.fincons.entity.Role;
 import com.fincons.exception.IllegalArgumentException;
@@ -7,10 +8,13 @@ import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.RoleMapper;
 import com.fincons.repository.RoleRepository;
 import com.fincons.service.RoleService;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,15 +29,18 @@ public class RoleServiceImpl implements RoleService {
     private RoleMapper roleMapper;
 
     @Override
-    public ResponseEntity<RoleDTO> findById(long id) {
+    public ResponseEntity<Object> findById(long id) {
 
         Role existingRole = getRoleById(id);
         RoleDTO roleDTO = roleMapper.mapRole(existingRole);
-        return ResponseEntity.ok(roleDTO);
+        return ResponseHandler.generateResponse(LocalDateTime.now(),
+                "Success: Found role with ID " + id + ".",
+                (HttpStatus.OK),
+                roleDTO);
     }
 
     @Override
-    public ResponseEntity<List<RoleDTO>> findAll() {
+    public ResponseEntity<Object> findAll() {
         List<Role> roles = roleRepository.findAll();
         List<RoleDTO> newListRole = new ArrayList<>();
         //Check if the list of department is empty
@@ -45,11 +52,15 @@ public class RoleServiceImpl implements RoleService {
                 throw new IllegalArgumentException("There aren't Roles");
             }
         }
-        return ResponseEntity.ok(newListRole);
+        return ResponseHandler.generateResponse(LocalDateTime.now(),
+                "Success: Found " + newListRole.size() +
+                        (newListRole.size() == 1 ? " role" : " roles") + " in the list.",
+                (HttpStatus.OK),
+                newListRole);
     }
 
     @Override
-    public ResponseEntity<RoleDTO> save(Role role) {
+    public ResponseEntity<Object> save(Role role) {
         //Contition for not have null attribute
         validateRoleFields(role);
 
@@ -59,32 +70,44 @@ public class RoleServiceImpl implements RoleService {
 
         RoleDTO roleDTO = roleMapper.mapRole(role);
         roleRepository.save(role);
-        return ResponseEntity.ok(roleDTO);
+        return ResponseHandler.generateResponse(LocalDateTime.now(),
+                "Success: Role with ID "+ role.getId() +" has been successfully updated!",
+                (HttpStatus.OK), roleDTO);
     }
 
     @Override
-    public ResponseEntity<RoleDTO> update(long id, Role role) {
+    public ResponseEntity<Object> update(long id, Role role) {
 
-        RoleDTO roleDTO;
         //Condition for not have null attributes
         validateRoleFields(role);
 
-        //Launch exception if not exist
+        RoleDTO roleDTO;
+        //Check if the specified ID exists
         Role existingRole = getRoleById(id);
+
+        List<Role> roles = roleRepository.findAll();
+        //Condition if there are roles with same name
+        checkForDuplicateRole(role, roles);
 
         existingRole.setName(role.getName());
         existingRole.setSalary(role.getSalary());
         roleRepository.save(existingRole);
 
         roleDTO = roleMapper.mapRole(role);
-        return ResponseEntity.ok(roleDTO);
+        return ResponseHandler.generateResponse(LocalDateTime.now(),
+                "Success: Role with ID "+ id +" has been successfully updated!",
+                (HttpStatus.OK),
+                roleDTO);
     }
 
     @Override
-    public ResponseEntity<RoleDTO> deleteById(long id) {
+    public ResponseEntity<Object> deleteById(long id) {
         getRoleById(id);
         roleRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseHandler.generateResponse(LocalDateTime.now(),
+                "Success: Role with ID "+ id +" has been successfully deleted!",
+                (HttpStatus.OK),
+                null);
     }
 
     private Role getRoleById(long id) {
@@ -98,7 +121,7 @@ public class RoleServiceImpl implements RoleService {
 
     private void validateRoleFields(Role role){
         //If one field is true run Exception
-        if(role.getName() == null || role.getName().isEmpty() ||
+        if (Strings.isEmpty(role.getName()) ||
                 Objects.isNull(role.getSalary())) {
             throw new IllegalArgumentException("The fields of the Role can't be null or empty");
         }

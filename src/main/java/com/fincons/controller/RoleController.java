@@ -18,23 +18,23 @@ public class RoleController {
     RoleService roleService;
 
     @GetMapping(value = "/find")
-    public ResponseEntity<RoleDTO> getRoleById(@RequestParam long id){
+    public ResponseEntity<Object> getRoleById(@RequestParam long id){
         return roleService.findById(id);
     }
     @GetMapping(value="/list")
-    public ResponseEntity<List<RoleDTO>> getAllRoles(){
+    public ResponseEntity<Object> getAllRoles(){
         return roleService.findAll();
     }
     @PostMapping(value = "/create")
-    public ResponseEntity<RoleDTO> createRole(@RequestBody Role role){
+    public ResponseEntity<Object> createRole(@RequestBody Role role){
         return roleService.save(role);
     }
     @PutMapping(value = "/update")
-    public ResponseEntity<RoleDTO> updateRoleById(@RequestParam long id, @RequestBody Role role){
+    public ResponseEntity<Object> updateRoleById(@RequestParam long id, @RequestBody Role role){
         return roleService.update(id, role);
     }
     @DeleteMapping(value = "/delete")
-    public ResponseEntity<RoleDTO> deleteRoleById(@RequestParam long id){
+    public ResponseEntity<Object> deleteRoleById(@RequestParam long id){
         return roleService.deleteById(id);
     }
 

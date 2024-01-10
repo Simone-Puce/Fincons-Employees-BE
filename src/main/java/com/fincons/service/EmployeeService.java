@@ -11,15 +11,15 @@ import java.util.List;
 @Service
 public interface EmployeeService {
 
-    ResponseEntity<EmployeeDTO> findById(long id);
-    ResponseEntity<List<EmployeeDTO>> findAll();
-    ResponseEntity<EmployeeDTO> save(Employee employee);
-    ResponseEntity<EmployeeDTO> update(long id, Employee employee);
-    ResponseEntity<EmployeeDTO> deleteById(long id);
+    ResponseEntity<Object> findById(long id);
+    ResponseEntity<Object> findAll();
+    ResponseEntity<Object> save(Employee employee);
+    ResponseEntity<Object> update(long id, Employee employee);
+    ResponseEntity<Object> deleteById(long id);
 
-    ResponseEntity<List<ProjectDTO>> findAllEmployeeProjects(long id);
-    ResponseEntity<List<EmployeeProjectDTO>> getAllEmployeeProject();
-    ResponseEntity<EmployeeProjectDTO> addEmployeeProject(long idEmployee, long idProject);
-    EmployeeProjectDTO updateEmployeeProject(long idEmployee, long idProject, EmployeeProjectDTO employeeProjectDTO);
-    ResponseEntity<EmployeeDTO> deleteEmployeeProject(long idEmployee, long idProject);
+    ResponseEntity<Object> findAllEmployeeProjects(long id);
+    ResponseEntity<Object> getAllEmployeeProject();
+    ResponseEntity<Object> addEmployeeProject(long idEmployee, long idProject);
+    ResponseEntity<Object> updateEmployeeProject(long idEmployee, long idProject, EmployeeProjectDTO employeeProjectDTO);
+    ResponseEntity<Object> deleteEmployeeProject(long idEmployee, long idProject);
 }

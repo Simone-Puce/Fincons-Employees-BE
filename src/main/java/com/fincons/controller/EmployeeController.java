@@ -24,44 +24,44 @@ public class EmployeeController {
 
 
     @GetMapping(value = "/find")
-    public ResponseEntity<EmployeeDTO> getEmployeeById(@RequestParam long id){
+    public ResponseEntity<Object> getEmployeeById(@RequestParam long id){
         return employeeService.findById(id);
     }
     @GetMapping(value="/list")
-    public ResponseEntity<List<EmployeeDTO>> getAllEmployees(){
+    public ResponseEntity<Object> getAllEmployees(){
         return employeeService.findAll();
     }
     @PostMapping(value = "/create")
-    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody Employee employee){
+    public ResponseEntity<Object> createEmployee(@RequestBody Employee employee){
         return employeeService.save(employee);
     }
     @PutMapping(value = "/update")
-    public ResponseEntity<EmployeeDTO> updateEmployeeById(@RequestParam long id, @RequestBody Employee employee){
+    public ResponseEntity<Object> updateEmployeeById(@RequestParam long id, @RequestBody Employee employee){
         return employeeService.update(id, employee);
     }
     @DeleteMapping(value = "/delete")
-    public ResponseEntity<EmployeeDTO> deleteEmployeeById(@RequestParam long id){
+    public  ResponseEntity<Object> deleteEmployeeById(@RequestParam long id){
         return employeeService.deleteById(id);
     }
 
     @GetMapping(value = "/find/employee-project")
-    public ResponseEntity<List<ProjectDTO>> getAllEmployeesProjects(@RequestParam long id){
+    public ResponseEntity<Object> getAllEmployeesProjects(@RequestParam long id){
         return employeeService.findAllEmployeeProjects(id);
     }
     @GetMapping(value = "/list/employee-project")
-    public ResponseEntity<List<EmployeeProjectDTO>> getAllEmployeeProject(){
+    public ResponseEntity<Object> getAllEmployeeProject(){
         return employeeService.getAllEmployeeProject();
     }
     @PostMapping(value= "/create/employee-project")
-    public ResponseEntity<EmployeeProjectDTO> createEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
+    public ResponseEntity<Object> createEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
         return employeeService.addEmployeeProject(idEmployee, idProject);
     }
     @PutMapping(value ="/update/employee-project")
-    public EmployeeProjectDTO updateEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject, @RequestBody EmployeeProjectDTO employeeProjectDTO){
+    public ResponseEntity<Object> updateEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject, @RequestBody EmployeeProjectDTO employeeProjectDTO){
         return employeeService.updateEmployeeProject(idEmployee, idProject, employeeProjectDTO);
     }
     @DeleteMapping(value= "/delete/employee-project")
-    public ResponseEntity<EmployeeDTO> deleteEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
+    public ResponseEntity<Object> deleteEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
         return employeeService.deleteEmployeeProject(idEmployee, idProject);
     }
 

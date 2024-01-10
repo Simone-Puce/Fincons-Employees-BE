@@ -1,5 +1,7 @@
 package com.fincons.dto;
 
+import com.fincons.entity.Employee;
+
 import java.util.List;
 
 public class DepartmentDTO {
@@ -21,6 +23,11 @@ public class DepartmentDTO {
         this.address = address;
         this.city = city;
     }
+
+    public DepartmentDTO() {
+
+    }
+
 
     public String getName() {
         return name;

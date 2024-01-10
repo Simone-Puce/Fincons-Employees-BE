@@ -1,5 +1,6 @@
 package com.fincons.service.impl;
 
+import com.fincons.Handler.ResponseHandler;
 import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Project;
 import com.fincons.exception.IllegalArgumentException;
@@ -7,10 +8,13 @@ import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ProjectMapper;
 import com.fincons.repository.ProjectRepository;
 import com.fincons.service.ProjectService;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 @Service
@@ -23,15 +27,17 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectMapper projectMapper;
 
     @Override
-    public ResponseEntity<ProjectDTO> findById(long id) {
+    public ResponseEntity<Object> findById(long id) {
         Project existingProject = getProjectById(id);
-        //Check if project not found
         ProjectDTO projectDTO = projectMapper.mapProject(existingProject);
-        return ResponseEntity.ok(projectDTO);
+        return ResponseHandler.generateResponse(LocalDateTime.now(),
+                "Success: Found project with ID " + id + ".",
+                (HttpStatus.OK),
+                projectDTO);
     }
 
     @Override
-    public ResponseEntity<List<ProjectDTO>> findAll() {
+    public ResponseEntity<Object> findAll() {
         List<Project> projects = projectRepository.findAll();
         List<ProjectDTO> newListProject = new ArrayList<>();
         //Check if the list of projects is empty
@@ -43,11 +49,15 @@ public class ProjectServiceImpl implements ProjectService {
                 throw new IllegalArgumentException("There aren't Project");
             }
         }
-        return ResponseEntity.ok(newListProject);
+        return ResponseHandler.generateResponse(LocalDateTime.now(),
+                "Success: Found " + newListProject.size() +
+                        (newListProject.size() == 1 ? " project" : " projects") + " in the list.",
+                (HttpStatus.OK),
+                newListProject);
     }
 
     @Override
-    public ResponseEntity<ProjectDTO> save(Project project) {
+    public ResponseEntity<Object> save(Project project) {
 
         //Condition for not have null attributes
         validateProjectFields(project);
@@ -58,18 +68,25 @@ public class ProjectServiceImpl implements ProjectService {
 
         ProjectDTO projectDTO = projectMapper.mapProjectWithoutEmployees(project);
         projectRepository.save(project);
-        return ResponseEntity.ok(projectDTO);
+        return ResponseHandler.generateResponse(LocalDateTime.now(),
+                "Success: Project with ID "+ project.getId() +" has been successfully updated!",
+                (HttpStatus.OK), projectDTO);
     }
 
     @Override
-    public ResponseEntity<ProjectDTO> update(long id, Project project) {
+    public ResponseEntity<Object> update(long id, Project project) {
         
-        ProjectDTO projectDTO;
+
         //Condition for not have null attributes
         validateProjectFields(project);
 
-        //Condition for not have null Project
+        ProjectDTO projectDTO;
+        //Check if the specified ID exists
         Project existingProject = getProjectById(id);
+
+        List<Project> projects = projectRepository.findAll();
+        //Condition if there are projects with sane names
+        checkForDuplicateProject(project, projects);
 
         existingProject.setName(project.getName());
         existingProject.setArea(project.getArea());
@@ -78,15 +95,21 @@ public class ProjectServiceImpl implements ProjectService {
                 
         projectDTO = projectMapper.mapProjectWithoutEmployees(project);
 
-        return ResponseEntity.ok(projectDTO);
+        return ResponseHandler.generateResponse(LocalDateTime.now(),
+                "Success: Project with ID "+ id +" has been successfully updated!",
+                (HttpStatus.OK),
+                projectDTO);
     }
 
     @Override
-    public ResponseEntity<ProjectDTO> deleteById(long id) {
+    public ResponseEntity<Object> deleteById(long id) {
 
         getProjectById(id);
         projectRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseHandler.generateResponse(LocalDateTime.now(),
+                "Success: Project with ID "+ id +" has been successfully deleted!",
+                (HttpStatus.OK),
+                null);
     }
 
     public Project getProjectById(long id){
@@ -99,9 +122,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     private void validateProjectFields(Project project){
         //If one field is true run Exception
-        if (project.getName() == null || project.getName().isEmpty() ||
-                project.getArea() == null || project.getArea().isEmpty() ||
-                project.getPriority() == null || project.getPriority().isEmpty()) {
+        if (Strings.isEmpty(project.getName())||
+                Strings.isEmpty(project.getArea()) ||
+                Strings.isEmpty(project.getPriority())) {
             throw new IllegalArgumentException("The fields of the Project can't be null or empty");
         }
 

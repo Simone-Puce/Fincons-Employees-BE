@@ -9,10 +9,10 @@ import java.util.List;
 @Service
 public interface RoleService {
 
-    ResponseEntity<RoleDTO> findById(long id);
-    ResponseEntity<List<RoleDTO>> findAll();
-    ResponseEntity<RoleDTO> save(Role role);
-    ResponseEntity<RoleDTO> update(long id, Role role);
-    ResponseEntity<RoleDTO> deleteById(long id);
+    ResponseEntity<Object> findById(long id);
+    ResponseEntity<Object> findAll();
+    ResponseEntity<Object> save(Role role);
+    ResponseEntity<Object> update(long id, Role role);
+    ResponseEntity<Object> deleteById(long id);
 
 }

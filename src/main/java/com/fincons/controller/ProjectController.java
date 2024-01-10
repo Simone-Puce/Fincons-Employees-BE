@@ -17,24 +17,24 @@ public class ProjectController {
     ProjectService projectService;
 
     @GetMapping(value = "/find")
-    public ResponseEntity<ProjectDTO> getProjectById(@RequestParam long id){
+    public ResponseEntity<Object> getProjectById(@RequestParam long id){
         return projectService.findById(id);
     }
 
     @GetMapping(value="/list")
-    public ResponseEntity<List<ProjectDTO>> getAllProjects(){
+    public ResponseEntity<Object> getAllProjects(){
         return projectService.findAll();
     }
     @PostMapping(value = "/create")
-    public ResponseEntity<ProjectDTO> createProject(@RequestBody Project project){
+    public ResponseEntity<Object> createProject(@RequestBody Project project){
         return projectService.save(project);
     }
     @PutMapping(value = "/update")
-    public ResponseEntity<ProjectDTO> updateProjectById(@RequestParam long id, @RequestBody Project project){
+    public ResponseEntity<Object> updateProjectById(@RequestParam long id, @RequestBody Project project){
         return projectService.update(id, project);
     }
     @DeleteMapping(value = "/delete")
-    public ResponseEntity<ProjectDTO> deleteProjectById(@RequestParam long id){
+    public ResponseEntity<Object> deleteProjectById(@RequestParam long id){
         return projectService.deleteById(id);
     }
     
