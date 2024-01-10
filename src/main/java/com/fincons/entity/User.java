@@ -31,13 +31,59 @@ public class User {
     private String password;
 
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL) // Performance
+    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinTable(
-            name = "users_roles", // nome tabella join che avrà id di user e is di role
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id" ), // user id fa riferimento al primo della relaizione   user_role  <- a sinistra vi è role quindi mettiamo user_id
-            inverseJoinColumns = @JoinColumn(name = "role_id",  referencedColumnName = "id" )   // a destra vi è role quindi dall'altra parte(l'inversa)  quuindi inversejoincolumns role_id
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id" ),
+            inverseJoinColumns = @JoinColumn(name = "role_id",  referencedColumnName = "id" )
     )
     private List<Role> roles;
 
+    public long getId() {
+        return id;
+    }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
 }
