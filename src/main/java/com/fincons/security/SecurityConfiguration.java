@@ -59,7 +59,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/company-employee-management/v1/error").permitAll()
                         .requestMatchers("/company-employee-management/v1/registered-users").hasAnyRole("ADMIN","USER")
                         .requestMatchers("/company-employee-management/v1/admin/**").hasRole("ADMIN")
-                );
+                ).httpBasic(Customizer.withDefaults());
 //        http
 //                .formLogin(form -> form
 //                        .loginPage("/company-employee-management/v1/login")
