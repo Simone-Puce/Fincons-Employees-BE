@@ -1,5 +1,5 @@
 package com.fincons.service.email;
 
 public interface IEmailBirthDate {
-    void sendBirthdayGreetings() throws RuntimeException;
+    void sendBirthdayGreetings() throws IllegalArgumentException;
 }

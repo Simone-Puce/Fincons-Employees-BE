@@ -31,7 +31,7 @@ public class EmailHireDate implements IEmailHireDate {
     private EmailContentBuilder emailContentBuilder;
 
     @Override
-    public void sendAnniversaryGreetings() throws RuntimeException{
+    public void sendAnniversaryGreetings() throws IllegalArgumentException{
         employeeRepository.findEmployeesByTodayHireDate(LocalDate.now()).stream()
                 .filter(emailNotEmpty)
                 .filter(emailCorrectFormat)

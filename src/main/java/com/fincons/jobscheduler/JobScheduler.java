@@ -31,8 +31,8 @@ public class JobScheduler {
 
     @Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderBirth}")
     @SchedulerLock(name = "birthEmailScheduler", lockAtLeastFor = "PT1M", lockAtMostFor = "PT5M")
-    @Retryable(retryFor = RuntimeException.class, maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.maxDelay}"))
-    public void emailSenderBirth() throws RuntimeException {
+    @Retryable(retryFor = IllegalArgumentException.class, maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.maxDelay}"))
+    public void emailSenderBirth() throws IllegalArgumentException {
         logger.info("Looking for Birthdays...");
         iEmailBirtheDate.sendBirthdayGreetings();
         logger.info("All emails were sent to {} ", LocalDate.now());
@@ -40,21 +40,22 @@ public class JobScheduler {
 
     @Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderHire}")
     @SchedulerLock(name = "hireEmailScheduler", lockAtLeastFor = "PT1M", lockAtMostFor = "PT5M")
-    @Retryable(retryFor = RuntimeException.class, maxAttempts = 4, backoff = @Backoff(delay = 2000))
-    public void emailSenderHire() throws RuntimeException {
+    @Retryable(retryFor = IllegalArgumentException.class, maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.maxDelay}"))
+    public void emailSenderHire() throws IllegalArgumentException {
         logger.info("Looking for Anniversaries...");
         iEmailHireDate.sendAnniversaryGreetings();
         logger.info("All emails were sent to {} ", LocalDate.now());
     }
 
     @Scheduled(cron = "${jobScheduler.JobScheduler.newRandomEmployee}")
-    public void newEmployeeRandom() throws RuntimeException {
-        logger.info("I'm creating new employees...");
+    public void newEmployeeRandom() throws IllegalArgumentException {
+        logger.info("Creating new employees...");
         iCreateNewEmployeeRandom.createNewRandomEmployee(5);
     }
 
     @Recover
-    public void recover(RuntimeException r) {
-        logger.error("Email has reached the maximum number of retry attempts.");
+    public void recover(IllegalArgumentException r) {
+        int i = 0;
+        logger.error("Email has reached the maximum number of retry attempts. {}", i);
     }
 }

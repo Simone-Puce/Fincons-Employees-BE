@@ -38,7 +38,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
 
     @Override
-    public Employee createEmployee(Employee employee) throws RuntimeException {
+    public Employee createEmployee(Employee employee) throws IllegalArgumentException {
         String email = employee.getEmail();
 
         Optional<Employee> existingEmployeeWithEmail = employeeRepository.findByEmail(email);
@@ -73,7 +73,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
     @Override
     public ResponseEntity<Map<String, Boolean>> deleteEmployee(Long id) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new PersonalException("Employee non trovato con id: " + id));
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Employee non trovato con id: " + id));
         employeeRepository.delete(employee);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);

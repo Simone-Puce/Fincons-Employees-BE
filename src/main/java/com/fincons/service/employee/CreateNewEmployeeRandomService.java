@@ -28,7 +28,7 @@ public class CreateNewEmployeeRandomService implements ICreateNewEmployeeRandom 
 
 
     @Override
-    public void createNewRandomEmployee(int nEmployee) throws RuntimeException {
+    public void createNewRandomEmployee(int nEmployee) throws IllegalArgumentException {
         Faker faker = new Faker(new Random());
         List<Employee> employeeList = new ArrayList<>();
 

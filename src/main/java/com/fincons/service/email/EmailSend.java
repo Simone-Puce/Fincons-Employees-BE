@@ -26,8 +26,8 @@ public class EmailSend {
             helper.addInline("logo", file);
             helper.addInline("img", image);
             emailSender.send(message);
-        } catch (IllegalArgumentException | MessagingException e) {
-            throw new IllegalArgumentException("Error sending email: " + e.getMessage());
+        } catch (MessagingException e) {
+            throw new IllegalArgumentException("error" + e.getMessage());
         }
     }
 }
