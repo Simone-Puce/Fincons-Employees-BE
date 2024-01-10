@@ -17,11 +17,11 @@ import java.util.function.Predicate;
 public class EmailHireDate implements IEmailHireDate {
 
     Logger logger = LoggerFactory.getLogger(EmailHireDate.class);
-    public static final Predicate<Employee> emailNotEmpty = employee -> !employee.getEmail().isEmpty();
-    public static final Predicate<Employee> emailCorrectFormat = employee -> employee.getEmail().matches("^[a-zA-Z]+\\.[a-zA-Z]+@gmail\\.com$");
-    public static final String EMAIL_SUBJECT_HIREDATE = "Buon Anniversario!";
-    public static final String EMAIL_CONTENT_HIREDATE = "Congratulazioni per esserti unito al nostro team!";
-    public static final String IMG_HIREDATE = "images/happyAnniversary.png";
+    private final Predicate<Employee> emailNotEmpty = employee -> !employee.getEmail().isEmpty();
+    private final Predicate<Employee> emailCorrectFormat = employee -> employee.getEmail().matches("^[a-zA-Z]+\\.[a-zA-Z]+@gmail\\.com$");
+    private static final String EMAIL_SUBJECT_HIREDATE = "Happy Anniversary!";
+    private static final String EMAIL_CONTENT_HIREDATE = "Congratulations on joining our team!";
+    private static final String IMG_HIREDATE = "images/happyAnniversary.png";
 
     @Autowired
     private EmployeeRepository employeeRepository;

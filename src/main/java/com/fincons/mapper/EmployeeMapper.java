@@ -1,7 +1,7 @@
 package com.fincons.mapper;
 
 import com.fincons.entity.Employee;
-import com.fincons.model.EmployeeDto;
+import com.fincons.dto.EmployeeDto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

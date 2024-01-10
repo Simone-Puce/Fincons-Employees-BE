@@ -6,9 +6,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.retry.annotation.EnableRetry;
 
 @SpringBootApplication
-@PropertySource("email.properties")
-@PropertySource("scheduler.properties")
-@PropertySource("template.properties")
 public class FinconsEmployeesBeApplication {
 
 	public static void main(String[] args) {

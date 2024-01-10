@@ -4,7 +4,7 @@ package com.fincons.service.employee;
 import com.fincons.entity.Employee;
 import com.fincons.exception.PersonalException;
 import com.fincons.mapper.EmployeeMapper;
-import com.fincons.model.EmployeeDto;
+import com.fincons.dto.EmployeeDto;
 import com.fincons.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +38,7 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
 
     @Override
-    public Employee createEmployee(Employee employee) throws IllegalArgumentException {
+    public Employee createEmployee(Employee employee) throws RuntimeException {
         String email = employee.getEmail();
 
         Optional<Employee> existingEmployeeWithEmail = employeeRepository.findByEmail(email);

@@ -2,7 +2,7 @@ package com.fincons.service.employee;
 
 
 import com.fincons.entity.Employee;
-import com.fincons.model.EmployeeDto;
+import com.fincons.dto.EmployeeDto;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

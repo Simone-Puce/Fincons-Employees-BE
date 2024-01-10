@@ -1,8 +1,8 @@
-package net.javaguides.springbootbackend.controller;
+package com.fincons.controller;
 
 import com.fincons.entity.Employee;
 import com.fincons.mapper.EmployeeMapper;
-import com.fincons.model.EmployeeDto;
+import com.fincons.dto.EmployeeDto;
 import com.fincons.service.employee.IEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

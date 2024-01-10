@@ -11,12 +11,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EmailSend {
-
     @Autowired
     private JavaMailSender emailSender;
 
-
-    public void sendEmail(String to, String subject, String htmlContent, String imagePath) throws RuntimeException {
+    public void sendEmail(String to, String subject, String htmlContent, String imagePath) throws IllegalArgumentException {
         MimeMessage message = emailSender.createMimeMessage();
         ClassPathResource file = new ClassPathResource("images/logo.png");
         ClassPathResource image = new ClassPathResource(imagePath);
@@ -28,7 +26,7 @@ public class EmailSend {
             helper.addInline("logo", file);
             helper.addInline("img", image);
             emailSender.send(message);
-        } catch (MessagingException e) {
+        } catch (IllegalArgumentException | MessagingException e) {
             throw new IllegalArgumentException("Error sending email: " + e.getMessage());
         }
     }

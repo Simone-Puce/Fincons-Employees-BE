@@ -1,4 +1,4 @@
-package com.fincons.jobScheduler;
+package com.fincons.jobscheduler;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ class JobSchedulerTest {
         assertDoesNotThrow(() -> jobScheduler.emailSenderHire());
     }
     @Test
-    void testNewEmployeeRandom() throws Exception {
+    void testNewEmployeeRandom() throws RuntimeException {
         jobScheduler.newEmployeeRandom();
     }
 }

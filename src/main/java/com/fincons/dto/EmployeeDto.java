@@ -1,4 +1,4 @@
-package com.fincons.model;
+package com.fincons.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
