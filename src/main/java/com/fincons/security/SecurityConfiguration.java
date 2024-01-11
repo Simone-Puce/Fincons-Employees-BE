@@ -5,6 +5,7 @@ import com.fincons.auth.CustomAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 
@@ -38,6 +39,28 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http
                 .authorizeHttpRequests((authz) -> authz
+                        //Auth for App
+                        .requestMatchers(HttpMethod.GET,"/company-employee-management/v1/department/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST,"/company-employee-management/v1/department/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT,"/company-employee-management/v1/department/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE,"/company-employee-management/v1/department/**").hasRole("USER")
+
+                        .requestMatchers(HttpMethod.GET,"/company-employee-management/v1/employee/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST,"/company-employee-management/v1/employee/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT,"/company-employee-management/v1/employee/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE,"/company-employee-management/v1/employee/**").hasRole("USER")
+
+                        .requestMatchers(HttpMethod.GET,"/company-employee-management/v1/position/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST,"/company-employee-management/v1/position/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT,"/company-employee-management/v1/position/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE,"/company-employee-management/v1/position/**").hasRole("USER")
+
+                        .requestMatchers(HttpMethod.GET,"/company-employee-management/v1/project/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST,"/company-employee-management/v1/project/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT,"/company-employee-management/v1/project/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE,"/company-employee-management/v1/project/**").hasRole("USER")
+
+                        //Auth for Login/Reg
                         .requestMatchers("/company-employee-management/v1/email").permitAll()//
                         .requestMatchers("/company-employee-management/v1/session-value").permitAll()
                         .requestMatchers("/company-employee-management/v1/home").permitAll()

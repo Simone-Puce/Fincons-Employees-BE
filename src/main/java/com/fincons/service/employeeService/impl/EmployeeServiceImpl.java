@@ -62,8 +62,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResponseEntity<Object> getEmployeeByEmail(String email) {
+        Employee existingEmployee = validateEmployeeByEmail(email);
+        EmployeeDTO employeeDTO = employeeMapper.mapEmployee(existingEmployee);
 
-        return null;
+        return ResponseHandler.generateResponse(LocalDateTime.now(),
+                "Success: Found employee with email " + email + ".",
+                (HttpStatus.OK),
+                employeeDTO);
     }
 
     @Override
@@ -329,6 +334,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                     employee1.getEmail().equals(employee.getEmail()))  {
                 throw new IllegalArgumentException("Employee with the same name, last name, and birth date already exists, or email is already taken.");
             }
-        }
+        } //Manage in feature email
     }
 }
