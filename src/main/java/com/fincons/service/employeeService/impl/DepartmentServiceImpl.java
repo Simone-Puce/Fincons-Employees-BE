@@ -103,11 +103,12 @@ public class DepartmentServiceImpl implements DepartmentService {
         //Condition if there are departments with same name
         checkForDuplicateDepartment(department, departments);
 
+
         existingDepartment.setName(department.getName());
         existingDepartment.setAddress(department.getAddress());
         existingDepartment.setCity(department.getCity());
         departmentRepository.save(existingDepartment);
-        departmentDTO = departmentMapper.mapDepartment(department);
+        departmentDTO = departmentMapper.mapDepartmentWithoutEmployee(department);
 
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Department with ID "+ id +" has been successfully updated!",

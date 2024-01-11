@@ -9,6 +9,7 @@ import java.util.Set;
 
 public class EmployeeDTO {
 
+    private Long id;
     private String firstName;
     private String lastName;
     private String gender;
@@ -21,7 +22,8 @@ public class EmployeeDTO {
     private Set<Project> projects;
 
 
-    public EmployeeDTO(String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects) {
+    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -35,7 +37,8 @@ public class EmployeeDTO {
     }
 
 
-    public EmployeeDTO(String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate) {
+    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -43,6 +46,13 @@ public class EmployeeDTO {
         this.birthDate = birthDate;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {

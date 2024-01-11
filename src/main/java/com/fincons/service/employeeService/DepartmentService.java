@@ -13,7 +13,6 @@ public interface DepartmentService {
     ResponseEntity<Object> createDepartment(Department department);
     ResponseEntity<Object> updateDepartmentById(long id, Department department);
     ResponseEntity<Object> deleteDepartmentById(long id);
-
     ResponseEntity<Object> getDepartmentEmployeesFindByIdDepartment(long id);
 
 

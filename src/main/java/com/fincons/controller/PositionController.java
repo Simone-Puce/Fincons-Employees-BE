@@ -14,7 +14,7 @@ public class PositionController {
     @Autowired
     PositionService positionService;
 
-    @GetMapping(value = "/find")
+    @GetMapping(value = "/find-by-id")
     public ResponseEntity<Object> getPositionById(@RequestParam long id){
         return positionService.getPositionById(id);
     }

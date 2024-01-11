@@ -65,7 +65,7 @@ public class DepartmentServiceTest {
         when(departmentRepository.findById(departmentId)).thenReturn(existingDepartment);
 
         // Configures the behavior of the spy for the mapper
-        DepartmentDTO departmentDTO = new DepartmentDTO(existingDepartment.getName(), existingDepartment.getAddress(), existingDepartment.getCity());
+        DepartmentDTO departmentDTO = new DepartmentDTO(existingDepartment.getId(),existingDepartment.getName(), existingDepartment.getAddress(), existingDepartment.getCity());
 
         // Finally run the method from service and save response
         ResponseEntity<Object> response = departmentService.getDepartmentById(departmentId);
@@ -88,8 +88,8 @@ public class DepartmentServiceTest {
 
         when(departmentRepository.findAll()).thenReturn(departments);
 
-        DepartmentDTO departmentDTO1 = new DepartmentDTO(department1.getName(), department1.getAddress(), department1.getCity());
-        DepartmentDTO departmentDTO2 = new DepartmentDTO(department2.getName(), department2.getAddress(), department2.getCity());
+        DepartmentDTO departmentDTO1 = new DepartmentDTO(department1.getId(), department1.getName(), department1.getAddress(), department1.getCity());
+        DepartmentDTO departmentDTO2 = new DepartmentDTO( department2.getId(), department2.getName(), department2.getAddress(), department2.getCity());
         System.out.println(departmentDTO1.getName() + departmentDTO1.getAddress() + departmentDTO1.getCity());
         //when(departmentMapper.mapDepartment(department1)).thenReturn(departmentDTO1);
         //when(departmentMapper.mapDepartment(department2)).thenReturn(departmentDTO2);

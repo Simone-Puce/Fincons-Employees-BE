@@ -20,7 +20,7 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
-    @GetMapping(value = "/find")
+    @GetMapping(value = "/find-by-id")
     public ResponseEntity<Object> getDepartmentById(@RequestParam long id){
         return departmentService.getDepartmentById(id);
     }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class PositionMapper {
     public PositionDTO mapPosition(Position position){
         return new PositionDTO(
+                position.getId(),
                 position.getName(),
                 position.getSalary());
     }

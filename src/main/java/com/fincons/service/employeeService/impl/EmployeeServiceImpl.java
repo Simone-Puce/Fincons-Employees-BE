@@ -123,7 +123,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         //Condition if there are employee with same firstName && lastName && birthDate
         checkForDuplicateEmployee(employee, employees);
 
-
         existingEmployee.setFirstName(employee.getFirstName());
         existingEmployee.setLastName(employee.getLastName());
         existingEmployee.setGender(employee.getGender());
@@ -328,11 +327,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private void checkForDuplicateEmployee(Employee employee, List<Employee> employees) {
         for (Employee employee1 : employees) {
-            if ((employee1.getFirstName().equals(employee.getFirstName()) &&
-                    employee1.getLastName().equals(employee.getLastName()) &&
-                    Objects.equals(employee1.getBirthDate(), employee.getBirthDate())) ||
-                    employee1.getEmail().equals(employee.getEmail()))  {
-                throw new IllegalArgumentException("Employee with the same name, last name, and birth date already exists, or email is already taken.");
+            if (employee1.getEmail().equals(employee.getEmail()))  {
+                throw new IllegalArgumentException("Employee with this email is already taken.");
             }
         } //Manage in feature email
     }

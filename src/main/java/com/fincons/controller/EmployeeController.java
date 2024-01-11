@@ -19,11 +19,11 @@ public class EmployeeController {
     ProjectService projectService;
 
 
-    @GetMapping(value = "/find")
+    @GetMapping(value = "/find-by-id")
     public ResponseEntity<Object> getEmployeeById(@RequestParam long id){
         return employeeService.getEmployeeById(id);
     }
-    @GetMapping(value = "/find-by-mail")
+    @GetMapping(value = "/find-by-email")
     public ResponseEntity<Object> getDepartmentByEmail(@RequestParam String email){
         return employeeService.getEmployeeByEmail(email);
     }
