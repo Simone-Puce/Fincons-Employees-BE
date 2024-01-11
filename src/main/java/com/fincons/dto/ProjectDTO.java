@@ -7,23 +7,34 @@ import java.util.Set;
 
 public class ProjectDTO {
 
+    private Long id;
     private String name;
     private String area;
     private String priority;
     @JsonIgnore
     private Set<Employee> employees;
 
-    public ProjectDTO(String name, String area, String priority, Set<Employee> employees) {
+    public ProjectDTO(Long id, String name, String area, String priority, Set<Employee> employees) {
+        this.id = id;
         this.name = name;
         this.area = area;
         this.priority = priority;
         this.employees = employees;
     }
 
-    public ProjectDTO(String name, String area, String priority) {
+    public ProjectDTO(Long id, String name, String area, String priority) {
+        this.id = id;
         this.name = name;
         this.area = area;
         this.priority = priority;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class ProjectMapper {
     public ProjectDTO mapProject(Project project){
         return new ProjectDTO(
+                project.getId(),
                 project.getName(),
                 project.getArea(),
                 project.getPriority(),
@@ -16,6 +17,7 @@ public class ProjectMapper {
 
     public ProjectDTO mapProjectWithoutEmployees(Project project){
         return new ProjectDTO(
+                project.getId(),
                 project.getName(),
                 project.getArea(),
                 project.getPriority());

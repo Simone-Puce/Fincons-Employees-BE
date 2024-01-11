@@ -26,6 +26,7 @@ public class DepartmentMapper {
                 employeeDTOList.add(employeeMapper.mapEmployee(employee))
         );
         return new DepartmentDTO(
+                department.getId(),
                 department.getName(),
                 department.getAddress(),
                 department.getCity(),
@@ -33,6 +34,7 @@ public class DepartmentMapper {
     }
     public DepartmentDTO mapDepartmentWithoutEmployee(Department department){
         return new DepartmentDTO(
+                department.getId(),
                 department.getName(),
                 department.getAddress(),
                 department.getCity()

@@ -40,7 +40,7 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests((authz) -> authz
                         //Auth for App
-                        .requestMatchers(HttpMethod.GET,"/company-employee-management/v1/department/**").hasRole("USER")
+                        .requestMatchers("/company-employee-management/v1/department/**").hasRole("USER")
                         .requestMatchers(HttpMethod.POST,"/company-employee-management/v1/department/**").hasRole("USER")
                         .requestMatchers(HttpMethod.PUT,"/company-employee-management/v1/department/**").hasRole("USER")
                         .requestMatchers(HttpMethod.DELETE,"/company-employee-management/v1/department/**").hasRole("USER")

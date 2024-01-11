@@ -13,7 +13,7 @@ public class ProjectController {
     @Autowired
     ProjectService projectService;
 
-    @GetMapping(value = "/find")
+    @GetMapping(value = "/find-by-id")
     public ResponseEntity<Object> getProjectById(@RequestParam long id){
         return projectService.getProjectById(id);
     }

@@ -5,19 +5,22 @@ import com.fincons.entity.Employee;
 import java.util.List;
 
 public class DepartmentDTO {
+    private Long id;
     private String name;
     private String address;
     private String city;
     private List<EmployeeDTO> employees;
 
-    public DepartmentDTO(String name, String address, String city, List<EmployeeDTO> employees) {
+    public DepartmentDTO(Long id, String name, String address, String city, List<EmployeeDTO> employees) {
+        this.id = id;
         this.name = name;
         this.address = address;
         this.city = city;
         this.employees = employees;
     }
 
-    public DepartmentDTO(String name, String address, String city) {
+    public DepartmentDTO(Long id, String name, String address, String city) {
+        this.id = id;
         this.name = name;
         this.address = address;
         this.city = city;
@@ -25,6 +28,14 @@ public class DepartmentDTO {
 
     public DepartmentDTO() {
 
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
