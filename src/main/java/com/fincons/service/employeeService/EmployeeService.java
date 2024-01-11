@@ -12,11 +12,11 @@ import java.util.List;
 public interface EmployeeService {
 
     ResponseEntity<Object> getEmployeeById(long id);
+    ResponseEntity<Object> getEmployeeByEmail(String email);
     ResponseEntity<Object> getAllEmployees();
     ResponseEntity<Object> createEmployee(Employee employee);
     ResponseEntity<Object> updateEmployeeById(long id, Employee employee);
     ResponseEntity<Object> deleteEmployeeById(long id);
-
     ResponseEntity<Object> findAllEmployeeProjects(long id);
     ResponseEntity<Object> getAllEmployeeProject();
     ResponseEntity<Object> addEmployeeProject(long idEmployee, long idProject);

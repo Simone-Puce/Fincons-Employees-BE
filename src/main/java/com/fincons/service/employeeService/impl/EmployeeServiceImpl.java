@@ -61,6 +61,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public ResponseEntity<Object> getEmployeeByEmail(String email) {
+
+        return null;
+    }
+
+    @Override
     public ResponseEntity<Object> getAllEmployees() {
         List<Employee> employees = employeeRepository.findAll();
         List<EmployeeDTO> newListEmployee = new ArrayList<>();
@@ -288,6 +294,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         if (existingEmployee == null){
             throw new ResourceNotFoundException("Employee with ID: " + id + " not found.");
+        }
+        return existingEmployee;
+    }
+    private Employee validateEmployeeByEmail(String email){
+        Employee existingEmployee = employeeRepository.findByEmail(email);
+
+        if (existingEmployee == null){
+            throw new ResourceNotFoundException("Employee with Email: " + email + " not found.");
         }
         return existingEmployee;
     }

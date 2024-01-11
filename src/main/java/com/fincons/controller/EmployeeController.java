@@ -23,6 +23,10 @@ public class EmployeeController {
     public ResponseEntity<Object> getEmployeeById(@RequestParam long id){
         return employeeService.getEmployeeById(id);
     }
+    @GetMapping(value = "/find-by-mail")
+    public ResponseEntity<Object> getDepartmentByEmail(@RequestParam String email){
+        return employeeService.getEmployeeByEmail(email);
+    }
     @GetMapping(value="/list")
     public ResponseEntity<Object> getAllEmployees(){
         return employeeService.getAllEmployees();
