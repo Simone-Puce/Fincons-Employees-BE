@@ -20,6 +20,7 @@ public class EmailBirthDate implements IEmailBirthDate {
     public static final Predicate<Employee> emailCorrectFormat = employee -> employee.getEmail().matches("^[a-zA-Z]+\\.[a-zA-Z]+@gmail\\.com$");
     public static final String EMAIL_SUBJECT_BIRTHDATE = "Happy Birthdate!";
     public static final String EMAIL_CONTENT_BIRTHDATE = "We wish you a fantastic birthday full of joy!";
+    private static final String EMAIL_SUBCONTENT_HIREDATE = "You are a shining example of how hard work can lead to meaningful results. We would like to wish you a happy anniversary in our company!";
     private static final String IMG_BIRTHDATE = "images/happyBirthday.png";
 
     @Autowired
@@ -42,6 +43,7 @@ public class EmailBirthDate implements IEmailBirthDate {
         emailContent.put("name", employee.getFirstName());
         emailContent.put("lastName", employee.getLastName());
         emailContent.put("personalizedText", EMAIL_CONTENT_BIRTHDATE);
+        emailContent.put("personalizedTextSub", EMAIL_SUBCONTENT_HIREDATE);
         String htmlContent = emailContentBuilder.buildEmailContent(emailContent);
         emailSend.sendEmail(employee.getEmail(), EMAIL_SUBJECT_BIRTHDATE, htmlContent, IMG_BIRTHDATE);
         logger.info("Email sent to {}", employee.getFirstName());

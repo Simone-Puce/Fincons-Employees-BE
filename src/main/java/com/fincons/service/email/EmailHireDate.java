@@ -21,6 +21,7 @@ public class EmailHireDate implements IEmailHireDate {
     private final Predicate<Employee> emailCorrectFormat = employee -> employee.getEmail().matches("^[a-zA-Z]+\\.[a-zA-Z]+@gmail\\.com$");
     private static final String EMAIL_SUBJECT_HIREDATE = "Happy Anniversary!";
     private static final String EMAIL_CONTENT_HIREDATE = "Congratulations on joining our team!";
+    private static final String EMAIL_SUBCONTENT_HIREDATE = "You are a shining example of how hard work can lead to meaningful results. We would like to wish you a happy anniversary in our company!";
     private static final String IMG_HIREDATE = "images/happyAnniversary.png";
 
     @Autowired
@@ -43,6 +44,7 @@ public class EmailHireDate implements IEmailHireDate {
         emailContent.put("name", employee.getFirstName());
         emailContent.put("lastName", employee.getLastName());
         emailContent.put("personalizedText", EMAIL_CONTENT_HIREDATE);
+        emailContent.put("personalizedTextSub", EMAIL_SUBCONTENT_HIREDATE);
         String htmlContent = emailContentBuilder.buildEmailContent(emailContent);
         emailSend.sendEmail(employee.getEmail(), EMAIL_SUBJECT_HIREDATE, htmlContent, IMG_HIREDATE);
         logger.info("Email sent to {}", employee.getFirstName());
