@@ -7,10 +7,10 @@ import com.fincons.entity.User;
 import com.fincons.exception.DuplicateEmailException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import com.fincons.repository.RoleRepository;
 import com.fincons.repository.UserRepository;
 import com.fincons.utility.EmailValidator;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
