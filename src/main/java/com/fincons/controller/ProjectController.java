@@ -27,7 +27,7 @@ public class ProjectController {
         return projectService.createProject(project);
     }
     @PutMapping(value = "/update")
-    public ResponseEntity<Object> updateProjectById(@RequestParam long id, @RequestBody Project project){
+    public ResponseEntity<Object> updateProjectById(@RequestParam long id, @RequestBody Project project) throws Exception {
         return projectService.updateProjectById(id, project);
     }
     @DeleteMapping(value = "/delete")

@@ -2,6 +2,7 @@ package com.fincons.service.employeeService.impl;
 
 import com.fincons.Handler.ResponseHandler;
 import com.fincons.dto.ProjectDTO;
+import com.fincons.entity.Department;
 import com.fincons.entity.Project;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
@@ -74,7 +75,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<Object> updateProjectById(long id, Project project) {
+    public ResponseEntity<Object> updateProjectById(long id, Project project) throws Exception {
         
 
         //Condition for not have null attributes
@@ -85,12 +86,30 @@ public class ProjectServiceImpl implements ProjectService {
         Project existingProject = validateProjectById(id);
 
         List<Project> projects = projectRepository.findAll();
-        //Condition if there are projects with sane names
-        checkForDuplicateProject(project, projects);
 
+        existingProject.setId(id);
         existingProject.setName(project.getName());
         existingProject.setArea(project.getArea());
         existingProject.setPriority(project.getPriority());
+
+        List<Project> projectstWithoutDepartmentIdChosed = new ArrayList<>();
+
+        for ( Project p : projects ) {
+            if(p.getId() != id){
+                projectstWithoutDepartmentIdChosed.add(p);
+            }
+        }
+
+        for (Project p : projectstWithoutDepartmentIdChosed ) {
+            if(p.getName().equals(existingProject.getName())
+            ){
+                throw new Exception("The project existing yet");
+            }else{
+                projectRepository.save(existingProject);
+            }
+        }
+
+
         projectRepository.save(existingProject);
                 
         projectDTO = projectMapper.mapProjectWithoutEmployees(project);
