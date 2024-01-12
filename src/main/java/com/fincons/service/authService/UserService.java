@@ -1,4 +1,4 @@
-package com.fincons.service;
+package com.fincons.service.authService;
 
 import com.fincons.dto.UserDTO;
 
