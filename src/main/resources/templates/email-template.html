@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="">
+
+<head>
+    <title>Email Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            margin-top: 2%;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            padding: 1rem;
+            width: 60%;
+            height: 20%;
+            display: flex;
+            flex-direction: column;
+            border-radius: 1.5rem;
+            background-color: rgb(252, 110, 44);
+        }
+        .card {
+            background-color: rgb(255, 255, 255);
+            border-radius: 1.25rem;
+            padding: inherit;
+            width: 100%
+        }
+        .subContainer {
+            display: flex;
+            text-align: center;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        img {
+            width: 60%;
+            display: flex;
+            justify-content: center;
+            margin: 1em auto;
+        }
+        .logo {
+            max-width: 19%;
+            margin: 0;
+        }
+        .text {
+            margin: 0%;
+            font-size: 2em;
+            font-family: 'Times New Roman', Times, serif;
+            margin-right: 0.3em;
+            text-align: center;
+        }
+        .personContainer {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="card">
+        <img th:src="'cid:img'" alt="Image">
+        <div class="personContainer">
+            <h1 class="text" th:disabled="${name == null}" th:text="${name}"></h1>
+            <h1 class="text" th:disabled="${lastName == null}" th:text="${lastName}"></h1>
+        </div>
+        <div>
+            <h2 class="text" th:text="${personalizedTextSub}"></h2>
+        </div>
+        <img th:src="'cid:logo'" class="logo" alt="Logo Fincons Group">
+    </div>
+</div>
+</body>
+
+</html>

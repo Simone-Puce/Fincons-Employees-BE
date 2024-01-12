@@ -33,10 +33,8 @@ public class Employee {
     private String email;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "birth_date"/*, nullable = false,*/)
+    @Column(name = "birth_date")
     private LocalDate birthDate;
-
-    //@DateTimeFormat(pattern = "dd-MM-yyyy") Questo è comunicante con il front-end non con il database
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "start_date")
@@ -47,8 +45,8 @@ public class Employee {
     private LocalDate endDate;
     @ManyToOne
     @JsonBackReference(value = "department-employee")
-    @JoinColumn(name = "id_department") //Questa è la foreign key che verrà collegata con l'id di project, è la foreign key
-    private Department department;      //questo "project"
+    @JoinColumn(name = "id_department")
+    private Department department;
 
     @ManyToOne
     @JsonBackReference(value = "position-employee")
