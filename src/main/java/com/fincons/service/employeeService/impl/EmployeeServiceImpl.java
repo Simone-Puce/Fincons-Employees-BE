@@ -120,7 +120,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee existingEmployee = validateEmployeeById(id);
 
         List<Employee> employees = employeeRepository.findAll();
-        //Condition if there are employee with same firstName && lastName && birthDate
+        //Condition if there are employee with same email
         checkForDuplicateEmployee(employee, employees);
 
         existingEmployee.setFirstName(employee.getFirstName());
@@ -181,7 +181,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public ResponseEntity<Object> getAllEmployeeProject() {
         List<EmployeeProjectDTO> employeeProject = employeeRepository.getAllEmployeeProject();
         if (employeeProject.isEmpty()) {
-            throw new IllegalArgumentException("The table is empty.");
+            throw new IllegalArgumentException("There aren't employees work on projects.");
         }
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Found "+ employeeProject.size() + " relationship in the search.",
