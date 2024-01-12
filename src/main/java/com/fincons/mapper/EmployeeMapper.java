@@ -1,26 +1,35 @@
 package com.fincons.mapper;
 
+import com.fincons.dto.EmployeeDTO;
 import com.fincons.entity.Employee;
-import com.fincons.dto.EmployeeDto;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class EmployeeMapper {
-
-    public Employee mapEmployeeDtoToEmployee(EmployeeDto employeeDto) {
-        return new Employee(employeeDto.getFirstName(), employeeDto.getLastName(), employeeDto.getEmail(), employeeDto.getImg(), employeeDto.getBirthDate(), employeeDto.getHireDate());
+    public EmployeeDTO mapEmployee(Employee employee){
+        return new EmployeeDTO(
+                employee.getId(),
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getGender(),
+                employee.getEmail(),
+                employee.getBirthDate(),
+                employee.getStartDate(),
+                employee.getEndDate(),
+                employee.getDepartment(),
+                employee.getPosition(),
+                employee.getProjects());
+    }
+    public EmployeeDTO mapEmployeeTest(Employee employee){
+        return new EmployeeDTO(
+                employee.getId(),
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getGender(),
+                employee.getEmail(),
+                employee.getBirthDate(),
+                employee.getStartDate(),
+                employee.getEndDate());
     }
 
-    public EmployeeDto mapEmployeeToEmployeeDto(Employee employee) {
-        return new EmployeeDto(employee.getId(), employee.getFirstName(), employee.getLastName(), employee.getEmail(), employee.getImg(), employee.getBirthDate(), employee.getHireDate());
-    }
-
-    public List<EmployeeDto> mapEmployeeListToEmployeeDtoList(List<Employee> employeeList) {
-        return employeeList.stream()
-                .map(this::mapEmployeeToEmployeeDto)
-                .collect(Collectors.toList());
-    }
 }

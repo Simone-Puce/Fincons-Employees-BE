@@ -1,79 +1,28 @@
-package com.fincons.entity;
+package com.fincons.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import com.fincons.entity.Department;
+import com.fincons.entity.Position;
+import com.fincons.entity.Project;
 
 import java.time.LocalDate;
 import java.util.Set;
 
-@Entity
-@Table(name = "employee")
+public class EmployeeDTO {
 
-public class Employee {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-
-    @Column(name = "first_name")
     private String firstName;
-
-    @Column(name = "last_name")
     private String lastName;
-
-    //@NotNull
-    @Column(name = "gender")
     private String gender;
-
-    @Column(name="email")
-    private String email;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "birth_date"/*, nullable = false,*/)
     private LocalDate birthDate;
-
-    //@DateTimeFormat(pattern = "dd-MM-yyyy") Questo è comunicante con il front-end non con il database
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "start_date")
+    private String email;
     private LocalDate startDate;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "end_date")
     private LocalDate endDate;
-    @ManyToOne
-    @JsonBackReference(value = "department-employee")
-    @JoinColumn(name = "id_department") //Questa è la foreign key che verrà collegata con l'id di project, è la foreign key
-    private Department department;      //questo "project"
-
-    @ManyToOne
-    @JsonBackReference(value = "position-employee")
-    @JoinColumn(name = "id_position")
+    private Department department;
     private Position position;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JsonManagedReference(value= "employee-project")
-    @JsonIgnore
-    @JoinTable(name = "employee_project",
-            joinColumns = {
-                @JoinColumn(name = "id_employee", referencedColumnName = "id")
-            },
-            inverseJoinColumns = {
-                @JoinColumn(name = "id_project", referencedColumnName = "id")
-            }
-    )
-
-    private Set<Project> projects; //Lui punta alla tabella project
+    private Set<Project> projects;
 
 
-    public Employee() {
-    }
-
-    public Employee(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects) {
+    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -87,10 +36,21 @@ public class Employee {
         this.projects = projects;
     }
 
+
+    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.email = email;
+        this.birthDate = birthDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -122,11 +82,9 @@ public class Employee {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
-
     public LocalDate getBirthDate() {
         return birthDate;
     }
@@ -174,6 +132,4 @@ public class Employee {
     public void setProjects(Set<Project> projects) {
         this.projects = projects;
     }
-
-
 }
