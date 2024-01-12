@@ -1,6 +1,6 @@
 package com.fincons.service.email;
 
-public interface IEmailHireDate {
+public interface IEmailStartDate {
 
     void sendAnniversaryGreetings() throws IllegalArgumentException;
 }

@@ -1,4 +1,4 @@
-package com.fincons.service.employee;
+package com.fincons.service.employeeService;
 
 public interface ICreateNewEmployeeRandom {
 

@@ -1,8 +1,8 @@
 package com.fincons.jobscheduler;
 
 import com.fincons.service.email.IEmailBirthDate;
-import com.fincons.service.email.IEmailHireDate;
-import com.fincons.service.employee.ICreateNewEmployeeRandom;
+import com.fincons.service.email.IEmailStartDate;
+import com.fincons.service.employeeService.ICreateNewEmployeeRandom;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class JobScheduler {
     Logger logger = LoggerFactory.getLogger(JobScheduler.class);
 
     @Autowired
-    private IEmailHireDate iEmailHireDate;
+    private IEmailStartDate iEmailStartDate;
     @Autowired
     private IEmailBirthDate iEmailBirtheDate;
     @Autowired
@@ -43,7 +43,7 @@ public class JobScheduler {
     @Retryable(retryFor = IllegalArgumentException.class, maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.maxDelay}"))
     public void emailSenderHire() throws IllegalArgumentException {
         logger.info("Looking for Anniversaries...");
-        iEmailHireDate.sendAnniversaryGreetings();
+        iEmailStartDate.sendAnniversaryGreetings();
         logger.info("All emails were sent to {} ", LocalDate.now());
     }
 

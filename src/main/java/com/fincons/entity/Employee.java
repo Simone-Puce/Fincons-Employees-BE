@@ -32,17 +32,15 @@ public class Employee {
     @Column(name="email")
     private String email;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "AAAA-MM-GG")
     @Column(name = "birth_date"/*, nullable = false,*/)
     private LocalDate birthDate;
 
-    //@DateTimeFormat(pattern = "dd-MM-yyyy") Questo è comunicante con il front-end non con il database
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "AAAA-MM-GG")
     @Column(name = "start_date")
     private LocalDate startDate;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "AAAA-MM-GG")
     @Column(name = "end_date")
     private LocalDate endDate;
     @ManyToOne

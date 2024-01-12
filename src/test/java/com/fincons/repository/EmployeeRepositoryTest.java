@@ -30,7 +30,7 @@ class EmployeeRepositoryTest {
     void testHireDate() {
         LocalDate hireDate = LocalDate.parse("1985-02-21");
 
-        List<Employee> emps = employeeRepository.findEmployeesByTodayHireDate(hireDate);
+        List<Employee> emps = employeeRepository.findEmployeesByTodayStartDate(hireDate);
         System.out.println(emps);
         assertThat(emps).hasSize(1);
     }
@@ -39,9 +39,9 @@ class EmployeeRepositoryTest {
     void testEmptyList() {
         LocalDate hireDate = LocalDate.parse("2004-02-20");
 
-        List<Employee> emps = employeeRepository.findEmployeesByTodayHireDate(hireDate);
+        List<Employee> emps = employeeRepository.findEmployeesByTodayStartDate(hireDate);
         System.out.println(emps);
-        assertThat(emps).hasSize(0);
+        assertThat(emps).isEmpty();
     }
 
     @Test
@@ -54,7 +54,7 @@ class EmployeeRepositoryTest {
         long totalEmployees = 0;
 
         for (LocalDate date = startOfYear; !date.isAfter(endOfYear); date = date.plusDays(1)) {
-            int employeesCount = employeeRepository.findEmployeesByTodayHireDate(date).size();
+            int employeesCount = employeeRepository.findEmployeesByTodayStartDate(date).size();
             totalEmployees += employeesCount;
         }
 

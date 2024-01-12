@@ -1,44 +1,56 @@
 package com.fincons.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fincons.entity.Department;
+import com.fincons.entity.Position;
+import com.fincons.entity.Project;
 
 import java.time.LocalDate;
+import java.util.Set;
 
-public class EmployeeDto {
+public class EmployeeDTO {
 
     private Long id;
-
     private String firstName;
-
     private String lastName;
-
-    private String email;
-
-    private String img;
-
+    private String gender;
     private LocalDate birthDate;
+    private String email;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private Department department;
+    private Position position;
+    private Set<Project> projects;
 
-    private LocalDate hireDate;
 
-    @JsonCreator
-    public EmployeeDto(@JsonProperty("id") Long id, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("email") String email, @JsonProperty("img") String img, @JsonProperty("birthDate") LocalDate birthDate, @JsonProperty("hireDate") LocalDate hireDate) {
+    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.gender = gender;
         this.email = email;
-        this.img = img;
         this.birthDate = birthDate;
-        this.hireDate = hireDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.department = department;
+        this.position = position;
+        this.projects = projects;
     }
 
-    public EmployeeDto() {
+
+    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.email = email;
+        this.birthDate = birthDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -59,22 +71,20 @@ public class EmployeeDto {
         this.lastName = lastName;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
-
     public LocalDate getBirthDate() {
         return birthDate;
     }
@@ -83,11 +93,43 @@ public class EmployeeDto {
         this.birthDate = birthDate;
     }
 
-    public LocalDate getHireDate() {
-        return hireDate;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setHireDate(LocalDate hireDate) {
-        this.hireDate = hireDate;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public Set<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(Set<Project> projects) {
+        this.projects = projects;
     }
 }

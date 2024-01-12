@@ -1,8 +1,10 @@
 package com.fincons.utility;
 
+import com.fincons.service.employeeService.DepartmentService;
 import com.github.javafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
@@ -10,10 +12,14 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Random;
 
 @Component
 public class DateHelper {
     Faker faker = new Faker();
+    Random random = new Random();
+    @Autowired
+    private DepartmentService departmentService;
 
     Logger logger = LoggerFactory.getLogger(DateHelper.class);
 
@@ -33,31 +39,42 @@ public class DateHelper {
         return dateToConvert.plusYears(18L);
     }
 
-    public LocalDate createHireDay(LocalDate birtHDate) {
+    public LocalDate createStartDay(LocalDate birtHDate) {
         Date hireDate = faker.date().between(
                 convertToDateViaInstant(convertTo18(birtHDate)),
                 new Date(System.currentTimeMillis()));
 
-        LocalDate hireDay = convertToLocalDateViaInstant(hireDate);
+        LocalDate startDay = convertToLocalDateViaInstant(hireDate);
 
-        boolean weekEnd = hireDay.getDayOfWeek() == DayOfWeek.SATURDAY ||
-                hireDay.getDayOfWeek() == DayOfWeek.SUNDAY;
+        boolean weekEnd = startDay.getDayOfWeek() == DayOfWeek.SATURDAY ||
+                startDay.getDayOfWeek() == DayOfWeek.SUNDAY;
         boolean holiday =
-                hireDay.getMonth() == Month.JANUARY && hireDay.getDayOfMonth() == 1 ||
-                        hireDay.getMonth() == Month.JANUARY && hireDay.getDayOfMonth() == 6 ||
-                        hireDay.getMonth() == Month.MAY && hireDay.getDayOfMonth() == 1 ||
-                        hireDay.getMonth() == Month.JUNE && hireDay.getDayOfMonth() == 2 ||
-                        hireDay.getMonth() == Month.AUGUST && hireDay.getDayOfMonth() == 15 ||
-                        hireDay.getMonth() == Month.NOVEMBER && hireDay.getDayOfMonth() == 1 ||
-                        hireDay.getMonth() == Month.DECEMBER && hireDay.getDayOfMonth() == 8 ||
-                        hireDay.getMonth() == Month.DECEMBER && hireDay.getDayOfMonth() == 24 ||
-                        hireDay.getMonth() == Month.DECEMBER && hireDay.getDayOfMonth() == 25 ||
-                        hireDay.getMonth() == Month.DECEMBER && hireDay.getDayOfMonth() == 26;
+                startDay.getMonth() == Month.JANUARY && startDay.getDayOfMonth() == 1 ||
+                        startDay.getMonth() == Month.JANUARY && startDay.getDayOfMonth() == 6 ||
+                        startDay.getMonth() == Month.MAY && startDay.getDayOfMonth() == 1 ||
+                        startDay.getMonth() == Month.JUNE && startDay.getDayOfMonth() == 2 ||
+                        startDay.getMonth() == Month.AUGUST && startDay.getDayOfMonth() == 15 ||
+                        startDay.getMonth() == Month.NOVEMBER && startDay.getDayOfMonth() == 1 ||
+                        startDay.getMonth() == Month.DECEMBER && startDay.getDayOfMonth() == 8 ||
+                        startDay.getMonth() == Month.DECEMBER && startDay.getDayOfMonth() == 24 ||
+                        startDay.getMonth() == Month.DECEMBER && startDay.getDayOfMonth() == 25 ||
+                        startDay.getMonth() == Month.DECEMBER && startDay.getDayOfMonth() == 26;
 
         if (weekEnd || holiday) {
-            logger.error("Found day between Saturday and Sunday: {} {} ", hireDay, hireDay.getDayOfWeek().name());
-            hireDay = hireDay.plusDays(3);
+            logger.error("Found day between Saturday and Sunday: {} {} ", startDay, startDay.getDayOfWeek().name());
+            startDay = startDay.plusDays(3);
         }
-        return hireDay;
+        return startDay;
+    }
+
+    public String getRandomGender() {
+        int randomInt = random.nextInt(2);
+        String gender;
+        if (randomInt == 0) {
+            gender = "male";
+        } else {
+            gender = "female";
+        }
+        return gender;
     }
 }

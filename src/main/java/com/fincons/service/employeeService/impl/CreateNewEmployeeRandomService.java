@@ -1,12 +1,19 @@
-package com.fincons.service.employee;
+package com.fincons.service.employeeService.impl;
 
 
+import com.fincons.entity.Department;
 import com.fincons.entity.Employee;
+import com.fincons.entity.Position;
+import com.fincons.service.employeeService.DepartmentService;
+import com.fincons.service.employeeService.ICreateNewEmployeeRandom;
+import com.fincons.service.employeeService.EmployeeService;
+import com.fincons.service.employeeService.PositionService;
 import com.fincons.utility.DateHelper;
 import com.github.javafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,7 +26,12 @@ import java.util.Random;
 public class CreateNewEmployeeRandomService implements ICreateNewEmployeeRandom {
 
     @Autowired
-    private IEmployeeService IEmployeeService;
+    private EmployeeService EmployeeService;
+    @Autowired
+    private DepartmentService departmentService;
+
+    @Autowired
+    private PositionService positionService;
 
     @Autowired
     private DateHelper dateHelper;
@@ -32,6 +44,11 @@ public class CreateNewEmployeeRandomService implements ICreateNewEmployeeRandom 
         Faker faker = new Faker(new Random());
         List<Employee> employeeList = new ArrayList<>();
 
+        Department department = new Department();
+        department.setId(1L);
+        Position position = new Position();
+        position.setId(1L);
+
         for (int i = 0; i < nEmployee; i++) {
             String name = faker.name().firstName();
             String surname = faker.name().lastName();
@@ -41,18 +58,26 @@ public class CreateNewEmployeeRandomService implements ICreateNewEmployeeRandom 
             Date dateBirth = faker.date().birthday();
             LocalDate birthDay = dateHelper.convertToLocalDateViaInstant(dateBirth);
             logger.info("Birthday Date: {}", birthDay);
-            LocalDate hireDay = dateHelper.createHireDay(birthDay);
-            logger.info("Assumption date: {} {}", hireDay, hireDay.getDayOfWeek().name());
+            LocalDate startDay = dateHelper.createStartDay(birthDay);
+            logger.info("Assumption date: {} {}", startDay, startDay.getDayOfWeek().name());
+            LocalDate endDay = startDay.plusYears(40);
+            String gender = dateHelper.getRandomGender();
+
+
 
             Employee emp = new Employee();
             emp.setFirstName(name);
             emp.setLastName(surname);
             emp.setEmail(newEmail.toLowerCase());
             emp.setBirthDate(birthDay);
-            emp.setHireDate(hireDay);
+            emp.setStartDate(startDay);
+            emp.setGender(gender);
+            emp.setEndDate(endDay);
+            emp.setDepartment(department);
+            emp.setPosition(position);
 
             employeeList.add(emp);
-            IEmployeeService.createEmployee(emp);
+            EmployeeService.createEmployee(emp);
         }
         logger.info("They were saved: {} Employee", employeeList.size());
     }

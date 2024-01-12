@@ -14,9 +14,9 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @Component
-public class EmailHireDate implements IEmailHireDate {
+public class EmailStartDate implements IEmailStartDate {
 
-    Logger logger = LoggerFactory.getLogger(EmailHireDate.class);
+    Logger logger = LoggerFactory.getLogger(EmailStartDate.class);
     private final Predicate<Employee> emailNotEmpty = employee -> !employee.getEmail().isEmpty();
     private final Predicate<Employee> emailCorrectFormat = employee -> employee.getEmail().matches("^[a-zA-Z]+\\.[a-zA-Z]+@gmail\\.com$");
     private static final String EMAIL_SUBJECT_HIREDATE = "Happy Anniversary!";
@@ -33,7 +33,7 @@ public class EmailHireDate implements IEmailHireDate {
 
     @Override
     public void sendAnniversaryGreetings() throws IllegalArgumentException{
-        employeeRepository.findEmployeesByTodayHireDate(LocalDate.now()).stream()
+        employeeRepository.findEmployeesByTodayStartDate(LocalDate.now()).stream()
                 .filter(emailNotEmpty)
                 .filter(emailCorrectFormat)
                 .forEach(getEmployeeConsumer);
