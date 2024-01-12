@@ -4,6 +4,7 @@ import com.fincons.Handler.ResponseHandler;
 import com.fincons.dto.DepartmentDTO;
 import com.fincons.entity.Department;
 import com.fincons.dto.EmployeeDepartmentDTO;
+import com.fincons.exception.DuplicateEmailException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.DepartmentMapper;
@@ -29,9 +30,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Autowired
     private DepartmentMapper departmentMapper;
 
-    public DepartmentServiceImpl(DepartmentRepository departmentRepository) {
-        this.departmentRepository = departmentRepository;
-    }
+
     @Autowired
     public DepartmentServiceImpl(DepartmentRepository departmentRepository, DepartmentMapper departmentMapper) {
         this.departmentRepository = departmentRepository;
@@ -89,7 +88,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 
     @Override
-    public ResponseEntity<Object> updateDepartmentById(long id, Department department) {
+    public ResponseEntity<Object> updateDepartmentById(long id, Department department) throws Exception {
 
 
         //Condition for not have null attributes
@@ -100,14 +99,32 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department existingDepartment = validateDepartmentById(id);
         
         List<Department> departments = departmentRepository.findAll();
-        //Condition if there are departments with same name
-        checkForDuplicateDepartment(department, departments);
 
 
+        existingDepartment.setId(id);
         existingDepartment.setName(department.getName());
         existingDepartment.setAddress(department.getAddress());
         existingDepartment.setCity(department.getCity());
-        departmentRepository.save(existingDepartment);
+
+        List<Department> departmentsWithoutDepartmentIdChosed = new ArrayList<>();
+
+        for ( Department d : departments ) {
+            if(d.getId() != id){
+                departmentsWithoutDepartmentIdChosed.add(d);
+            }
+        }
+
+        for (Department d : departmentsWithoutDepartmentIdChosed ) {
+            if(d.getName().equals(existingDepartment.getName()) &&
+                    d.getAddress().equals(existingDepartment.getAddress()) &&
+                    d.getCity().equals(existingDepartment.getCity())
+            ){
+                throw new Exception("The department existing yet");
+            }else{
+                departmentRepository.save(existingDepartment);
+            }
+        }
+
         departmentDTO = departmentMapper.mapDepartmentWithoutEmployee(department);
 
         return ResponseHandler.generateResponse(LocalDateTime.now(),

@@ -76,7 +76,7 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public ResponseEntity<Object> updatePositionById(long id, Position position) {
+    public ResponseEntity<Object> updatePositionById(long id, Position position) throws Exception {
 
         //Condition for not have null attributes
         validatePositionFields(position);
@@ -86,12 +86,31 @@ public class PositionServiceImpl implements PositionService {
         Position existingPosition = validatePositionById(id);
 
         List<Position> positions = positionRepository.findAll();
-        //Condition if there are positions with same name
-        checkForDuplicatePosition(position, positions);
 
+
+        existingPosition.setId(id);
         existingPosition.setName(position.getName());
         existingPosition.setSalary(position.getSalary());
-        positionRepository.save(existingPosition);
+
+
+        List<Position> positionsWithoutPositionIdChosed = new ArrayList<>();
+
+        for(Position p: positions){
+            if(p.getId() != id){
+                positionsWithoutPositionIdChosed.add(p);
+            }
+        }
+
+        for (Position p: positionsWithoutPositionIdChosed){
+            if(p.getName().equals(existingPosition.getName()) &&
+                    p.getSalary().equals(existingPosition.getSalary())
+            ){
+                throw new Exception("The position existing yet");
+            }
+            else {
+                positionRepository.save(existingPosition);
+            }
+        }
 
         positionDTO = positionMapper.mapPosition(position);
         return ResponseHandler.generateResponse(LocalDateTime.now(),

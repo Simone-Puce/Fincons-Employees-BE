@@ -15,7 +15,7 @@ public interface EmployeeService {
     ResponseEntity<Object> getEmployeeByEmail(String email);
     ResponseEntity<Object> getAllEmployees();
     ResponseEntity<Object> createEmployee(Employee employee);
-    ResponseEntity<Object> updateEmployeeById(long id, Employee employee);
+    ResponseEntity<Object> updateEmployeeById(long id, Employee employee) throws Exception;
     ResponseEntity<Object> deleteEmployeeById(long id);
     ResponseEntity<Object> findAllEmployeeProjects(long id);
     ResponseEntity<Object> getAllEmployeeProject();

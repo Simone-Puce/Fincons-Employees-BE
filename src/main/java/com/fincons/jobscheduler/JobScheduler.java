@@ -29,7 +29,8 @@ public class JobScheduler {
     @Autowired
     private ICreateNewEmployeeRandom iCreateNewEmployeeRandom;
 
-    @Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderBirth}")
+
+    //@Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderBirth}")
     @SchedulerLock(name = "birthEmailScheduler", lockAtLeastFor = "PT1M", lockAtMostFor = "PT5M")
     @Retryable(retryFor = IllegalArgumentException.class, maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.maxDelay}"))
     public void emailSenderBirth() throws IllegalArgumentException {
@@ -38,7 +39,8 @@ public class JobScheduler {
         logger.info("All emails were sent to {} ", LocalDate.now());
     }
 
-    @Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderHire}")
+
+    //@Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderHire}")
     @SchedulerLock(name = "hireEmailScheduler", lockAtLeastFor = "PT1M", lockAtMostFor = "PT5M")
     @Retryable(retryFor = IllegalArgumentException.class, maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.maxDelay}"))
     public void emailSenderHire() throws IllegalArgumentException {
@@ -47,7 +49,8 @@ public class JobScheduler {
         logger.info("All emails were sent to {} ", LocalDate.now());
     }
 
-    @Scheduled(cron = "${jobScheduler.JobScheduler.newRandomEmployee}")
+
+    //@Scheduled(cron = "${jobScheduler.JobScheduler.newRandomEmployee}")
     public void newEmployeeRandom() throws IllegalArgumentException {
         logger.info("Creating new employees...");
         iCreateNewEmployeeRandom.createNewRandomEmployee(5);

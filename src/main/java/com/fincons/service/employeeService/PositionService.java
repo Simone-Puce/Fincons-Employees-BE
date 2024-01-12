@@ -10,7 +10,7 @@ public interface PositionService {
     ResponseEntity<Object> getPositionById(long id);
     ResponseEntity<Object> getAllPositions();
     ResponseEntity<Object> createPosition(Position position);
-    ResponseEntity<Object> updatePositionById(long id, Position position);
+    ResponseEntity<Object> updatePositionById(long id, Position position) throws Exception;
     ResponseEntity<Object> deletePositionById(long id);
 
 }

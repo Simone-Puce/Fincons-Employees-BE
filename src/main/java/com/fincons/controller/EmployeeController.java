@@ -36,7 +36,7 @@ public class EmployeeController {
         return employeeService.createEmployee(employee);
     }
     @PutMapping(value = "/update")
-    public ResponseEntity<Object> updateEmployeeById(@RequestParam long id, @RequestBody Employee employee){
+    public ResponseEntity<Object> updateEmployeeById(@RequestParam long id, @RequestBody Employee employee) throws Exception {
         return employeeService.updateEmployeeById(id, employee);
     }
     @DeleteMapping(value = "/delete")
