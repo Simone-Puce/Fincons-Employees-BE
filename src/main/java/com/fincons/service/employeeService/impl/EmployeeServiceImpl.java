@@ -110,19 +110,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseEntity<Object> updateEmployeeById(long id, Employee employee) {
+    public ResponseEntity<Object> updateEmployeeById(long id, Employee employee) throws Exception {
 
         //Condition for not have null attributes
         validateEmployeeFields(employee);
 
         EmployeeDTO employeeDTO;
+
+
+        List<Employee> employees = employeeRepository.findAll();
+        //Condition if there are employee with same firstName && lastName && birthDate
+
+
         //Check if the specified ID exists
         Employee existingEmployee = validateEmployeeById(id);
 
-        List<Employee> employees = employeeRepository.findAll();
-        //Condition if there are employee with same email
-        checkForDuplicateEmployee(employee, employees);
 
+        existingEmployee.setId(id);
         existingEmployee.setFirstName(employee.getFirstName());
         existingEmployee.setLastName(employee.getLastName());
         existingEmployee.setGender(employee.getGender());
@@ -133,10 +137,24 @@ public class EmployeeServiceImpl implements EmployeeService {
         existingEmployee.setDepartment(employee.getDepartment());
         existingEmployee.setPosition(employee.getPosition());
 
-        employeeRepository.save(existingEmployee);
 
+
+        List<String> employeesWithoutEmployeeIdChosed = new ArrayList<>();
+
+        for(Employee e : employees){
+            if(e.getId() != id ){
+                employeesWithoutEmployeeIdChosed.add(e.getEmail());
+            }
+        }
+
+        for (String s : employeesWithoutEmployeeIdChosed) {
+            if(s.equals(existingEmployee.getEmail())){
+                throw new Exception("Email exist yet");
+            }else{
+                employeeRepository.save(existingEmployee);
+            }
+        }
         employeeDTO = employeeMapper.mapEmployee(employee);
-
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Employee with ID "+ id +" has been successfully updated!",
                 (HttpStatus.OK),
@@ -181,7 +199,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public ResponseEntity<Object> getAllEmployeeProject() {
         List<EmployeeProjectDTO> employeeProject = employeeRepository.getAllEmployeeProject();
         if (employeeProject.isEmpty()) {
-            throw new IllegalArgumentException("There aren't employees work on projects.");
+            throw new IllegalArgumentException("The table is empty.");
         }
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Found "+ employeeProject.size() + " relationship in the search.",
@@ -270,7 +288,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         );
     }
 
-    // Metodo per la mappatura dell'Employee a EmployeeProjectDTO
+
     private EmployeeProjectDTO mapEmployeeToDTO(EmployeeProjectDTO targetDTO) {
         return new EmployeeProjectDTO(targetDTO.getIdEmployee(), targetDTO.getIdProject());
     }

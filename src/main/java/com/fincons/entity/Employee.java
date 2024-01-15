@@ -32,6 +32,7 @@ public class Employee {
     @Column(name="email")
     private String email;
 
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "birth_date")
     private LocalDate birthDate;
