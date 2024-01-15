@@ -1,5 +1,6 @@
 package com.fincons.entities;
 
+
 import jakarta.persistence.*;
 
 
@@ -25,20 +26,20 @@ public class File {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
-    private Employee employee;
+    private Employee empId;
 
 
     public File() {}
 
 
-    public File( String file64, String name, String extension, String description, Employee employee) {
+    public File( String file64, String name, String extension, String description, Employee empId) {
         this.file64 = file64;
         this.name = name;
         this.extension = extension;
         this.description = description;
-        this.employee = employee;
+        this.empId = empId;
     }
 
     public Long getId() {
@@ -81,12 +82,12 @@ public class File {
         this.description = description;
     }
 
-    public Employee getEmployee() {
-        return employee;
+    public Employee getEmpId() {
+        return empId;
     }
 
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
+    public void setEmpId(Employee empId) {
+        this.empId = empId;
     }
 }
 

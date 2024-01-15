@@ -16,7 +16,7 @@ public class FileMapper {
         file.setExtension(fileDto.getExtension());
         file.setDescription(fileDto.getDescription());
         file.setFile64(fileDto.getFile64());
-        file.setEmployee(fileDto.getEmployeeId());
+        file.setEmpId(fileDto.getEmployeeId());
         return file;
     }
 
@@ -26,7 +26,7 @@ public class FileMapper {
         fileDTO.setExtension(file.getExtension());
         fileDTO.setDescription(file.getDescription());
         fileDTO.setFile64(file.getFile64());
-        fileDTO.setEmployeeId(file.getEmployee());
+        //fileDTO.setEmployeeId(file.getEmpId());  //without mapping the Employee Object for the empId, it works
         return fileDTO;
     }
 

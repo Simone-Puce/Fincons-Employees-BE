@@ -20,7 +20,7 @@ public class Employee {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "empId", cascade = CascadeType.ALL)
     private List<File> fileList;
 
 
