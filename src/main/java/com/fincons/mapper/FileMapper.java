@@ -1,7 +1,7 @@
-package com.fincons.mappers;
+package com.fincons.mapper;
 
-import com.fincons.entities.File;
-import com.fincons.models.FileDTO;
+import com.fincons.entity.File;
+import com.fincons.dto.FileDTO;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +26,7 @@ public class FileMapper {
         fileDTO.setExtension(file.getExtension());
         fileDTO.setDescription(file.getDescription());
         fileDTO.setFile64(file.getFile64());
-        //fileDTO.setEmployeeId(file.getEmpId());  //without mapping the Employee Object for the empId, it works
+        fileDTO.setEmployeeId(file.getEmpId());  //without mapping the Employee Object for the empId, it works
         return fileDTO;
     }
 

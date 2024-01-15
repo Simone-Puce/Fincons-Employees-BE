@@ -1,7 +1,7 @@
-package com.fincons.services;
+package com.fincons.service.fileService;
 
-import com.fincons.entities.File;
-import com.fincons.models.FileDTO;
+import com.fincons.entity.File;
+import com.fincons.dto.FileDTO;
 import org.springframework.http.ResponseEntity;
 
 

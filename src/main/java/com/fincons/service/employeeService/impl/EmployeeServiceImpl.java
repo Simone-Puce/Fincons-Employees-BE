@@ -53,7 +53,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public ResponseEntity<Object> getEmployeeById(long id) {
         Employee existingEmployee = validateEmployeeById(id);
-        EmployeeDTO employeeDTO = employeeMapper.mapEmployee(existingEmployee);
+        EmployeeDTO employeeDTO = employeeMapper.mapEmployeeToEmployeeDto(existingEmployee);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Found employee with ID " + id + ".",
                 (HttpStatus.OK),
@@ -63,7 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public ResponseEntity<Object> getEmployeeByEmail(String email) {
         Employee existingEmployee = validateEmployeeByEmail(email);
-        EmployeeDTO employeeDTO = employeeMapper.mapEmployee(existingEmployee);
+        EmployeeDTO employeeDTO = employeeMapper.mapEmployeeToEmployeeDto(existingEmployee);
 
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Found employee with email " + email + ".",
@@ -78,7 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         //Check if the list of employee is empty
         for (Employee employee : employees) {
             if (employee != null) {
-                EmployeeDTO employeeDTO = employeeMapper.mapEmployee(employee);
+                EmployeeDTO employeeDTO = employeeMapper.mapEmployeeToEmployeeDto(employee);
                 newListEmployee.add(employeeDTO);
             } else {
                 throw new IllegalArgumentException("There aren't Employees");
@@ -102,7 +102,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         checkForDuplicateEmployee(employee, employees);
 
 
-        EmployeeDTO employeeDTO = employeeMapper.mapEmployee(employee);
+        EmployeeDTO employeeDTO = employeeMapper.mapEmployeeToEmployeeDto(employee);
         employeeRepository.save(employee);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Employee with ID "+ employee.getId() +" has been successfully updated!",
@@ -154,7 +154,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employeeRepository.save(existingEmployee);
             }
         }
-        employeeDTO = employeeMapper.mapEmployee(employee);
+        employeeDTO = employeeMapper.mapEmployeeToEmployeeDto(employee);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Employee with ID "+ id +" has been successfully updated!",
                 (HttpStatus.OK),

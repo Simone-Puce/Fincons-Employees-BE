@@ -1,4 +1,4 @@
-package com.fincons.utilities;
+package com.fincons.utility;
 
 import org.springframework.stereotype.Component;
 

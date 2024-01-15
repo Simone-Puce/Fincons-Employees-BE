@@ -1,6 +1,6 @@
-package com.fincons.utilities;
+package com.fincons.utility;
 
-import com.fincons.entities.File;
+import com.fincons.entity.File;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

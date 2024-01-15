@@ -1,12 +1,12 @@
-package com.fincons.services;
+package com.fincons.service.fileService;
 
-import com.fincons.entities.File;
+import com.fincons.entity.File;
 import com.fincons.exceptions.ResourceNotFoundException;
-import com.fincons.mappers.FileMapper;
-import com.fincons.models.FileDTO;
-import com.fincons.repositories.FileRepository;
-import com.fincons.utilities.DecodingFile;
-import com.fincons.utilities.EncodingFile;
+import com.fincons.mapper.FileMapper;
+import com.fincons.dto.FileDTO;
+import com.fincons.repository.FileRepository;
+import com.fincons.utility.DecodingFile;
+import com.fincons.utility.EncodingFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,6 @@ public class FileServiceImpl implements FileServiceApi {
 
     @Autowired
     private DecodingFile decodingFile;
-
 
     @Override
     public File uploadFile(FileDTO fileDto) {

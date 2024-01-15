@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -65,9 +66,11 @@ public class Employee {
                 @JoinColumn(name = "id_project", referencedColumnName = "id")
             }
     )
-
     private Set<Project> projects; //Lui punta alla tabella project
 
+
+    @OneToMany(mappedBy = "empId", cascade = CascadeType.ALL)
+    private List<File> fileList;
 
     public Employee() {
     }
@@ -174,5 +177,11 @@ public class Employee {
         this.projects = projects;
     }
 
+    public List<File> getFileList() {
+        return fileList;
+    }
 
+    public void setFileList(List<File> fileList) {
+        this.fileList = fileList;
+    }
 }

@@ -1,53 +1,38 @@
-package com.fincons.entities;
+package com.fincons.dto;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fincons.entity.Employee;
 
 
-import jakarta.persistence.*;
+public class FileDTO {
 
-
-@Entity
-@Table(name = "files")
-public class File {
-
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-
-    @Column(columnDefinition = "LONGTEXT", name = "file64")
     private String file64;
 
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "extension")
     private String extension;
 
-    @Column(name = "description")
     private String description;
 
-    @ManyToOne//(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
-    private Employee empId;
+    private Employee employeeId;
 
+    public FileDTO() {
+    }
 
-    public File() {}
-
-
-    public File( String file64, String name, String extension, String description, Employee empId) {
+    @JsonCreator
+    public FileDTO(
+            @JsonProperty("file64") String file64,
+            @JsonProperty("name") String name,
+            @JsonProperty("extension") String extension,
+            @JsonProperty("description") String description,
+            @JsonProperty("employeeId") Employee employeeId
+    ) {
         this.file64 = file64;
         this.name = name;
         this.extension = extension;
         this.description = description;
-        this.empId = empId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.employeeId = employeeId;
     }
 
     public String getFile64() {
@@ -82,12 +67,11 @@ public class File {
         this.description = description;
     }
 
-    public Employee getEmpId() {
-        return empId;
+    public Employee getEmployeeId() {
+        return employeeId;
     }
 
-    public void setEmpId(Employee empId) {
-        this.empId = empId;
+    public void setEmployeeId(Employee employeeId) {
+        this.employeeId = employeeId;
     }
 }
-

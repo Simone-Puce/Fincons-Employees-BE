@@ -1,9 +1,9 @@
-package com.fincons.controllers;
+package com.fincons.controller;
 
-import com.fincons.entities.File;
-import com.fincons.models.FileDTO;
-import com.fincons.repositories.FileRepository;
-import com.fincons.services.FileServiceApi;
+import com.fincons.entity.File;
+import com.fincons.dto.FileDTO;
+import com.fincons.repository.FileRepository;
+import com.fincons.service.fileService.FileServiceApi;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:81")
 @RestController
-@RequestMapping("/api/v2/")
+@RequestMapping("/company-employee-management")
 public class FileController {
 
     @Autowired
@@ -24,22 +24,22 @@ public class FileController {
     @Autowired
     private FileServiceApi fileServiceApi;
 
-    @GetMapping("/file")
+    @GetMapping("${file.list.uri}")
     public List<FileDTO> getAllFiles() {
         return fileServiceApi.getAllFiles();
     }
 
-    @PostMapping(value = "/upload-file", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "${file.upload.uri}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public File uploadFile(@RequestBody FileDTO fileDTO) {
         return fileServiceApi.uploadFile(fileDTO);
     }
 
-    @GetMapping("/view-file/{id}")
+    @GetMapping("${file.view.uri}/{id}")
     public FileDTO viewFile(@PathVariable Long id){
         return fileServiceApi.viewFile(id);
     }
 
-    @GetMapping("/download-file/{id}")
+    @GetMapping("${file.download.uri}/{id}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) throws IOException {
         return fileServiceApi.downloadFile(id);
     }
