@@ -60,7 +60,7 @@ public class UserServiceImpl  implements UserService {
 
         String emailDto = userDTO.getEmail().toLowerCase().replace(" ", "");
 
-        // Controllo se l'indirizzo email è valido
+
         if (!emailDto.isEmpty() && EmailValidator.isValidEmail(emailDto) && !userRepo.existsByEmail(emailDto)) {
             User userToSave = dtoToUser(userDTO);
             Role role;
@@ -73,7 +73,7 @@ public class UserServiceImpl  implements UserService {
             User userSaved = userRepo.save(userToSave);
             return userToUserDto(userSaved);
         } else {
-            // L'indirizzo email non è valido o esiste già nella repository
+
             throw new DuplicateEmailException("Invalid or existing email!!");
         }
     }
