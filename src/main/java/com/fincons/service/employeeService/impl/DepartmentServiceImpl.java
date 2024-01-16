@@ -54,7 +54,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         //Check if the list of department is empty
         for (Department department : departments) {
             if (department != null) {
-                DepartmentDTO departmentDTO = departmentMapper.mapDepartment(department);
+                DepartmentDTO departmentDTO = departmentMapper.mapDepartmentWithoutEmployee(department);
                 newListDepartment.add(departmentDTO);
             } else {
                 throw new IllegalArgumentException("There aren't Departments");
