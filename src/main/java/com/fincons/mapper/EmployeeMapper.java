@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EmployeeMapper {
-    public EmployeeDTO mapEmployee(Employee employee){
+    public EmployeeDTO mapEmployeeToEmployeeDto(Employee employee){
         return new EmployeeDTO(
                 employee.getId(),
                 employee.getFirstName(),
@@ -18,8 +18,26 @@ public class EmployeeMapper {
                 employee.getEndDate(),
                 employee.getDepartment(),
                 employee.getPosition(),
-                employee.getProjects());
+                employee.getProjects(),
+                employee.getFileList());
     }
+
+    public Employee mapEmployeeDtoToEmployee(EmployeeDTO employeeDTO){
+        return new Employee(
+                employeeDTO.getId(),
+                employeeDTO.getFirstName(),
+                employeeDTO.getLastName(),
+                employeeDTO.getGender(),
+                employeeDTO.getEmail(),
+                employeeDTO.getBirthDate(),
+                employeeDTO.getStartDate(),
+                employeeDTO.getEndDate(),
+                employeeDTO.getDepartment(),
+                employeeDTO.getPosition(),
+                employeeDTO.getProjects());
+    }
+
+/*
     public EmployeeDTO mapEmployeeTest(Employee employee){
         return new EmployeeDTO(
                 employee.getId(),
@@ -31,5 +49,5 @@ public class EmployeeMapper {
                 employee.getStartDate(),
                 employee.getEndDate());
     }
-
+*/
 }
