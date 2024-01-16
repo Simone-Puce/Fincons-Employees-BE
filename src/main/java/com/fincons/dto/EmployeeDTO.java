@@ -1,10 +1,9 @@
 package com.fincons.dto;
 
-import com.fincons.entity.Department;
-import com.fincons.entity.Position;
-import com.fincons.entity.Project;
+import com.fincons.entity.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 public class EmployeeDTO {
@@ -20,22 +19,23 @@ public class EmployeeDTO {
     private Department department;
     private Position position;
     private Set<Project> projects;
+    private List<CertificateEmployee> certificates;
 
 
-    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects) {
+    public EmployeeDTO(Long id, String firstName, String lastName, String gender, LocalDate birthDate, String email, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects, List<CertificateEmployee> certificates) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
-        this.email = email;
         this.birthDate = birthDate;
+        this.email = email;
         this.startDate = startDate;
         this.endDate = endDate;
         this.department = department;
         this.position = position;
         this.projects = projects;
+        this.certificates = certificates;
     }
-
 
     public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate) {
         this.id = id;
@@ -131,5 +131,13 @@ public class EmployeeDTO {
 
     public void setProjects(Set<Project> projects) {
         this.projects = projects;
+    }
+
+    public List<CertificateEmployee> getCertificates() {
+        return certificates;
+    }
+
+    public void setCertificates(List<CertificateEmployee> certificates) {
+        this.certificates = certificates;
     }
 }
