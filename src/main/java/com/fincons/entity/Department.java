@@ -35,6 +35,12 @@ public class Department {
         this.address = address;
         this.city = city;
     }
+    public Department(Long id, String name, String address) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+    }
+
 
     public List<Employee> getEmployees() {
         return employees;
