@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
 public interface FileServiceApi {
@@ -19,4 +20,5 @@ public interface FileServiceApi {
 
     List<FileDTO> getAllFiles();
 
+    ResponseEntity<Object> deleteFileById(Long id);
 }

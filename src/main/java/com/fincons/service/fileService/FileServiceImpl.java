@@ -1,5 +1,6 @@
 package com.fincons.service.fileService;
 
+import com.fincons.Handler.ResponseHandler;
 import com.fincons.entity.File;
 import com.fincons.exceptions.ResourceNotFoundException;
 import com.fincons.mapper.FileMapper;
@@ -8,12 +9,16 @@ import com.fincons.repository.FileRepository;
 import com.fincons.utility.DecodingFile;
 import com.fincons.utility.EncodingFile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -55,6 +60,16 @@ public class FileServiceImpl implements FileServiceApi {
     public List<FileDTO> getAllFiles() {
         List<File> fileList = fileRepository.findAll();
         return fileMapper.mapFileListToFileDtoList(fileList);
+    }
+
+    @Override
+    public ResponseEntity<Object> deleteFileById(Long id) {
+        File file = fileRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("File don't exist with id:" + id));
+        fileRepository.delete(file);
+        return ResponseHandler.generateResponse(LocalDateTime.now(),
+                "Success: File with ID "+ id +" has been successfully deleted!",
+                (HttpStatus.OK),
+                null);
     }
 
 }

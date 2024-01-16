@@ -12,14 +12,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:81")
 @RestController
 @RequestMapping("/company-employee-management")
 public class FileController {
-
-    @Autowired
-    private FileRepository fileRepository;
 
     @Autowired
     private FileServiceApi fileServiceApi;
@@ -42,6 +40,11 @@ public class FileController {
     @GetMapping("${file.download.uri}/{id}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) throws IOException {
         return fileServiceApi.downloadFile(id);
+    }
+
+    @DeleteMapping("${file.delete.uri}/{id}")
+    public ResponseEntity<Object> deleteEmployeeById(@PathVariable Long id) {
+        return fileServiceApi.deleteFileById(id);
     }
 
 }
