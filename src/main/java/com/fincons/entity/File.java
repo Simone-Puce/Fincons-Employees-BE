@@ -14,7 +14,7 @@ public class File {
     private Long id;
 
 
-    @Column(columnDefinition = "LONGTEXT", name = "file64")
+    @Column(name = "file64", length = 20971520) // to work remote
     private String file64;
 
     @Column(name = "name")
