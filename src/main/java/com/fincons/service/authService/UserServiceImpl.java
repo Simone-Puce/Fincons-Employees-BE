@@ -12,20 +12,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.fincons.repository.RoleRepository;
 import com.fincons.repository.UserRepository;
 import com.fincons.utility.EmailValidator;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserServiceImpl  implements UserService {
+public class UserServiceImpl  implements UserService{
 
     public UserServiceImpl(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
         this.roleRepo = roleRepo;
@@ -96,6 +94,8 @@ public class UserServiceImpl  implements UserService {
         return null;
     }
 
+
+
     @Override
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepo.findAll();
@@ -112,8 +112,6 @@ public class UserServiceImpl  implements UserService {
         return userToUserDto(userFounded);
     }
 
-
-
     public User dtoToUser(UserDTO userDTO) {
         ModelMapper modelMapper = new ModelMapper();
         User userToSave = modelMapper.map(userDTO, User.class);
@@ -123,7 +121,6 @@ public class UserServiceImpl  implements UserService {
 
     public UserDTO userToUserDto(User user) {
         ModelMapper modelMapper = new ModelMapper();
-
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
         userDTO.setRoles(user.getRoles().stream().map(this::roleToRoleDto).toList());
         return userDTO;

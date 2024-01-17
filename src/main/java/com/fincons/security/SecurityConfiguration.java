@@ -1,14 +1,22 @@
 package com.fincons.security;
 
+import com.fincons.auth.CustomAuthenticationProvider;
+import com.fincons.jwt.JwtAuthenticationEntryPoint;
+import com.fincons.jwt.JwtAuthenticationFilter;
+
+import com.fincons.auth.CustomAuthenticationProvider;
 import com.fincons.jwt.JwtAuthenticationEntryPoint;
 import com.fincons.jwt.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -27,7 +35,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @AllArgsConstructor
 public class SecurityConfiguration {
-
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -38,6 +45,8 @@ public class SecurityConfiguration {
     }
 
     private UserDetailsService userDetailsService;
+
+    private CustomAuthenticationProvider customAuthenticationProvider;
 
     private JwtAuthenticationEntryPoint authenticationEntryPoint;
 
@@ -53,9 +62,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/company-employee-management/v1/session-value").permitAll()
                         .requestMatchers("/company-employee-management/v1/home").permitAll()
                         .requestMatchers("/company-employee-management/v1/register").permitAll()
-                        .requestMatchers("/company-employee-management/v1/employees").hasRole("USER") //working
-                        .requestMatchers("/company-employee-management/v1/login").permitAll()
-                        .requestMatchers("/company-employee-management/v1/logout").permitAll()
+                        .requestMatchers("/company-employee-management/v1/employees").authenticated()
                         .requestMatchers("/company-employee-management/v1/error").permitAll()
                         .requestMatchers("/company-employee-management/v1/registered-users").hasAnyRole("ADMIN","USER")
                         .requestMatchers("/company-employee-management/v1/admin/**").hasRole("ADMIN")
@@ -73,6 +80,8 @@ public class SecurityConfiguration {
 //                        .logoutSuccessUrl("/company-employee-management/v1/home")
 //                        .invalidateHttpSession(true)
 //                        .deleteCookies("JSESSIONID").permitAll());
+
+
 
         http
                 .exceptionHandling(exception -> exception
