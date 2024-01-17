@@ -1,12 +1,18 @@
 package com.fincons.controller;
 
+import com.fincons.dto.ImportResultDTO;
 import com.fincons.entity.Employee;
 import com.fincons.dto.EmployeeProjectDTO;
+import com.fincons.enums.ProcessingStatus;
 import com.fincons.service.employeeService.EmployeeService;
 import com.fincons.service.employeeService.ProjectService;
+
+import com.fincons.service.importFile.ImportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("${employee.uri}")
@@ -17,6 +23,9 @@ public class EmployeeController {
 
     @Autowired
     ProjectService projectService;
+
+    @Autowired
+    private ImportService importService;
 
 
     @GetMapping(value = "/find-by-id")
@@ -63,6 +72,18 @@ public class EmployeeController {
     @DeleteMapping(value= "/delete/employee-project")
     public ResponseEntity<Object> deleteEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
         return employeeService.deleteEmployeeProject(idEmployee, idProject);
+    }
+
+    @PostMapping("/importfile")
+    public ResponseEntity<ImportResultDTO> addEmployeeFromFile(@RequestBody MultipartFile importedFile) {
+
+        ImportResultDTO importResult = importService.processImport(importedFile);
+        if (importResult.getStatus() == ProcessingStatus.NOT_LOADED) {
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(importResult);
+        } else {
+            return ResponseEntity.ok(importResult);
+        }
     }
 
 

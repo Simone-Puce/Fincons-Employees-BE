@@ -35,5 +35,6 @@ public interface EmployeeRepository extends JpaRepository <Employee, Long> {
     @Query("SELECT e FROM Employee e WHERE DAY(e.birthDate) = DAY(:birthDate) AND MONTH(e.birthDate) = MONTH(:birthDate)")
     List<Employee> findEmployeesByTodayBirthday(@Param("birthDate") LocalDate birthDate);
 
+    boolean  existsByEmail(String emailId);
 
 }
