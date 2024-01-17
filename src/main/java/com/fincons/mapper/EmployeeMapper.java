@@ -12,15 +12,33 @@ public class EmployeeMapper {
                 employee.getFirstName(),
                 employee.getLastName(),
                 employee.getGender(),
-                employee.getBirthDate(),
                 employee.getEmail(),
+                employee.getBirthDate(),
                 employee.getStartDate(),
                 employee.getEndDate(),
                 employee.getDepartment(),
                 employee.getPosition(),
                 employee.getProjects(),
-                employee.getCertificates());
+                employee.getCertificates(),
+                employee.getFileList());
     }
+
+    public Employee mapEmployeeDtoToEmployee(EmployeeDTO employeeDTO){
+        return new Employee(
+                employeeDTO.getId(),
+                employeeDTO.getFirstName(),
+                employeeDTO.getLastName(),
+                employeeDTO.getGender(),
+                employeeDTO.getEmail(),
+                employeeDTO.getBirthDate(),
+                employeeDTO.getStartDate(),
+                employeeDTO.getEndDate(),
+                employeeDTO.getDepartment(),
+                employeeDTO.getPosition(),
+                employeeDTO.getProjects());
+    }
+
+/*
     public EmployeeDTO mapEmployeeTest(Employee employee){
         return new EmployeeDTO(
                 employee.getId(),
@@ -32,5 +50,5 @@ public class EmployeeMapper {
                 employee.getStartDate(),
                 employee.getEndDate());
     }
-
+*/
 }

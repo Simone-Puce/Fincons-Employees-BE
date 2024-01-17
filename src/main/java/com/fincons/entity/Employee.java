@@ -9,10 +9,12 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "employee")
+
 public class Employee {
 
     @Id
@@ -66,11 +68,16 @@ public class Employee {
                 @JoinColumn(name = "id_project", referencedColumnName = "id")
             }
     )
+
     private Set<Project> projects; //Lui punta alla tabella project
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<CertificateEmployee> certificates;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "empId", cascade = CascadeType.ALL)
+    private List<File> fileList;
 
     public Employee() {
     }
@@ -169,7 +176,6 @@ public class Employee {
         this.position = position;
     }
 
-
     public Set<Project> getProjects() {
         return projects;
     }
@@ -178,10 +184,16 @@ public class Employee {
         this.projects = projects;
     }
 
+    public List<File> getFileList() {
+        return fileList;
+    }
     public List<CertificateEmployee> getCertificates() {
         return certificates;
     }
 
+    public void setFileList(List<File> fileList) {
+        this.fileList = fileList;
+    }
     public void setCertificates(List<CertificateEmployee> certificates) {
         this.certificates = certificates;
     }
