@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProjectMapper {
     public ProjectDTO mapProject(Project project){
+
         return new ProjectDTO(
                 project.getId(),
                 project.getName(),

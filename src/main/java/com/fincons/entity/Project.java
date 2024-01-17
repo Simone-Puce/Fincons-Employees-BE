@@ -1,6 +1,7 @@
 package com.fincons.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -19,8 +20,9 @@ public class Project {
     @Column
     private String priority;
 
-    @JsonBackReference(value= "employee-project")
+
     @ManyToMany(mappedBy = "projects")
+    @JsonIgnore
     private Set<Employee> employees;
 
     public Project() {

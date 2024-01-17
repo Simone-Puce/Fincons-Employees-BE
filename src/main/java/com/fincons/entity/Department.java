@@ -28,7 +28,6 @@ public class Department {
             mappedBy = "department",
             fetch = FetchType.LAZY)
     @JsonManagedReference(value = "department-employee")
-    @JsonIgnore
     private List<Employee> employees;
     public Department() {
     }

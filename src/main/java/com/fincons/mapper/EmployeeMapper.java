@@ -21,7 +21,6 @@ public class EmployeeMapper {
                 employee.getProjects(),
                 employee.getFileList());
     }
-
     public Employee mapEmployeeDtoToEmployee(EmployeeDTO employeeDTO){
         return new Employee(
                 employeeDTO.getId(),
@@ -36,9 +35,7 @@ public class EmployeeMapper {
                 employeeDTO.getPosition(),
                 employeeDTO.getProjects());
     }
-
-/*
-    public EmployeeDTO mapEmployeeTest(Employee employee){
+    public EmployeeDTO mapEmployeeToEmployeeDtoWithoutObjects(Employee employee){
         return new EmployeeDTO(
                 employee.getId(),
                 employee.getFirstName(),
@@ -49,5 +46,4 @@ public class EmployeeMapper {
                 employee.getStartDate(),
                 employee.getEndDate());
     }
-*/
 }

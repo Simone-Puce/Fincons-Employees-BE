@@ -22,7 +22,6 @@ public class Position {
             mappedBy = "position",
             fetch = FetchType.LAZY)
     @JsonManagedReference(value = "position-employee")
-    @JsonIgnore
     private List<Employee> employees;
 
     public List<Employee> getEmployees() {
