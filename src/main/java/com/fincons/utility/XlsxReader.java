@@ -115,8 +115,11 @@ public class XlsxReader implements ImportFileReader {
                     employeeToAdd.add(employeeDto);
                 }
             }
-        } catch (IOException e) {
+        } catch (NumberFormatException e) {
+            errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_READING_FILE_DATE));
+        }catch (IOException e) {
             LOGGER.error("Si è verificata una eccezione di I/O", e);
+            errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_IO));
         }
         return new ImportFileDTO(employeeToAdd, errorReadingList);
     }
