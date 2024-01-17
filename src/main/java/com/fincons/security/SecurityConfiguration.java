@@ -1,9 +1,13 @@
 package com.fincons.security;
 
 
+import com.fincons.auth.CustomAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -27,6 +31,8 @@ public class SecurityConfiguration {
 
     @Autowired
     UserDetailsService userDetailsService;
+    @Autowired
+    CustomAuthenticationProvider customAuthenticationProvider;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -34,22 +40,38 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/company-employee-management/v1/email").permitAll()//
+                        //Auth for App
+                        .requestMatchers(HttpMethod.DELETE,"/company-employee-management/v1/department/**").hasRole("USER") // Will replace with admin when FE will be ready
+                        .requestMatchers(HttpMethod.DELETE,"/company-employee-management/v1/employee/**").hasRole("USER") // Will replace with admin when FE will be ready
+                        .requestMatchers(HttpMethod.DELETE,"/company-employee-management/v1/position/**").hasRole("USER") // Will replace with admin when FE will be ready
+                        .requestMatchers(HttpMethod.DELETE,"/company-employee-management/v1/project/**").hasRole("USER")  // Will replace with admin when FE will be ready
+
+                        .requestMatchers("/company-employee-management/v1/department/**").hasRole("USER")
+                        .requestMatchers("/company-employee-management/v1/employee/**").hasRole("USER")
+                        .requestMatchers("/company-employee-management/v1/position/**").hasRole("USER")
+                        .requestMatchers("/company-employee-management/v1/project/**").hasRole("USER")
+                        .requestMatchers("/company-employee-management/v1/file/**").hasRole("USER")
+
+
+                        //Auth for Login/Reg
+                        .requestMatchers("/company-employee-management/v1/email").permitAll()
                         .requestMatchers("/company-employee-management/v1/session-value").permitAll()
                         .requestMatchers("/company-employee-management/v1/home").permitAll()
                         .requestMatchers("/company-employee-management/v1/register").permitAll()
-                        .requestMatchers("/company-employee-management/v1/employees").authenticated() //working
-                        .requestMatchers("/company-employee-management/v1/login").permitAll()
-                        .requestMatchers("/company-employee-management/v1/logout").permitAll()
+                        .requestMatchers("/company-employee-management/v1/employees").authenticated()
                         .requestMatchers("/company-employee-management/v1/error").permitAll()
                         .requestMatchers("/company-employee-management/v1/registered-users").hasAnyRole("ADMIN","USER")
-                        .requestMatchers("/company-employee-management/v1/admin/**").hasRole("ADMIN")
+
+                        .requestMatchers("/company-employee-management/v1/login").permitAll()
+                        .requestMatchers("/company-employee-management/v1/logout").permitAll().anyRequest().authenticated()
+
+
                 );
         http
                 .formLogin(form -> form
                         .loginPage("/company-employee-management/v1/login")
                         .loginProcessingUrl("/company-employee-management/v1/login")
-                        .failureUrl("/company-employee-management/v1/error") //pagine di errore
+                        .failureUrl("/company-employee-management/v1/error")
                         .defaultSuccessUrl("/company-employee-management/v1/home").permitAll());
         http
                 .logout(logout -> logout
@@ -59,11 +81,17 @@ public class SecurityConfiguration {
                         .deleteCookies("JSESSIONID").permitAll());
         return http.build();
     }
-
+/*
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
+    //per inserire il provider di autenticazione
+    @Autowired
+    public void configure (AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider((AuthenticationProvider) customAuthenticationProvider);
+    }
+ */
 
 }
