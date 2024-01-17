@@ -29,7 +29,6 @@ public class CertificateServiceImpl implements CertificateService {
     public ResponseEntity<Object> getAllCertificates() {
         List<Certificate> certificates = certificateRepository.findAll();
         List<CertificateDTO> certificateDTOs = certificateMapper.mapCertificateListToCertificateDtoList(certificates);
-
         if(certificateDTOs.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -37,11 +36,11 @@ public class CertificateServiceImpl implements CertificateService {
     }
     @Override
     public ResponseEntity<Object> getCertificateById(Long id) throws ServiceException {
-        Certificate certificate = certificateRepository.findById(id).orElse(null);
-        if (certificate == null){
+        Certificate findCertificate = certificateRepository.findById(id).orElse(null);
+        if (findCertificate == null){
             throw new ServiceException("Certificate not found for this id");
         }
-        CertificateDTO certificateDTO = certificateMapper.mapCertificateToCertificateDto(certificate);
+        CertificateDTO certificateDTO = certificateMapper.mapCertificateToCertificateDto(findCertificate);
         return new ResponseEntity<>(certificateDTO, HttpStatus.OK);
     }
 
@@ -55,6 +54,10 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public ResponseEntity<Object> updateCertificate(Long id, CertificateDTO certificateDTO) {
+        Certificate findCertificate = certificateRepository.findById(id).orElse(null);
+        if (findCertificate == null){
+            throw new ServiceException("Certificate not found for this id");
+        }
         Certificate certificate = certificateMapper.mapCertificateDtoToCertificate(certificateDTO);
         certificate = certificateRepository.save(certificate);
         CertificateDTO responseDTO = certificateMapper.mapCertificateToCertificateDto(certificate);
@@ -63,11 +66,11 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public ResponseEntity<Object> deleteCertificate(Long id) throws ServiceException {
-        Certificate certificate = certificateRepository.findById(id).orElse(null);
-        if (certificate == null){
+        Certificate findCertificate = certificateRepository.findById(id).orElse(null);
+        if (findCertificate == null){
             throw new ServiceException("Certificate not found for this id");
         }
-        certificateRepository.delete(certificate);
+        certificateRepository.delete(findCertificate);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

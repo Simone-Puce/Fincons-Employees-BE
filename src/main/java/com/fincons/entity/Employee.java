@@ -69,7 +69,7 @@ public class Employee {
     private Set<Project> projects; //Lui punta alla tabella project
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    @JsonManagedReference(value= "certificate_employee")
+    @JsonIgnore
     private List<CertificateEmployee> certificates;
 
     public Employee() {

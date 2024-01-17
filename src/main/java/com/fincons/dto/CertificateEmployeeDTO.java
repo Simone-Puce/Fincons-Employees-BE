@@ -16,10 +16,11 @@ public class CertificateEmployeeDTO {
     public CertificateEmployeeDTO() {
     }
 
-    public CertificateEmployeeDTO(Long id, Certificate certificate, Employee employee) {
+    public CertificateEmployeeDTO(Long id, Certificate certificate, Employee employee, LocalDate achieved) {
         this.id = id;
         this.certificate = certificate;
         this.employee = employee;
+        this.achieved = achieved;
     }
 
     public Long getId() {

@@ -1,6 +1,6 @@
 package com.fincons.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class Certificate {
     @Column(name = "activate")
     private boolean activate;
     @OneToMany(mappedBy = "certificate", cascade = CascadeType.ALL)
-    @JsonManagedReference(value= "certificate_employee")
+    @JsonIgnore
     private List<CertificateEmployee> employees;
 
     public Certificate() {}

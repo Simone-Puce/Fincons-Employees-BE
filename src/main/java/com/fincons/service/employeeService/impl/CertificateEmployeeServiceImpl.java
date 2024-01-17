@@ -1,6 +1,8 @@
 package com.fincons.service.employeeService.impl;
 
+import com.fincons.dto.CertificateDTO;
 import com.fincons.dto.CertificateEmployeeDTO;
+import com.fincons.entity.Certificate;
 import com.fincons.entity.CertificateEmployee;
 import com.fincons.mapper.CertificateEmployeeMapper;
 import com.fincons.repository.CertificateEmployeeRepository;
@@ -40,11 +42,11 @@ public class CertificateEmployeeServiceImpl implements CertificateEmployeeServic
 
     @Override
     public ResponseEntity<Object> getCertificateEmployeeById(Long id) throws ServiceException {
-        CertificateEmployee certificateEmployee = certificateEmployeeRepository.findById(id).orElse(null);
-        if (certificateEmployee == null){
+        CertificateEmployee findCertificateEmployee = certificateEmployeeRepository.findById(id).orElse(null);
+        if (findCertificateEmployee == null){
             throw new ServiceException("Certificate not found");
         }
-        CertificateEmployeeDTO certificateEmployeeDTO = certificateEmployeeMapper.mapCertificateEmployeeToCertificateEmployeeDto(certificateEmployee);
+        CertificateEmployeeDTO certificateEmployeeDTO = certificateEmployeeMapper.mapCertificateEmployeeToCertificateEmployeeDto(findCertificateEmployee);
         return new ResponseEntity<>(certificateEmployeeDTO, HttpStatus.OK);
     }
     @Override
@@ -57,12 +59,14 @@ public class CertificateEmployeeServiceImpl implements CertificateEmployeeServic
 
     @Override
     public ResponseEntity<Object> updateCertificateEmployee(Long id, CertificateEmployeeDTO certificateEmployeeDTO) {
-        if (certificateEmployeeRepository.existsById(id)) {
-            CertificateEmployee savedCertificateEmployee = certificateEmployeeRepository.findById(id).orElse(null);
-
-            return new ResponseEntity<>(savedCertificateEmployee, HttpStatus.OK);
+        CertificateEmployee findCertificateEmployee = certificateEmployeeRepository.findById(id).orElse(null);
+        if (findCertificateEmployee == null){
+            throw new ServiceException("Certificate not found");
         }
-        return new ResponseEntity<>("Certificate employee not found", HttpStatus.NOT_FOUND);
+        CertificateEmployee certificateEmployee = certificateEmployeeMapper.mapCertificateEmployeeDtoToCertificateEmployee(certificateEmployeeDTO);
+        certificateEmployee = certificateEmployeeRepository.save(certificateEmployee);
+        CertificateEmployeeDTO responseDTO = certificateEmployeeMapper.mapCertificateEmployeeToCertificateEmployeeDto(certificateEmployee);
+        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
 
     @Override

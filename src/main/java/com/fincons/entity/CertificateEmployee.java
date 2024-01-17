@@ -17,11 +17,9 @@ public class CertificateEmployee {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "certificateId")
-    @JsonBackReference(value= "certificate_employee")
     private Certificate certificate;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employeeId")
-    @JsonBackReference(value= "certificate_employee")
     private Employee employee;
 
     @JsonFormat(pattern = "yyyy-MM-dd")

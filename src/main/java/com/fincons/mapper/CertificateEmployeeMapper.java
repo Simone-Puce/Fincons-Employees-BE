@@ -16,7 +16,8 @@ public class CertificateEmployeeMapper {
         return new CertificateEmployeeDTO(
                 certificateEmployee.getId(),
                 certificateEmployee.getCertificate(),
-                certificateEmployee.getEmployee()
+                certificateEmployee.getEmployee(),
+                certificateEmployee.getAchieved()
         );
     }
 
