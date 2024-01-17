@@ -19,4 +19,5 @@ public interface FileServiceApi {
 
     List<FileDTO> getAllFiles();
 
+    ResponseEntity<Object> deleteFileById(Long id);
 }
