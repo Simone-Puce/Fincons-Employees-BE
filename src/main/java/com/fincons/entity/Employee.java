@@ -57,9 +57,8 @@ public class Employee {
     @JoinColumn(name = "id_position")
     private Position position;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JsonManagedReference(value= "employee-project")
-    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "employee_project",
             joinColumns = {
                 @JoinColumn(name = "id_employee", referencedColumnName = "id")
@@ -68,6 +67,7 @@ public class Employee {
                 @JoinColumn(name = "id_project", referencedColumnName = "id")
             }
     )
+    private Set<Project> projects;
 
     private Set<Project> projects; //Lui punta alla tabella project
 
@@ -75,8 +75,11 @@ public class Employee {
     @JsonIgnore
     private List<CertificateEmployee> certificates;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "empId", cascade = CascadeType.ALL)
+
+    @JsonManagedReference(value = "file-employee")
+    @OneToMany(
+            mappedBy = "empId",
+            fetch = FetchType.LAZY)
     private List<File> fileList;
 
     public Employee() {

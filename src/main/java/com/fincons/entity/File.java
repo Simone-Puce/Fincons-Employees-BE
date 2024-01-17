@@ -1,5 +1,6 @@
 package com.fincons.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -26,8 +27,8 @@ public class File {
     private String description;
 
 
-    @JsonIgnore
-    @ManyToOne//(fetch = FetchType.LAZY)
+    @JsonBackReference(value = "file-employee")
+    @ManyToOne
     @JoinColumn(name = "employee_id", nullable = true)
     private Employee empId;
 

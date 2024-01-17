@@ -66,6 +66,20 @@ public class EmployeeDTO {
         this.fileList = fileList;
     }
 
+    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.birthDate = birthDate;
+        this.email = email;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public EmployeeDTO() {
+    }
+
     public Long getId() {
         return id;
     }

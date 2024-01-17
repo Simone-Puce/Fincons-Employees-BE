@@ -54,7 +54,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         //Check if the list of department is empty
         for (Department department : departments) {
             if (department != null) {
-                DepartmentDTO departmentDTO = departmentMapper.mapDepartmentWithoutEmployee(department);
+                DepartmentDTO departmentDTO = departmentMapper.mapDepartment(department);
                 newListDepartment.add(departmentDTO);
             } else {
                 throw new IllegalArgumentException("There aren't Departments");
@@ -77,7 +77,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         //Condition if there are departments with name same
         checkForDuplicateDepartment(department, departments);
 
-        DepartmentDTO departmentDTO = departmentMapper.mapDepartmentWithoutEmployee(department);
+        DepartmentDTO departmentDTO = departmentMapper.mapDepartment(department);
         departmentRepository.save(department);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Department with ID "+ department.getId() +" has been successfully updated!",
@@ -123,7 +123,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             }
         }
 
-        departmentDTO = departmentMapper.mapDepartmentWithoutEmployee(department);
+        departmentDTO = departmentMapper.mapDepartment(department);
 
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Department with ID "+ id +" has been successfully updated!",

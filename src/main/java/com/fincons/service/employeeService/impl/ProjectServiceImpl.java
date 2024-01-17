@@ -42,7 +42,7 @@ public class ProjectServiceImpl implements ProjectService {
         //Check if the list of projects is empty
         for (Project project : projects) {
             if (project != null) {
-                ProjectDTO projectsDTO = projectMapper.mapProjectWithoutEmployees(project);
+                ProjectDTO projectsDTO = projectMapper.mapProject(project);
                 newListProject.add(projectsDTO);
             } else {
                 throw new IllegalArgumentException("There aren't Project");

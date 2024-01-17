@@ -1,5 +1,7 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fincons.entity.Employee;
 
 import java.util.List;
 
@@ -27,6 +29,12 @@ public class DepartmentDTO {
 
     public DepartmentDTO() {
 
+    }
+
+    public DepartmentDTO(String name, String address, String city) {
+        this.name = name;
+        this.address = address;
+        this.city = city;
     }
 
     public Long getId() {

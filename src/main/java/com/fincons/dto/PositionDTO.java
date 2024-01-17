@@ -1,13 +1,14 @@
 package com.fincons.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 public class PositionDTO {
     private Long id;
     private String name;
     private Double salary;
-    //@JsonIgnore
     private List<EmployeeDTO> employees;
 
     public PositionDTO(Long id, String name, Double salary, List<EmployeeDTO> employees) {

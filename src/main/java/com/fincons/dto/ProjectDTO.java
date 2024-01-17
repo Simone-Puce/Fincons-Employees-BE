@@ -10,7 +10,6 @@ public class ProjectDTO {
     private String name;
     private String area;
     private String priority;
-    @JsonIgnore
     private Set<Employee> employees;
 
     public ProjectDTO(Long id, String name, String area, String priority, Set<Employee> employees) {
