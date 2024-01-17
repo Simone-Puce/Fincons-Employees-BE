@@ -1,7 +1,10 @@
 package com.fincons.controller;
 
+import com.fincons.service.authService.UserService;
 import com.fincons.dto.UserDTO;
 import com.fincons.exception.DuplicateEmailException;
+import com.fincons.jwt.JwtAuthResponse;
+import com.fincons.jwt.LoginDto;
 import com.fincons.jwt.JwtAuthResponse;
 import com.fincons.jwt.LoginDto;
 import com.fincons.service.UserService;
@@ -13,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("http://localhost:81")
 @RequestMapping("/company-employee-management")
 public class UserController {
     @Autowired
@@ -44,7 +47,6 @@ public class UserController {
     public String errorEndpoint() {
         return "Error!";
     }
-
 
     @GetMapping("${employees.uri}")
     public String employeesEndPoint() {
