@@ -19,9 +19,6 @@ import java.util.List;
 public class FileController {
 
     @Autowired
-    private FileRepository fileRepository;
-
-    @Autowired
     private FileServiceApi fileServiceApi;
 
     @GetMapping("${file.list.uri}")
@@ -42,6 +39,11 @@ public class FileController {
     @GetMapping("${file.download.uri}/{id}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) throws IOException {
         return fileServiceApi.downloadFile(id);
+    }
+
+    @DeleteMapping("${file.delete.uri}/{id}")
+    public ResponseEntity<Object> deleteEmployeeById(@PathVariable Long id) {
+        return fileServiceApi.deleteFileById(id);
     }
 
 }
