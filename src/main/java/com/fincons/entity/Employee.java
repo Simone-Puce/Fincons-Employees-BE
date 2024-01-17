@@ -69,6 +69,7 @@ public class Employee {
     private Set<Project> projects; //Lui punta alla tabella project
 
 
+    @JsonIgnore
     @OneToMany(mappedBy = "empId", cascade = CascadeType.ALL)
     private List<File> fileList;
 

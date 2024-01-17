@@ -2,7 +2,7 @@ package com.fincons.service.fileService;
 
 import com.fincons.Handler.ResponseHandler;
 import com.fincons.entity.File;
-import com.fincons.exceptions.ResourceNotFoundException;
+import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.FileMapper;
 import com.fincons.dto.FileDTO;
 import com.fincons.repository.FileRepository;
