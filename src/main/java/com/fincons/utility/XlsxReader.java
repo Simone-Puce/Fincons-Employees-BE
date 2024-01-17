@@ -115,13 +115,11 @@ public class XlsxReader implements ImportFileReader {
 
                     String dep = getCellValue(row.getCell(EmployeeHeaderXlsx.Dipartimento.getIndex()));
                     Department dipartimento = new Department();
-                    dipartimento.setId(Long.parseLong(dep));
+                    dipartimento.setId(Math.round(Double.parseDouble(dep)));
 
                     String pos = getCellValue(row.getCell(EmployeeHeaderXlsx.Posizione.getIndex()));
                     Position posizione = new Position();
-                    posizione.setId(Long.parseLong(pos));
-
-                    //(nome, cognome, genere,dataDiNascita,email,dataDiInizio,dataDiFine,dipartimento, posizione);
+                    posizione.setId(Math.round(Double.parseDouble(dep)));
 
 
                     // Crea un oggetto EmployeeDto con i valori ottenuti

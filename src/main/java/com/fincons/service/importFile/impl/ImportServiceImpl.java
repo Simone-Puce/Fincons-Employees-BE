@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 @PropertySource("importfile.properties")
 @Service
 public class ImportServiceImpl implements ImportService {
@@ -124,13 +125,14 @@ public class ImportServiceImpl implements ImportService {
 
             // 2.--------CONTROLLO SE LA LISTA E' VUOTA DOPO LE VALIDAZIONI--------
             if (employeeList.isEmpty()) {
-               ImportErrorUtility.emptyListAfterValidation(errorList, importResult);
+                ImportErrorUtility.emptyListAfterValidation(errorList, importResult);
             } else {
 
                 //Si passa alla persistenza degli impiegati, ritornando eventualmente una lista di errori se qualche dipendente è già presente.
-                //E SETTO NELLA LISTA GENERICA DI ERRORI, I DUPLICATI TROVATI DURANTE L'INSERIMENTO NEL DB.
-                errorList.addAll(persistenceEmployeeService.addIfNotPresent(employeeList));
-
+                //SETTANDO IN UNA APPOSITA LISTA, I DUPLICATI TROVATI DURANTE L'INSERIMENTO NEL DB.
+                List<ErrorDetailDTO> duplicatedEmployee = persistenceEmployeeService.addIfNotPresent(employeeList);
+                //setto la lista generale per ritornarla comunque nel corpo della risposta di tutti gli errori
+                errorList.addAll(duplicatedEmployee);
 
 
                 //TODO - ALTRO METODO PRIVATO PER SETTARE L'IMPORT RESULT
@@ -138,7 +140,14 @@ public class ImportServiceImpl implements ImportService {
                 importResult.setErrors(errorList);
 
                 if (importResult.getErrors().size() > 0 && employeeList.size() > 0) {
-                    importResult.setStatus(ProcessingStatus.LOADED_WITH_ERRORS);
+                    //se vengono trovati N dipendenti duplicati tanto quanti N dipendenti da aggiungere
+                    //l'import result sarà not loaded dato che nessun dipendente verrà aggiunto al db.
+                    if (duplicatedEmployee.size() == employeeList.size()) {
+                        importResult.setStatus(ProcessingStatus.NOT_LOADED);
+                    } else {
+                        importResult.setStatus(ProcessingStatus.LOADED_WITH_ERRORS);
+                    }
+
                 } else if (importResult.getErrors().size() == 0 && employeeList.size() > 0) {
                     importResult.setStatus(ProcessingStatus.LOADED);
                 } else if (importResult.getErrors().size() == 0 && employeeList.size() == 0) {

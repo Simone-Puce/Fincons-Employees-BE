@@ -146,7 +146,7 @@ public class CsvReader implements ImportFileReader {
                 employeeToAdd.add(personToAdd);
             }
         } catch (NumberFormatException e) {
-            errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_READING_FILE_DATE));
+            errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_READING_FILE_NUMBER));
         } catch (Exception e) {
             errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_OPEN_FILE));
         }

@@ -18,7 +18,7 @@ public class EmployeeDataValidator {
         List<ErrorDetailDTO> validationResultList = new ArrayList<>();
 
 
-        //controllo se una riga è totalmente errata
+        //controllo sui campi fondamentali: Nome,Cognome ed Email
         if ( (!isValidEmail(employeeToValidate.getEmail())) && (!isValidNameSurname(employeeToValidate.getFirstName())) && (!isValidNameSurname(employeeToValidate.getLastName())) ) {
             //se tutti e tre i campi non sono validi, aggiungi l'errore bloccante di riga interamente errata
             validationResultList.add(new ErrorDetailDTO(employeeToValidate.getRowNum(), "Name,Surname,Email", ErrorCode.INVALID_ROW));
