@@ -11,6 +11,7 @@ import com.fincons.service.importFile.ImportFileReader;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.IOException;
@@ -145,7 +146,7 @@ public class CsvReader implements ImportFileReader {
                 employeeToAdd.add(personToAdd);
             }
         } catch (NumberFormatException e) {
-            errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_READING_FILE_NUMBER));
+            errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_READING_FILE_DATE));
         } catch (Exception e) {
             errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_OPEN_FILE));
         }

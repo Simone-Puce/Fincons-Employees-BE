@@ -115,11 +115,13 @@ public class XlsxReader implements ImportFileReader {
 
                     String dep = getCellValue(row.getCell(EmployeeHeaderXlsx.Dipartimento.getIndex()));
                     Department dipartimento = new Department();
-                    dipartimento.setId(Math.round(Double.parseDouble(dep)));
+                    dipartimento.setId(Long.parseLong(dep));
 
                     String pos = getCellValue(row.getCell(EmployeeHeaderXlsx.Posizione.getIndex()));
                     Position posizione = new Position();
-                    posizione.setId(Math.round(Double.parseDouble(pos)));
+                    posizione.setId(Long.parseLong(pos));
+
+                    //(nome, cognome, genere,dataDiNascita,email,dataDiInizio,dataDiFine,dipartimento, posizione);
 
 
                     // Crea un oggetto EmployeeDto con i valori ottenuti
@@ -132,8 +134,7 @@ public class XlsxReader implements ImportFileReader {
             }
         } catch (NumberFormatException e) {
             errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_READING_FILE_NUMBER));
-
-        } catch (IOException e) {
+        }catch (IOException e) {
             LOGGER.error("Si è verificata una eccezione di I/O", e);
             errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_IO));
         }

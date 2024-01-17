@@ -33,6 +33,7 @@ public enum ErrorCode {
     ERROR_OPEN_FILE(20010, Gravity.BLOCKING, "Errore sul file","Errore durante l'apertura o la lettura del file. "),
 
     ERROR_READING_FILE_NUMBER(20011, Gravity.BLOCKING, "Errore formato numerico sul file in lettura","Errore durante la lettura del file. Controllare che i campi nel file siano corretti. (Numeri e Date)."),
+    ERROR_READING_FILE_DATE(20011, Gravity.BLOCKING, "Errore sul file in lettura","Errore sul formato dei numeri e/o delle date."),
 
     //----------------------------PER ERRORI GENERICI DI SISTEMA-------------------------
     ERROR_IO(5001, Gravity.BLOCKING, "Eccezione I/O","Si è verificata una Eccezione di I/O.");

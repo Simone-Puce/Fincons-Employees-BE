@@ -5,10 +5,8 @@ public enum EmployeeHeaderXlsx {
     Nome(0),
     Cognome(1),
     Genere(2),
-
-    DataDiNascita(3),
-
-    Email(4),
+    Email(3),
+    DataDiNascita(4),
     DataDiInizio(5),
     DataDiFine(6),
     Dipartimento(7),
