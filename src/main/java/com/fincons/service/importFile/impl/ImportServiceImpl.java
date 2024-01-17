@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 @PropertySource("importfile.properties")
 @Service
 public class ImportServiceImpl implements ImportService {
@@ -98,7 +99,6 @@ public class ImportServiceImpl implements ImportService {
     }
 
 
-
     private void processReadResult(ImportFileDTO readResult, ImportResultDTO importResult) {
         //LISTA DEI DIPENDENTI
         List<EmployeeDTO> employeeList = readResult.getEmployeeList();
@@ -108,17 +108,11 @@ public class ImportServiceImpl implements ImportService {
 
         //1.--------CONTROLLO SE LA LISTA E' VUOTA PRIMA DI ESEGUIRE LE RESTANTI OPERAZIONI--------
         if (employeeList.isEmpty()) {
-              ImportErrorUtility.emptyFile(errorList, importResult);
-        } else {
-            //--------ITERAZIONE SULLA LISTA DEI DIPENDENTI PER RIPORTARE ERRORI RIGUARDANTI LA VALIDAZIONE--------
-            for (EmployeeDTO employee : employeeList) {
-                /*
-                List<ErrorDetail> error = EmployeeDataValidator.isValidEmployee(employee);
-                employeesValidatedResult.addAll(error);
-                */
-                //--------SETTAGGIO DELLA LISTA GENERALE DI ERRORI CON QUELLI RISCONTRATI DURANTE LA VALIDAZIONE--------
+            ImportErrorUtility.emptyFile(errorList, importResult);
+        } else { //SE NON è VUOTA  SI CONTINUA CON TUTTO IL PROCESSO
+            //--------ITERAZIONE SULLA LISTA DEI DIPENDENTI PER VALIDARE I RISPETTIVI CAMPI RIPORTANDO EVENTUALI ERRORI NELL'APPOSITA LISTA--------
+            for (EmployeeDTO employee : employeeList)
                 errorList.addAll(EmployeeDataValidator.isValidEmployee(employee));
-            }
 
             // CONTROLLO DELLA PRESENZA DI ERRORI BLOCCANTI, SE PRESENTI, VENGONO RIMOSSI I RECORD INTERESSATI
             Iterator<EmployeeDTO> iterator = employeeList.iterator();
@@ -133,19 +127,27 @@ public class ImportServiceImpl implements ImportService {
 
             // 2.--------CONTROLLO SE LA LISTA E' VUOTA DOPO LE VALIDAZIONI--------
             if (employeeList.isEmpty()) {
-               ImportErrorUtility.emptyListAfterValidation(errorList, importResult);
+                ImportErrorUtility.emptyListAfterValidation(errorList, importResult);
             } else {
 
                 //Si passa alla persistenza degli impiegati, ritornando eventualmente una lista di errori se qualche dipendente è già presente.
-                //E SETTO NELLA LISTA GENERICA DI ERRORI, I DUPLICATI TROVATI DURANTE L'INSERIMENTO NEL DB.
-                errorList.addAll(persistenceEmployeeService.addIfNotPresent(employeeList));
-
+                //SETTANDO IN UNA APPOSITA LISTA, I DUPLICATI TROVATI DURANTE L'INSERIMENTO NEL DB.
+                List<ErrorDetailDTO> duplicatedEmployee = persistenceEmployeeService.addIfNotPresent(employeeList);
+                //setto la lista generale per ritornarla comunque nel corpo della risposta di tutti gli errori
+                errorList.addAll(duplicatedEmployee);
 
                 // Aggiorna l'oggetto ImportResult con gli errori riscontrati nel processo di importazione
                 importResult.setErrors(errorList);
 
                 if (importResult.getErrors().size() > 0 && employeeList.size() > 0) {
-                    importResult.setStatus(ProcessingStatus.LOADED_WITH_ERRORS);
+                    //se vengono trovati N dipendenti duplicati tanto quanti N dipendenti da aggiungere
+                    //l'import result sarà not loaded dato che nessun dipendente verrà aggiunto al db.
+                    if (duplicatedEmployee.size() == employeeList.size()) {
+                        importResult.setStatus(ProcessingStatus.NOT_LOADED);
+                    } else {
+                        importResult.setStatus(ProcessingStatus.LOADED_WITH_ERRORS);
+                    }
+
                 } else if (importResult.getErrors().size() == 0 && employeeList.size() > 0) {
                     importResult.setStatus(ProcessingStatus.LOADED);
                 } else if (importResult.getErrors().size() == 0 && employeeList.size() == 0) {
@@ -154,10 +156,13 @@ public class ImportServiceImpl implements ImportService {
                     importResult.setStatus(ProcessingStatus.NOT_LOADED);
                 }
                 importResult.setEndProcessingDate(ImportServiceDateUtility.generateDate());
-            }
         }
 
+
+        }
     }
 
-
 }
+
+
+

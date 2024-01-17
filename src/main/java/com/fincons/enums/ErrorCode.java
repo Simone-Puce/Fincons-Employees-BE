@@ -16,9 +16,10 @@ public enum ErrorCode {
 
     INVALID_NAME_SURNAME(1503, Gravity.WARNING, "Campo non valido", "Il campo inserito non è valido, controlla che non ci siano numeri e/o caratteri speciali"),
 
-    INVALID_ROW(1504, Gravity.BLOCKING, "Campi non validi", "La riga non risulta valida e verrà ignorata perché si è verificato un errore in tutti i campi"),
+    INVALID_GENRE(1504, Gravity.WARNING, "Campo 'Genere' non valido", "Il campo 'Genere' inserito non è valido, deve corrispondere ai seguenti valori (M= Maschio, F=Femmina, O=Other)"),
+    INVALID_ROW(1505, Gravity.BLOCKING, "Campi non validi", "La riga non risulta valida e verrà ignorata perché i campi fondamentali non rispettano i giusti criteri."),
 
-    EMPTY_LIST_AFTER_VALIDATION(1505, Gravity.BLOCKING, "Nessun dipendente da aggiungere", "La lista dei dipendenti dopo la validazione, risulta vuota."),
+    EMPTY_LIST_AFTER_VALIDATION(1506, Gravity.BLOCKING, "Nessun dipendente da aggiungere", "La lista dei dipendenti dopo la validazione, risulta vuota."),
 
     //----------------------------PER I FILE-------------------------
     UNEXPECTED_FORMAT(2001, Gravity.BLOCKING, "Formato sbagliato", "Formato file non supportato. "),
@@ -27,7 +28,7 @@ public enum ErrorCode {
     FILE_NOT_FOUND(2004, Gravity.BLOCKING, "File non trovato", "file non trovati"),
     ERROR_OPEN_FILE(20010, Gravity.BLOCKING, "Errore sul file","Errore durante l'apertura o la lettura del file. "),
 
-    ERROR_READING_FILE_DATE(20011, Gravity.BLOCKING, "Errore sul file in lettura","Errore sul formato dei numeri e/o delle date."),
+    ERROR_READING_FILE_NUMBER(20011, Gravity.BLOCKING, "Errore formato numerico sul file in lettura","Errore durante la lettura del file. Controllare che i campi nel file siano corretti. (Numeri e Date)."),
 
     //----------------------------PER ERRORI GENERICI DI SISTEMA-------------------------
     ERROR_IO(5001, Gravity.BLOCKING, "Eccezione I/O","Si è verificata una Eccezione di I/O.");

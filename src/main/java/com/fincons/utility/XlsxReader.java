@@ -15,7 +15,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -99,13 +98,11 @@ public class XlsxReader implements ImportFileReader {
 
                     String dep= getCellValue(row.getCell(EmployeeHeaderXlsx.Dipartimento.getIndex()));
                     Department dipartimento = new Department();
-                    dipartimento.setId(Long.parseLong(dep));
+                    dipartimento.setId(Math.round(Double.parseDouble(dep)));
 
                     String pos =getCellValue(row.getCell(EmployeeHeaderXlsx.Posizione.getIndex()));
                     Position posizione = new Position();
-                    posizione.setId(Long.parseLong(pos));
-
-                    //(nome, cognome, genere,dataDiNascita,email,dataDiInizio,dataDiFine,dipartimento, posizione);
+                    posizione.setId(Math.round(Double.parseDouble(dep)));
 
 
                     // Crea un oggetto EmployeeDto con i valori ottenuti
@@ -116,7 +113,7 @@ public class XlsxReader implements ImportFileReader {
                 }
             }
         } catch (NumberFormatException e) {
-            errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_READING_FILE_DATE));
+            errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_READING_FILE_NUMBER));
         }catch (IOException e) {
             LOGGER.error("Si è verificata una eccezione di I/O", e);
             errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_IO));

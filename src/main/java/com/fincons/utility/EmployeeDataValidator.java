@@ -18,7 +18,7 @@ public class EmployeeDataValidator {
         List<ErrorDetailDTO> validationResultList = new ArrayList<>();
 
 
-        //controllo se una riga è totalmente errata
+        //controllo sui campi fondamentali: Nome,Cognome ed Email
         if ( (!isValidEmail(employeeToValidate.getEmail())) && (!isValidNameSurname(employeeToValidate.getFirstName())) && (!isValidNameSurname(employeeToValidate.getLastName())) ) {
             //se tutti e tre i campi non sono validi, aggiungi l'errore bloccante di riga interamente errata
             validationResultList.add(new ErrorDetailDTO(employeeToValidate.getRowNum(), "Name,Surname,Email", ErrorCode.INVALID_ROW));
@@ -38,6 +38,11 @@ public class EmployeeDataValidator {
         //Validazione cognome
         if (!isValidNameSurname(employeeToValidate.getLastName())) {
             validationResultList.add(new ErrorDetailDTO(employeeToValidate.getRowNum(), "Surname", ErrorCode.INVALID_NAME_SURNAME));
+        }
+
+        //Validazione genere
+        if (!isValidGenre(employeeToValidate.getGender())) {
+            validationResultList.add(new ErrorDetailDTO(employeeToValidate.getRowNum(), "Genere", ErrorCode.INVALID_GENRE));
         }
 
         return validationResultList;
@@ -75,4 +80,19 @@ public class EmployeeDataValidator {
         }
 
     }
+
+
+    private static boolean isValidGenre(String genre) {
+        if (!StringUtils.hasText(genre)) {
+            return false;
+        }
+
+        if (genre.equalsIgnoreCase("M") || genre.equalsIgnoreCase("F") || genre.equalsIgnoreCase("O")) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
 }
