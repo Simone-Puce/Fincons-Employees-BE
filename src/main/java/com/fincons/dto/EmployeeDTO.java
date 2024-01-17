@@ -1,10 +1,9 @@
 package com.fincons.dto;
 
-import com.fincons.entity.Department;
-import com.fincons.entity.Position;
-import com.fincons.entity.Project;
+import com.fincons.entity.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 public class EmployeeDTO {
@@ -20,9 +19,10 @@ public class EmployeeDTO {
     private Department department;
     private Position position;
     private Set<Project> projects;
+    private List<File> fileList;
 
 
-    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects) {
+    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects, List<File> fileList) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -34,10 +34,11 @@ public class EmployeeDTO {
         this.department = department;
         this.position = position;
         this.projects = projects;
+        this.fileList = fileList;
     }
 
 
-    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate) {
+    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, List<File> fileList) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -46,6 +47,7 @@ public class EmployeeDTO {
         this.birthDate = birthDate;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.fileList = fileList;
     }
 
     public Long getId() {
@@ -131,5 +133,13 @@ public class EmployeeDTO {
 
     public void setProjects(Set<Project> projects) {
         this.projects = projects;
+    }
+
+    public List<File> getFileList() {
+        return fileList;
+    }
+
+    public void setFileList(List<File> fileList) {
+        this.fileList = fileList;
     }
 }

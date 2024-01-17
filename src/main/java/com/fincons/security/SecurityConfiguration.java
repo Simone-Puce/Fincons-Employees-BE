@@ -50,6 +50,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/company-employee-management/v1/employee/**").hasRole("USER")
                         .requestMatchers("/company-employee-management/v1/position/**").hasRole("USER")
                         .requestMatchers("/company-employee-management/v1/project/**").hasRole("USER")
+                        .requestMatchers("/company-employee-management/v1/file/**").hasRole("USER")
 
 
                         //Auth for Login/Reg

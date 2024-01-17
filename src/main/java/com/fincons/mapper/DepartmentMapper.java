@@ -23,7 +23,7 @@ public class DepartmentMapper {
         List<EmployeeDTO> employeeDTOList = new ArrayList<>();
 
         department.getEmployees().forEach( employee ->
-                employeeDTOList.add(employeeMapper.mapEmployee(employee))
+                employeeDTOList.add(employeeMapper.mapEmployeeToEmployeeDto(employee))
         );
         return new DepartmentDTO(
                 department.getId(),

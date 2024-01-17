@@ -50,7 +50,7 @@ public class JobScheduler {
     }
 
 
-    //@Scheduled(cron = "${jobScheduler.JobScheduler.newRandomEmployee}")
+    @Scheduled(cron = "${jobScheduler.JobScheduler.newRandomEmployee}")
     public void newEmployeeRandom() throws IllegalArgumentException {
         logger.info("Creating new employees...");
         iCreateNewEmployeeRandom.createNewRandomEmployee(5);
