@@ -67,4 +67,5 @@ public class DepartmentDTO {
     public void setEmployees(List<EmployeeDTO> employees) {
         this.employees = employees;
     }
+
 }

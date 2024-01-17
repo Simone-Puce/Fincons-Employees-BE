@@ -41,7 +41,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public ResponseEntity<Object> getDepartmentById(long id) {
 
         Department existingDepartment = validateDepartmentById(id);
-        DepartmentDTO departmentDTO = departmentMapper.mapDepartmentWithoutEmployee(existingDepartment);
+        DepartmentDTO departmentDTO = departmentMapper.mapDepartment(existingDepartment);
 
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Found department with ID " + id + ".",
@@ -160,7 +160,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                 idDepartmentForEmployee);
     }
 
-    private Department validateDepartmentById(long id){
+    public Department validateDepartmentById(long id){
         Department existingDepartment = departmentRepository.findById(id);
 
         if(Objects.isNull(existingDepartment)){
@@ -169,7 +169,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         return existingDepartment;
     }
 
-    private void validateDepartmentFields(Department department){
+    public void validateDepartmentFields(Department department){
         //If one field is true run Exception
         if (Strings.isEmpty(department.getName())||
                 Strings.isEmpty(department.getAddress()) ||
@@ -177,7 +177,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             throw new IllegalArgumentException("The fields of the Department can't be null or empty");
         }
     }
-    private void checkForDuplicateDepartment(Department department, List<Department> departments){
+    public void checkForDuplicateDepartment(Department department, List<Department> departments){
         for (Department department1 : departments) {
             if (department1.getName().equals(department.getName())) {
                 throw new IllegalArgumentException("Department with the same name, already exists");

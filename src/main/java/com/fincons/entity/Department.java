@@ -2,6 +2,7 @@ package com.fincons.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fincons.dto.EmployeeDTO;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "department")
 public class Department {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +43,13 @@ public class Department {
         this.address = address;
     }
 
+    public Department(String name, String address, String city) {
+        this.name = name;
+        this.address = address;
+        this.city = city;
+    }
+
+
 
     public List<Employee> getEmployees() {
         return employees;
@@ -48,6 +57,10 @@ public class Department {
 
     public void setEmployees(List<Employee> employees) {
         this.employees = employees;
+    }
+
+    public void addEmployees(Employee employees){
+        this.employees.add(employees);
     }
 
     public Long getId() {

@@ -86,6 +86,19 @@ public class Employee {
         this.projects = projects;
     }
 
+    public Employee(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Position position) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.email = email;
+        this.birthDate = birthDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.department = department;
+        this.position = position;
+    }
+
     public Long getId() {
         return id;
     }

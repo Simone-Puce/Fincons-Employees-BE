@@ -17,7 +17,6 @@ public class Position {
     @Column
     private Double salary;
 
-
     @OneToMany(
             mappedBy = "position",
             fetch = FetchType.LAZY)
@@ -41,6 +40,12 @@ public class Position {
     }
 
     public Position() {
+    }
+
+    public Position(Long id, String name, Double salary) {
+        this.id = id;
+        this.name = name;
+        this.salary = salary;
     }
 
     public Long getId() {
