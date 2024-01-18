@@ -6,14 +6,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EmployeeMapper {
-    public EmployeeDTO mapEmployee(Employee employee){
+    public EmployeeDTO mapEmployeeToEmployeeDto(Employee employee){
         return new EmployeeDTO(
                 employee.getId(),
                 employee.getFirstName(),
                 employee.getLastName(),
                 employee.getGender(),
-                employee.getEmail(),
                 employee.getBirthDate(),
+                employee.getEmail(),
                 employee.getStartDate(),
                 employee.getEndDate(),
                 employee.getDepartment(),

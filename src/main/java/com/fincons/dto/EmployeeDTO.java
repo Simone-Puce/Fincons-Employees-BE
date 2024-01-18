@@ -1,8 +1,6 @@
 package com.fincons.dto;
 
-import com.fincons.entity.Department;
-import com.fincons.entity.Position;
-import com.fincons.entity.Project;
+import com.fincons.entity.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,8 +23,7 @@ public class EmployeeDTO {
     private List<File> fileList;
 
 
-    public EmployeeDTO(Long id, String firstName, String lastName, String gender, LocalDate birthDate, String email, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects, List<CertificateEmployee> certificates) {
-    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects, List<File> fileList) {
+    public EmployeeDTO(Long id, String firstName, String lastName, String gender, LocalDate birthDate, String email, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects, List<CertificateEmployee> certificates, List<File> fileList) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

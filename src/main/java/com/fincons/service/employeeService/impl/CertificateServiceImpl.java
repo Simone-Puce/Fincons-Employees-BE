@@ -71,6 +71,6 @@ public class CertificateServiceImpl implements CertificateService {
             throw new ServiceException("Certificate not found for this id");
         }
         certificateRepository.delete(findCertificate);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("Certificate employee deleted", HttpStatus.OK);
     }
 }
