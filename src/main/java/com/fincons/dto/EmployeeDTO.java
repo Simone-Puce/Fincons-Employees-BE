@@ -19,6 +19,7 @@ public class EmployeeDTO {
     private Department department;
     private Position position;
     private Set<Project> projects;
+    private List<CertificateEmployee> certificates;
     private List<File> fileList;
 
     private long rowNum;
@@ -37,7 +38,7 @@ public class EmployeeDTO {
     }
 
 
-    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects, List<File> fileList) {
+    public EmployeeDTO(Long id, String firstName, String lastName, String gender, LocalDate birthDate, String email, LocalDate startDate, LocalDate endDate, Department department, Position position, Set<Project> projects, List<CertificateEmployee> certificates, List<File> fileList) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -49,6 +50,7 @@ public class EmployeeDTO {
         this.department = department;
         this.position = position;
         this.projects = projects;
+        this.certificates = certificates;
         this.fileList = fileList;
     }
 
@@ -148,6 +150,14 @@ public class EmployeeDTO {
 
     public void setProjects(Set<Project> projects) {
         this.projects = projects;
+    }
+
+    public List<CertificateEmployee> getCertificates() {
+        return certificates;
+    }
+
+    public void setCertificates(List<CertificateEmployee> certificates) {
+        this.certificates = certificates;
     }
 
     public List<File> getFileList() {
