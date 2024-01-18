@@ -1,5 +1,6 @@
 package com.fincons.service.authService;
 
+import com.fincons.auth.CustomAuthenticationProvider;
 import com.fincons.dto.RoleDTO;
 import com.fincons.dto.UserDTO;
 import com.fincons.entity.Role;
@@ -25,21 +26,18 @@ import java.util.List;
 @Service
 public class UserServiceImpl  implements UserService{
 
-    public UserServiceImpl(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
+    public UserServiceImpl(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder, CustomAuthenticationProvider customAuthenticationProvider, JwtTokenProvider jwtTokenProvider) {
         this.roleRepo = roleRepo;
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
+        this.customAuthenticationProvider = customAuthenticationProvider;
         this.jwtTokenProvider = jwtTokenProvider;
     }
-
+    private CustomAuthenticationProvider customAuthenticationProvider;
     private RoleRepository roleRepo;
-
     private UserRepository userRepo;
-
     private PasswordEncoder passwordEncoder;
 
-    private AuthenticationManager authenticationManager;
 
     @Bean
     public ModelMapper modelMapper() {
@@ -78,7 +76,7 @@ public class UserServiceImpl  implements UserService{
 
     @Override
     public String login(LoginDto loginDto) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+        Authentication authentication = customAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getEmail(),
                 loginDto.getPassword()
         ));
