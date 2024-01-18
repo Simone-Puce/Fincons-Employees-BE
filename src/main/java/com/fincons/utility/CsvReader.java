@@ -85,36 +85,53 @@ public class CsvReader implements ImportFileReader {
 
                 CSVRecord record = fileIterator.next();
 
+                long lineNumber=record.getRecordNumber()+1;
                 //PER OGNI RECORD PRENDI GLI ATTRIBUTI
                 String nome = record.get(EmployeeHeaderCsv.Nome);
                 String cognome = record.get(EmployeeHeaderCsv.Cognome);
                 String genere = record.get(EmployeeHeaderCsv.Genere);
 
-                String dataNascita = record.get(EmployeeHeaderCsv.DataDiNascita);
-                LocalDate dataDiNascita = LocalDate.parse(dataNascita,formatter);
+                LocalDate dataDiNascita=null,dataDiInizio=null,dataDiFine=null;
 
+                String dataNascita = record.get(EmployeeHeaderCsv.DataDiNascita);
+                if (EmployeeDataValidator.isValidDate(dataNascita)) {
+                     dataDiNascita = LocalDate.parse(dataNascita, formatter);
+                }else{
+                    errorReadingList.add(new ErrorDetailDTO(lineNumber, "Data Di Nascita", ErrorCode.INVALID_DATE));
+                    continue;
+                }
 
 
                 String email = record.get(EmployeeHeaderCsv.Email);
 
                 String dataInizio = record.get(EmployeeHeaderCsv.DataInizio);
-                LocalDate dataDiInizio = LocalDate.parse(dataInizio,formatter);
-
+                if (EmployeeDataValidator.isValidDate(dataInizio)) {
+                     dataDiInizio = LocalDate.parse(dataInizio, formatter);
+                }else{
+                    errorReadingList.add(new ErrorDetailDTO(lineNumber, "Data Di Inizio", ErrorCode.INVALID_DATE));
+                    continue;
+                }
                 String dataFine = record.get(EmployeeHeaderCsv.DataFine);
-                LocalDate dataDiFine = LocalDate.parse(dataFine,formatter);
+                if (EmployeeDataValidator.isValidDate(dataFine)) {
+                     dataDiFine = LocalDate.parse(dataFine, formatter);
+                }else{
+                    errorReadingList.add(new ErrorDetailDTO(lineNumber, "Data Di Nascita", ErrorCode.INVALID_DATE));
+                    continue;
+                }
+
 
                 String dep = record.get(EmployeeHeaderCsv.Dipartimento);
-                Department dipartimento= new Department();
+                Department dipartimento = new Department();
                 dipartimento.setId(Long.parseLong(dep));
 
-                String pos= record.get(EmployeeHeaderCsv.Posizione);
+                String pos = record.get(EmployeeHeaderCsv.Posizione);
                 Position posizione = new Position();
                 posizione.setId(Long.parseLong(pos));
 
 
                 //CREA UN EMPLOYEE DTO
-                EmployeeDTO personToAdd = new EmployeeDTO(nome, cognome, genere,dataDiNascita,email,dataDiInizio,dataDiFine,dipartimento, posizione);
-                personToAdd.setRowNum(record.getRecordNumber() + 1);
+                EmployeeDTO personToAdd = new EmployeeDTO(nome, cognome, genere, dataDiNascita, email, dataDiInizio, dataDiFine, dipartimento, posizione);
+                personToAdd.setRowNum(lineNumber);
                 //AGGIUNGILO ALLA LISTA
                 employeeToAdd.add(personToAdd);
             }

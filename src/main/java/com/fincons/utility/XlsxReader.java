@@ -15,6 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -64,7 +65,7 @@ public class XlsxReader implements ImportFileReader {
             int readCount = 0;
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 readCount++;
-
+                System.out.println("lastrownum: " + sheet.getLastRowNum());
                 if (readCount > maxRows) {
                     LOGGER.warn("Il numero di righe nel file supera il limite massimo consentito. maxrows: " + maxRows);
                     errorReadingList.add(new ErrorDetailDTO(ErrorCode.MAXIMUM_ROWS));
@@ -72,55 +73,77 @@ public class XlsxReader implements ImportFileReader {
                 }
 
                 Row row = sheet.getRow(i);
-                int rowNum = row.getRowNum();
-                data.put(rowNum, new ArrayList<>());
+                int lineNumber = row.getRowNum()+1;
+                data.put(lineNumber, new ArrayList<>());
 
                 // Verifica se la riga è non è nulla
                 if (row != null) {
                     // Ottieni i valori delle celle usando l'enumeratore EmployeeHeaderXlsx
                     String nome = getCellValue(row.getCell(EmployeeHeaderXlsx.Nome.getIndex()));
                     String cognome = getCellValue(row.getCell(EmployeeHeaderXlsx.Cognome.getIndex()));
-                    String genere= getCellValue(row.getCell(EmployeeHeaderXlsx.Genere.getIndex()));
+                    String genere = getCellValue(row.getCell(EmployeeHeaderXlsx.Genere.getIndex()));
+
+                    LocalDate dataDiNascita = null, dataDiInizio = null, dataDiFine = null;
+
 
                     String dataNascita = getCellValue(row.getCell(EmployeeHeaderXlsx.DataDiNascita.getIndex()));
-                    double data1 = Double.parseDouble(dataNascita);
-                    LocalDate dataDiNascita= DateUtil.getLocalDateTime(data1).toLocalDate();
+                    if (EmployeeDataValidator.isValidDateExcelFile(dataNascita)) {
+                        dataDiNascita= processData(dataNascita);
+                    }else{
+                        errorReadingList.add(new ErrorDetailDTO(lineNumber, "Data Di Nascita", ErrorCode.INVALID_DATE));
+                        continue;
+                    }
 
                     String email = getCellValue(row.getCell(EmployeeHeaderXlsx.Email.getIndex()));
 
-                    String dataInizio=getCellValue(row.getCell(EmployeeHeaderXlsx.DataDiInizio.getIndex()));
-                    double data2 = Double.parseDouble(dataInizio);
-                    LocalDate dataDiInizio= DateUtil.getLocalDateTime(data2).toLocalDate();
 
-                    String dataFine= getCellValue(row.getCell(EmployeeHeaderXlsx.DataDiFine.getIndex()));
-                    double data3 = Double.parseDouble(dataFine);
-                    LocalDate dataDiFine= DateUtil.getLocalDateTime(data3).toLocalDate();
+                    String dataInizio = getCellValue(row.getCell(EmployeeHeaderXlsx.DataDiInizio.getIndex()));
+                    if (EmployeeDataValidator.isValidDateExcelFile(dataInizio)) {
+                        dataDiInizio =processData(dataInizio);
+                    }else{
+                        errorReadingList.add(new ErrorDetailDTO(lineNumber, "Data Di Inizio", ErrorCode.INVALID_DATE));
+                        continue;
+                    }
 
-                    String dep= getCellValue(row.getCell(EmployeeHeaderXlsx.Dipartimento.getIndex()));
+
+                    String dataFine = getCellValue(row.getCell(EmployeeHeaderXlsx.DataDiFine.getIndex()));
+                    if (EmployeeDataValidator.isValidDateExcelFile(dataFine)) {
+                        dataDiFine =processData(dataFine);
+                    }else{
+                        errorReadingList.add(new ErrorDetailDTO(lineNumber, "Data Di Fine", ErrorCode.INVALID_DATE));
+                        continue;
+                    }
+
+                    String dep = getCellValue(row.getCell(EmployeeHeaderXlsx.Dipartimento.getIndex()));
                     Department dipartimento = new Department();
                     dipartimento.setId(Math.round(Double.parseDouble(dep)));
 
-                    String pos =getCellValue(row.getCell(EmployeeHeaderXlsx.Posizione.getIndex()));
+                    String pos = getCellValue(row.getCell(EmployeeHeaderXlsx.Posizione.getIndex()));
                     Position posizione = new Position();
                     posizione.setId(Math.round(Double.parseDouble(dep)));
 
 
                     // Crea un oggetto EmployeeDto con i valori ottenuti
-                    EmployeeDTO employeeDto = new EmployeeDTO(nome, cognome, genere,dataDiNascita,email,dataDiInizio,dataDiFine,dipartimento,posizione);
-                    employeeDto.setRowNum(row.getRowNum() + 1);
+                    EmployeeDTO employeeDto = new EmployeeDTO(nome, cognome, genere, dataDiNascita, email, dataDiInizio, dataDiFine, dipartimento, posizione);
+                    employeeDto.setRowNum(lineNumber);
                     // Aggiungi l'oggetto EmployeeDto alla lista
                     employeeToAdd.add(employeeDto);
                 }
             }
         } catch (NumberFormatException e) {
             errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_READING_FILE_NUMBER));
-        }catch (IOException e) {
+        } catch (IOException e) {
             LOGGER.error("Si è verificata una eccezione di I/O", e);
             errorReadingList.add(new ErrorDetailDTO(ErrorCode.ERROR_IO));
         }
         return new ImportFileDTO(employeeToAdd, errorReadingList);
     }
 
+    private LocalDate processData(String data){
+        double doubleDta = Double.parseDouble(data);
+        LocalDate processData = DateUtil.getLocalDateTime(doubleDta).toLocalDate();
+        return processData;
+    }
 
     private String getCellValue(Cell cell) {
         if (cell == null) {
