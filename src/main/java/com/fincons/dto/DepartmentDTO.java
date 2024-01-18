@@ -1,6 +1,5 @@
 package com.fincons.dto;
 
-import com.fincons.entity.Employee;
 
 import java.util.List;
 
