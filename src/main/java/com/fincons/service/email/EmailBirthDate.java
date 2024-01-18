@@ -17,7 +17,7 @@ import java.util.function.Predicate;
 public class EmailBirthDate implements IEmailBirthDate {
     Logger logger = LoggerFactory.getLogger(EmailBirthDate.class);
     public static final Predicate<Employee> emailNotEmpty = employee -> !employee.getEmail().isEmpty();
-    public static final Predicate<Employee> emailCorrectFormat = employee -> employee.getEmail().matches("^[a-zA-Z]+\\.[a-zA-Z]+@gmail\\.com$");
+    public static final Predicate<Employee> emailCorrectFormat = employee -> employee.getEmail().matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
     public static final String EMAIL_SUBJECT_BIRTHDATE = "Happy Birthdate!";
     public static final String EMAIL_CONTENT_BIRTHDATE = "We wish you a fantastic birthday full of joy!";
     private static final String EMAIL_SUBCONTENT_HIREDATE = "You are a shining example of how hard work can lead to meaningful results. We would like to wish you a happy anniversary in our company!";

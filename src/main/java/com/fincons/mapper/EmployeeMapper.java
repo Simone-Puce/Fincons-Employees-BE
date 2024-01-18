@@ -12,13 +12,14 @@ public class EmployeeMapper {
                 employee.getFirstName(),
                 employee.getLastName(),
                 employee.getGender(),
-                employee.getEmail(),
                 employee.getBirthDate(),
+                employee.getEmail(),
                 employee.getStartDate(),
                 employee.getEndDate(),
                 employee.getDepartment(),
                 employee.getPosition(),
                 employee.getProjects(),
+                employee.getCertificates(),
                 employee.getFileList());
     }
 
