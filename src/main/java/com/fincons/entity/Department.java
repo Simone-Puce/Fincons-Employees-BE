@@ -1,11 +1,14 @@
 package com.fincons.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.Objects;
+
+
 
 @Entity
 @Table(name = "department")
@@ -25,6 +28,7 @@ public class Department {
             mappedBy = "department",
             fetch = FetchType.LAZY)
     @JsonManagedReference(value = "department-employee")
+    @JsonIgnore
     private List<Employee> employees;
     public Department() {
     }

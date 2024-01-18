@@ -77,6 +77,7 @@ public class Employee {
 
 
     @JsonManagedReference(value = "file-employee")
+    @JsonIgnore
     @OneToMany(
             mappedBy = "empId",
             fetch = FetchType.LAZY)

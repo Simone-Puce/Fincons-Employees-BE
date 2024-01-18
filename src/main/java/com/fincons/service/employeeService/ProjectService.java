@@ -10,7 +10,7 @@ public interface ProjectService {
     ResponseEntity<Object> getProjectById(long id);
     ResponseEntity<Object> getAllProjects();
     ResponseEntity<Object> createProject(Project project);
-    ResponseEntity<Object> updateProjectById(long id, Project project) throws Exception;
+    ResponseEntity<Object> updateProjectById(long id, Project project);
     ResponseEntity<Object> deleteProjectById(long id);
 
 }

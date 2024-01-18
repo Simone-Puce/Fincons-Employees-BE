@@ -73,7 +73,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ResponseEntity<Object> updateProjectById(long id, Project project) throws Exception {
+    public ResponseEntity<Object> updateProjectById(long id, Project project) {
         
 
         //Condition for not have null attributes
@@ -101,7 +101,7 @@ public class ProjectServiceImpl implements ProjectService {
         for (Project p : projectstWithoutDepartmentIdChosed ) {
             if(p.getName().equals(existingProject.getName())
             ){
-                throw new Exception("The project existing yet");
+                throw new IllegalArgumentException("The project existing yet");
             }else{
                 projectRepository.save(existingProject);
             }

@@ -4,7 +4,6 @@ import com.fincons.dto.DepartmentDTO;
 import com.fincons.dto.EmployeeDTO;
 import com.fincons.entity.Department;
 import com.fincons.entity.Employee;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.ArrayList;
@@ -16,14 +15,13 @@ public class DepartmentMapper {
     @Autowired
     private EmployeeMapper employeeMapper;
 
-    public DepartmentDTO mapDepartment(Department department) {
+    public DepartmentDTO mapDepartmentToDepartmentDto(Department department) {
         if (department.getEmployees() == null) {
             return new DepartmentDTO(
                         department.getName(),
                         department.getAddress(),
                         department.getCity()
             );
-
         } else {
             List<EmployeeDTO> employeeDTOList = new ArrayList<>();
 
@@ -37,6 +35,5 @@ public class DepartmentMapper {
                     department.getCity(),
                     employeeDTOList);
         }
-
     }
 }
