@@ -76,7 +76,7 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public ResponseEntity<Object> updatePositionById(long id, Position position) throws Exception {
+    public ResponseEntity<Object> updatePositionById(long id, Position position) {
 
         //Condition for not have null attributes
         validatePositionFields(position);
@@ -105,7 +105,7 @@ public class PositionServiceImpl implements PositionService {
             if(p.getName().equals(existingPosition.getName()) &&
                     p.getSalary().equals(existingPosition.getSalary())
             ){
-                throw new Exception("The position existing yet");
+                throw new IllegalArgumentException("The position existing yet");
             }
             else {
                 positionRepository.save(existingPosition);
@@ -121,7 +121,9 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public ResponseEntity<Object> deletePositionById(long id) {
-        getPositionById(id);
+        List<Position> positions = positionRepository.findAll();
+
+        Position position = validatePositionById(id);
         positionRepository.deleteById(id);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Position with ID "+ id +" has been successfully deleted!",

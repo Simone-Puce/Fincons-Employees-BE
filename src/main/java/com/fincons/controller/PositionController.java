@@ -27,7 +27,7 @@ public class PositionController {
         return positionService.createPosition(position);
     }
     @PutMapping(value = "/update")
-    public ResponseEntity<Object> updatePositionById(@RequestParam long id, @RequestBody Position position) throws Exception {
+    public ResponseEntity<Object> updatePositionById(@RequestParam long id, @RequestBody Position position) {
         return positionService.updatePositionById(id, position);
     }
     @DeleteMapping(value = "/delete")

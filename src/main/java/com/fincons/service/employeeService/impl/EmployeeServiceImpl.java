@@ -1,5 +1,6 @@
 package com.fincons.service.employeeService.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fincons.Handler.ResponseHandler;
 import com.fincons.dto.EmployeeDTO;
 import com.fincons.dto.ProjectDTO;
@@ -52,8 +53,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public ResponseEntity<Object> getEmployeeById(long id) {
+
         Employee existingEmployee = validateEmployeeById(id);
         EmployeeDTO employeeDTO = employeeMapper.mapEmployeeToEmployeeDto(existingEmployee);
+
+
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Found employee with ID " + id + ".",
                 (HttpStatus.OK),
@@ -110,7 +114,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseEntity<Object> updateEmployeeById(long id, Employee employee) throws Exception {
+    public ResponseEntity<Object> updateEmployeeById(long id, Employee employee) {
 
         //Condition for not have null attributes
         validateEmployeeFields(employee);
@@ -149,7 +153,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         for (String s : employeesWithoutEmployeeIdChosed) {
             if(s.equals(existingEmployee.getEmail())){
-                throw new Exception("Email exist yet");
+                throw new IllegalArgumentException("Email exist yet");
             }else{
                 employeeRepository.save(existingEmployee);
             }

@@ -1,8 +1,6 @@
 package com.fincons.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.List;
 
 public class PositionDTO {
@@ -20,6 +18,11 @@ public class PositionDTO {
 
     public PositionDTO(Long id, String name, Double salary) {
         this.id = id;
+        this.name = name;
+        this.salary = salary;
+    }
+
+    public PositionDTO(String name, Double salary) {
         this.name = name;
         this.salary = salary;
     }

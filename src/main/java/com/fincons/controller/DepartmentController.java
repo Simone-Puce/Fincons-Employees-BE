@@ -33,7 +33,7 @@ public class DepartmentController {
         return departmentService.createDepartment(department);
     }
     @PutMapping(value = "/update")
-    public ResponseEntity<Object> updateDepartmentById(@RequestParam long id, @RequestBody Department department) throws Exception {
+    public ResponseEntity<Object> updateDepartmentById(@RequestParam long id, @RequestBody Department department) {
         return departmentService.updateDepartmentById(id, department);
     }
     @DeleteMapping(value = "/delete")

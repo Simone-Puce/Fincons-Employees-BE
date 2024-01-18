@@ -11,7 +11,7 @@ public interface DepartmentService {
     ResponseEntity<Object> getDepartmentById(long id);
     ResponseEntity<Object> getAllDepartment();
     ResponseEntity<Object> createDepartment(Department department);
-    ResponseEntity<Object> updateDepartmentById(long id, Department department) throws Exception;
+    ResponseEntity<Object> updateDepartmentById(long id, Department department);
     ResponseEntity<Object> deleteDepartmentById(long id);
     ResponseEntity<Object> getDepartmentEmployeesFindByIdDepartment(long id);
 

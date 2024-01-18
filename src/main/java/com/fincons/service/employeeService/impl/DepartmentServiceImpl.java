@@ -4,7 +4,6 @@ import com.fincons.Handler.ResponseHandler;
 import com.fincons.dto.DepartmentDTO;
 import com.fincons.entity.Department;
 import com.fincons.dto.EmployeeDepartmentDTO;
-import com.fincons.exception.DuplicateEmailException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.DepartmentMapper;
@@ -41,7 +40,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public ResponseEntity<Object> getDepartmentById(long id) {
 
         Department existingDepartment = validateDepartmentById(id);
-        DepartmentDTO departmentDTO = departmentMapper.mapDepartment(existingDepartment);
+        DepartmentDTO departmentDTO = departmentMapper.mapDepartmentToDepartmentDto(existingDepartment);
 
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Found department with ID " + id + ".",
@@ -56,7 +55,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         //Check if the list of department is empty
         for (Department department : departments) {
             if (department != null) {
-                DepartmentDTO departmentDTO = departmentMapper.mapDepartment(department);
+                DepartmentDTO departmentDTO = departmentMapper.mapDepartmentToDepartmentDto(department);
                 newListDepartment.add(departmentDTO);
             } else {
                 throw new IllegalArgumentException("There aren't Departments");
@@ -79,7 +78,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         //Condition if there are departments with name same
         checkForDuplicateDepartment(department, departments);
 
-        DepartmentDTO departmentDTO = departmentMapper.mapDepartment(department);
+        DepartmentDTO departmentDTO = departmentMapper.mapDepartmentToDepartmentDto(department);
         departmentRepository.save(department);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Department with ID "+ department.getId() +" has been successfully updated!",
@@ -88,7 +87,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 
     @Override
-    public ResponseEntity<Object> updateDepartmentById(long id, Department department) throws Exception {
+    public ResponseEntity<Object> updateDepartmentById(long id, Department department) {
 
 
         //Condition for not have null attributes
@@ -119,13 +118,13 @@ public class DepartmentServiceImpl implements DepartmentService {
                     d.getAddress().equals(existingDepartment.getAddress()) &&
                     d.getCity().equals(existingDepartment.getCity())
             ){
-                throw new Exception("The department existing yet");
+                throw new IllegalArgumentException("The department existing yet");
             }else{
                 departmentRepository.save(existingDepartment);
             }
         }
 
-        departmentDTO = departmentMapper.mapDepartment(department);
+        departmentDTO = departmentMapper.mapDepartmentToDepartmentDto(department);
 
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Department with ID "+ id +" has been successfully updated!",
@@ -136,7 +135,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public ResponseEntity<Object> deleteDepartmentById(long id) {
 
-        getDepartmentById(id);
+        validateDepartmentById(id);
         departmentRepository.deleteById(id);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Department with ID "+ id +" has been successfully deleted!",
@@ -146,7 +145,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public ResponseEntity<Object> getDepartmentEmployeesFindByIdDepartment(long id) {
-        getDepartmentById(id);
+        validateDepartmentById(id);
         List<EmployeeDepartmentDTO> idDepartmentForEmployee;
 
         idDepartmentForEmployee = departmentRepository.getDepartmentEmployeesFindByIdDepartment(id);

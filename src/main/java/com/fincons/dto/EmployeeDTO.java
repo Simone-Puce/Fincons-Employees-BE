@@ -1,5 +1,8 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fincons.entity.*;
 
 import java.time.LocalDate;
@@ -63,6 +66,22 @@ public class EmployeeDTO {
 
     public EmployeeDTO() {
     }
+
+
+    public EmployeeDTO(Long id, String firstName, String lastName, String gender, String email, LocalDate birthDate,  LocalDate startDate, LocalDate endDate, String departmentName, String departmentAddress, String departmentCity, Position position, Set<Project> projects, List<File> fileList) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.birthDate = birthDate;
+        this.email = email;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.position = position;
+        this.projects = projects;
+        this.fileList = fileList;
+    }
+
 
     public Long getId() {
         return id;
@@ -156,4 +175,5 @@ public class EmployeeDTO {
     public void setFileList(List<File> fileList) {
         this.fileList = fileList;
     }
+
 }

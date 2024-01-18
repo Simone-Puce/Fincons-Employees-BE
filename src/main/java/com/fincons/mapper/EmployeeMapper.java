@@ -1,12 +1,22 @@
 package com.fincons.mapper;
 
+import com.fincons.dto.DepartmentDTO;
 import com.fincons.dto.EmployeeDTO;
+import com.fincons.entity.Department;
 import com.fincons.entity.Employee;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class EmployeeMapper {
+
+
+
     public EmployeeDTO mapEmployeeToEmployeeDto(Employee employee){
+
         return new EmployeeDTO(
                 employee.getId(),
                 employee.getFirstName(),
