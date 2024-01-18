@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.List;
 import java.util.Set;
 
@@ -66,9 +68,14 @@ public class Employee {
                 @JoinColumn(name = "id_project", referencedColumnName = "id")
             }
     )
+
     private Set<Project> projects; //Lui punta alla tabella project
 
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<CertificateEmployee> certificates;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "empId", cascade = CascadeType.ALL)
     private List<File> fileList;
 
@@ -180,8 +187,32 @@ public class Employee {
     public List<File> getFileList() {
         return fileList;
     }
+    public List<CertificateEmployee> getCertificates() {
+        return certificates;
+    }
 
     public void setFileList(List<File> fileList) {
         this.fileList = fileList;
+    }
+    public void setCertificates(List<CertificateEmployee> certificates) {
+        this.certificates = certificates;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", gender='" + gender + '\'' +
+                ", email='" + email + '\'' +
+                ", birthDate=" + birthDate +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", department=" + department +
+                ", position=" + position +
+                ", projects=" + projects +
+                ", certificates=" + certificates +
+                '}';
     }
 }
