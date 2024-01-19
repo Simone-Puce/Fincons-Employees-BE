@@ -147,6 +147,9 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
         }
 
+        if(employeesWithoutEmployeeIdChosed.isEmpty()){
+            employeeRepository.save(existingEmployee);
+        }
         for (String s : employeesWithoutEmployeeIdChosed) {
             if(s.equals(existingEmployee.getEmail())){
                 throw new Exception("Email exist yet");

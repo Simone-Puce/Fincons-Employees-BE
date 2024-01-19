@@ -101,6 +101,9 @@ public class PositionServiceImpl implements PositionService {
             }
         }
 
+        if(positionsWithoutPositionIdChosed.isEmpty()){
+            positionRepository.save(existingPosition);
+        }
         for (Position p: positionsWithoutPositionIdChosed){
             if(p.getName().equals(existingPosition.getName()) &&
                     p.getSalary().equals(existingPosition.getSalary())
