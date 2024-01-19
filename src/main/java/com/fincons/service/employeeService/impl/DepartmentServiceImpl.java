@@ -112,6 +112,9 @@ public class DepartmentServiceImpl implements DepartmentService {
             }
         }
 
+        if(departmentsWithoutDepartmentIdChosed.isEmpty()){
+            departmentRepository.save(existingDepartment);
+        }
         for (Department d : departmentsWithoutDepartmentIdChosed ) {
             if(d.getName().equals(existingDepartment.getName()) &&
                     d.getAddress().equals(existingDepartment.getAddress()) &&

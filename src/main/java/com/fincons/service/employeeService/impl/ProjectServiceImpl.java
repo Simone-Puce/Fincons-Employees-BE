@@ -90,15 +90,17 @@ public class ProjectServiceImpl implements ProjectService {
         existingProject.setArea(project.getArea());
         existingProject.setPriority(project.getPriority());
 
-        List<Project> projectstWithoutDepartmentIdChosed = new ArrayList<>();
+        List<Project> projectstWithoutProjectIdChosed = new ArrayList<>();
 
         for ( Project p : projects ) {
             if(p.getId() != id){
-                projectstWithoutDepartmentIdChosed.add(p);
+                projectstWithoutProjectIdChosed.add(p);
             }
         }
-
-        for (Project p : projectstWithoutDepartmentIdChosed ) {
+        if(projectstWithoutProjectIdChosed.isEmpty()){
+            projectRepository.save(existingProject);
+        }
+        for (Project p : projectstWithoutProjectIdChosed) {
             if(p.getName().equals(existingProject.getName())
             ){
                 throw new IllegalArgumentException("The project existing yet");
