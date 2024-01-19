@@ -120,7 +120,7 @@ public class XlsxReader implements ImportFileReader {
 
                     String pos = getCellValue(row.getCell(EmployeeHeaderXlsx.Posizione.getIndex()));
                     Position posizione = new Position();
-                    posizione.setId(Math.round(Double.parseDouble(dep)));
+                    posizione.setId(Math.round(Double.parseDouble(pos)));
 
 
                     // Crea un oggetto EmployeeDto con i valori ottenuti
