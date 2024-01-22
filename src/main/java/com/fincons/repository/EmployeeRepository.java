@@ -28,11 +28,11 @@ public interface EmployeeRepository extends JpaRepository <Employee, Long> {
     )
     List<EmployeeProjectDTO> getAllEmployeeProject();
 
-    @Query("SELECT e FROM Employee e WHERE DAY(e.startDate) = DAY(:startDate) AND MONTH(e.startDate) = MONTH(:startDate)")
+    @Query("SELECT e FROM Employee e WHERE DAY(e.startDate) = DAY(CURRENT_DATE) AND MONTH(e.startDate) = MONTH(CURRENT_DATE)")
     List<Employee> findEmployeesByTodayStartDate(@Param("startDate") LocalDate startDate);
 
 
-    @Query("SELECT e FROM Employee e WHERE DAY(e.birthDate) = DAY(:birthDate) AND MONTH(e.birthDate) = MONTH(:birthDate)")
+    @Query("SELECT e FROM Employee e WHERE DAY(e.birthDate) = DAY(CURRENT_DATE) AND MONTH(e.birthDate) = MONTH(CURRENT_DATE)")
     List<Employee> findEmployeesByTodayBirthday(@Param("birthDate") LocalDate birthDate);
 
 
