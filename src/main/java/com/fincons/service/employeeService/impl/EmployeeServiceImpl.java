@@ -153,11 +153,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         if(employeesWithoutEmployeeIdChosed.isEmpty()){
             employeeRepository.save(existingEmployee);
         }
-        for (String s : employeesWithoutEmployeeIdChosed) {
-            if(s.equals(existingEmployee.getEmail())){
-                throw new IllegalArgumentException("Email exist yet");
-            }else{
-                employeeRepository.save(existingEmployee);
+        else {
+            for (String s : employeesWithoutEmployeeIdChosed) {
+                if (s.equals(existingEmployee.getEmail())) {
+                    throw new IllegalArgumentException("Email exist yet");
+                } else {
+                    employeeRepository.save(existingEmployee);
+                }
             }
         }
         employeeDTO = employeeMapper.mapEmployeeToEmployeeDto(employee);
