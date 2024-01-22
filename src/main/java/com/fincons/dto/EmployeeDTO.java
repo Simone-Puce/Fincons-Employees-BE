@@ -167,13 +167,4 @@ public class EmployeeDTO {
     public void setFileList(List<File> fileList) {
         this.fileList = fileList;
     }
-
-    public long getRowNum() {
-        return rowNum;
-    }
-
-    public void setRowNum(long rowNum) {
-        this.rowNum = rowNum;
-    }
-
 }
