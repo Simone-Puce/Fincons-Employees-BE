@@ -100,12 +100,14 @@ public class ProjectServiceImpl implements ProjectService {
         if(projectstWithoutProjectIdChosed.isEmpty()){
             projectRepository.save(existingProject);
         }
-        for (Project p : projectstWithoutProjectIdChosed) {
-            if(p.getName().equals(existingProject.getName())
-            ){
-                throw new IllegalArgumentException("The project existing yet");
-            }else{
-                projectRepository.save(existingProject);
+        else {
+            for (Project p : projectstWithoutProjectIdChosed) {
+                if (p.getName().equals(existingProject.getName())
+                ) {
+                    throw new IllegalArgumentException("The project existing yet");
+                } else {
+                    projectRepository.save(existingProject);
+                }
             }
         }
 

@@ -115,14 +115,16 @@ public class DepartmentServiceImpl implements DepartmentService {
         if(departmentsWithoutDepartmentIdChosed.isEmpty()){
             departmentRepository.save(existingDepartment);
         }
-        for (Department d : departmentsWithoutDepartmentIdChosed ) {
-            if(d.getName().equals(existingDepartment.getName()) &&
-                    d.getAddress().equals(existingDepartment.getAddress()) &&
-                    d.getCity().equals(existingDepartment.getCity())
-            ){
-                throw new IllegalArgumentException("The department existing yet");
-            }else{
-                departmentRepository.save(existingDepartment);
+        else {
+            for (Department d : departmentsWithoutDepartmentIdChosed ) {
+                if(d.getName().equals(existingDepartment.getName()) &&
+                        d.getAddress().equals(existingDepartment.getAddress()) &&
+                        d.getCity().equals(existingDepartment.getCity())
+                ){
+                    throw new IllegalArgumentException("The department existing yet");
+                }else{
+                    departmentRepository.save(existingDepartment);
+                }
             }
         }
 
