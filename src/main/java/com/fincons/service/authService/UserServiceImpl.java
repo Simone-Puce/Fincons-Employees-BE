@@ -8,11 +8,11 @@ import com.fincons.entity.User;
 import com.fincons.exception.DuplicateEmailException;
 import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.jwt.LoginDto;
-import com.fincons.service.authService.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +21,7 @@ import com.fincons.repository.UserRepository;
 import com.fincons.utility.EmailValidator;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -89,10 +90,41 @@ public class UserServiceImpl  implements UserService{
 
     @Override
     public UserDTO updateUser(String email, UserDTO userModified) throws Exception {
-        return null;
+
+        if(!email.isEmpty() && EmailValidator.isValidEmail(email)){
+
+            //Recupero l'user con la mail selezionata
+            User userToModify = userRepo.findByEmail(email);
+
+            //Setto il nuovo user
+            userToModify.setFirstName(userModified.getFirstName());
+            userToModify.setLastName(userModified.getLastName());
+            userToModify.setEmail(userModified.getEmail());
+            userToModify.setPassword(userModified.getPassword());
+
+            List<User> users = userRepo.findAll();
+
+            List<User> listUsersWithoutUserWithEmailChosed = new ArrayList<>();
+
+            // lista senza l'oggetto user con la mail
+            for (User s : users) {
+                if(!s.getEmail().equals(email)){
+                    listUsersWithoutUserWithEmailChosed.add(s);
+                }
+            }
+
+            for (User u : listUsersWithoutUserWithEmailChosed) {
+                if(u.getEmail().equals(email)) {
+                    throw new Exception("The Email exist yet");
+                }else {
+                    userRepo.save(userToModify);
+                }
+            }
+                 return userToUserDto(userToModify);
+        }else{
+            throw new Exception("There isn't user with this email!");
+        }
     }
-
-
 
     @Override
     public List<UserDTO> getAllUsers() {

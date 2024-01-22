@@ -80,11 +80,23 @@ public class UserController {
         try {
             UserDTO userToShow = userService.registerNewUser(userDTO, passwordForAdmin);
             return ResponseEntity.status(HttpStatus.CREATED).body(userToShow);
-
         }catch (DuplicateEmailException e) {
             return ResponseEntity.status(409).body("Invalid or existing email!!");
         }
     }
+    @PutMapping("${modify.user}")
+    public ResponseEntity<?> updateUserByEmail(@RequestParam String email,@RequestBody UserDTO userModified)
+    {
+            try{
+                UserDTO userToShow = userService.updateUser(email,userModified);
+                return ResponseEntity.status(HttpStatus.OK).body(userToShow);
+            }catch (Exception e){
+                return ResponseEntity.status(409).body("Email does not exist!!!");
+            }
+    }
+
+
+
 
     @GetMapping("${session.uri}")
     public String session(HttpSession session){
