@@ -22,4 +22,11 @@ public interface EmployeeService {
     ResponseEntity<Object> addEmployeeProject(long idEmployee, long idProject);
     ResponseEntity<Object> updateEmployeeProject(long idEmployee, long idProject, EmployeeProjectDTO employeeProjectDTO);
     ResponseEntity<Object> deleteEmployeeProject(long idEmployee, long idProject);
+
+    //aggiunti questi due metodi per evitare validazioni e controlli già implementati in questo service perché
+    //vanno in contrasto con i miei validator e controlli
+    boolean  employeeExists(Employee employee);
+
+    Employee addEmployeeFromFile(Employee employee);
+
 }

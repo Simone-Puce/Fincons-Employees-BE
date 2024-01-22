@@ -350,4 +350,19 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
         } //Manage in feature email
     }
+
+    @Override
+    public boolean employeeExists(Employee employee) {
+        boolean employeeExists = employeeRepository.existsByEmail(employee.getEmail());
+        if(employeeExists){
+            return true;
+        }else{
+            return  false;
+        }
+    }
+
+
+    public Employee addEmployeeFromFile(Employee employee) {
+     return employeeRepository.save(employee);
+    }
 }

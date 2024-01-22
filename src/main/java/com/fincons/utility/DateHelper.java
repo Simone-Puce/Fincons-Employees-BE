@@ -1,6 +1,7 @@
 package com.fincons.utility;
 
 import com.fincons.service.employeeService.DepartmentService;
+import com.fincons.service.employeeService.PositionService;
 import com.github.javafaker.Faker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,8 @@ public class DateHelper {
     Random random = new Random();
     @Autowired
     private DepartmentService departmentService;
+
+    private PositionService positionService;
 
     Logger logger = LoggerFactory.getLogger(DateHelper.class);
 

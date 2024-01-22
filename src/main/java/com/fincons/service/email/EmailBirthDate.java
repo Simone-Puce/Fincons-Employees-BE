@@ -20,7 +20,7 @@ public class EmailBirthDate implements IEmailBirthDate {
     public static final Predicate<Employee> emailCorrectFormat = employee -> employee.getEmail().matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
     public static final String EMAIL_SUBJECT_BIRTHDATE = "Happy Birthdate!";
     public static final String EMAIL_CONTENT_BIRTHDATE = "We wish you a fantastic birthday full of joy!";
-    private static final String EMAIL_SUBCONTENT_HIREDATE = "You are a shining example of how hard work can lead to meaningful results. We would like to wish you a happy anniversary in our company!";
+    private static final String EMAIL_SUBCONTENT_BIRTHDATE = "May life gift you with radiant smiles, unexpected successes, and boundless love every day. Heartfelt wishes for a bright future filled with accomplishments and joy!";
     private static final String IMG_BIRTHDATE = "images/happyBirthday.png";
 
     @Autowired
@@ -43,7 +43,7 @@ public class EmailBirthDate implements IEmailBirthDate {
         emailContent.put("name", employee.getFirstName());
         emailContent.put("lastName", employee.getLastName());
         emailContent.put("personalizedText", EMAIL_CONTENT_BIRTHDATE);
-        emailContent.put("personalizedTextSub", EMAIL_SUBCONTENT_HIREDATE);
+        emailContent.put("personalizedTextSub", EMAIL_SUBCONTENT_BIRTHDATE);
         String htmlContent = emailContentBuilder.buildEmailContent(emailContent);
         emailSend.sendEmail(employee.getEmail(), EMAIL_SUBJECT_BIRTHDATE, htmlContent, IMG_BIRTHDATE);
         logger.info("Email sent to {}", employee.getFirstName());

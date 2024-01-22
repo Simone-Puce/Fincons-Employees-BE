@@ -44,9 +44,9 @@ public class CreateNewEmployeeRandomService implements ICreateNewEmployeeRandom 
         List<Employee> employeeList = new ArrayList<>();
 
         Department department = new Department();
-        department.setId(1L);
+        department.setId(3L);
         Position position = new Position();
-        position.setId(1L);
+        position.setId(5L);
 
         for (int i = 0; i < nEmployee; i++) {
             String name = faker.name().firstName();

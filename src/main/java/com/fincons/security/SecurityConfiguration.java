@@ -53,7 +53,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/company-employee-management/v1/certificate/**").hasRole("USER")
                         .requestMatchers("/company-employee-management/v1/certificate-employee/**").hasRole("USER")
                         .requestMatchers("/company-employee-management/v1/file/**").hasRole("USER")
-
+                        .requestMatchers("/company-employee-management/v1/importfile").hasRole("USER")
 
                         //Auth for Login/Reg
                         .requestMatchers("/company-employee-management/v1/email").permitAll()
