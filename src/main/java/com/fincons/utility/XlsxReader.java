@@ -57,15 +57,15 @@ public class XlsxReader implements ImportFileReader {
 
         List<EmployeeDTO> employeeToAdd = new ArrayList<>();
         List<ErrorDetailDTO> errorReadingList = new ArrayList<>();
-        Map<Integer, List<String>> data = new HashMap<>();
+
 
         try (XSSFWorkbook workbook = new XSSFWorkbook(xlsxInputStream)) {
             XSSFSheet sheet = workbook.getSheetAt(0);
-
             int readCount = 0;
+
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 readCount++;
-                System.out.println("lastrownum: " + sheet.getLastRowNum());
+                LOGGER.trace("lastrownum: " + sheet.getLastRowNum());
                 if (readCount > maxRows) {
                     LOGGER.warn("Il numero di righe nel file supera il limite massimo consentito. maxrows: " + maxRows);
                     errorReadingList.add(new ErrorDetailDTO(ErrorCode.MAXIMUM_ROWS));
@@ -74,7 +74,6 @@ public class XlsxReader implements ImportFileReader {
 
                 Row row = sheet.getRow(i);
                 int lineNumber = row.getRowNum()+1;
-                data.put(lineNumber, new ArrayList<>());
 
                 // Verifica se la riga è non è nulla
                 if (row != null) {
