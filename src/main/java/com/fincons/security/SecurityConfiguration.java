@@ -76,7 +76,7 @@ public class SecurityConfiguration {
                     authz.requestMatchers("/company-employee-management/v1/register").permitAll();
                     authz.requestMatchers("/company-employee-management/v1/employees").authenticated();
                     authz.requestMatchers("/company-employee-management/v1/error").permitAll();
-                    authz.requestMatchers("/company-employee-management/v1/registered-users").hasAnyRole("ADMIN","USER");
+                    authz.requestMatchers("/company-employee-management/v1/registered-users").hasAnyRole("ADMIN");
 
                     authz.requestMatchers("/company-employee-management/v1/login").permitAll();
                     authz.requestMatchers("/company-employee-management/v1/logout").permitAll().anyRequest().authenticated();
