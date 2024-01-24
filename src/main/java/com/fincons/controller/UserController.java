@@ -5,9 +5,8 @@ import com.fincons.dto.UserDTO;
 import com.fincons.exception.DuplicateEmailException;
 import com.fincons.jwt.JwtAuthResponse;
 import com.fincons.jwt.LoginDto;
-import com.fincons.jwt.JwtAuthResponse;
-import com.fincons.jwt.LoginDto;
-import com.fincons.service.UserService;
+
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
