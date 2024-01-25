@@ -8,6 +8,8 @@ import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,6 +62,24 @@ public class AppConfig {
 
         return modelMapper;
     }
+
+    @Bean
+    public ModelMapper modelMapperEmployee() {
+        return new ModelMapper();
+    }
+    @Bean
+    public ModelMapper modelMapperProject() {
+        return new ModelMapper();
+    }
+    @Bean
+    public ModelMapper modelMapperDepartment() {
+        return new ModelMapper();
+    }
+    @Bean
+    public ModelMapper modelMapperPosition() {
+        return new ModelMapper();
+    }
+
 
 
 }

@@ -13,15 +13,14 @@ import java.util.List;
 @Repository
 public interface EmployeeRepository extends JpaRepository <Employee, Long> {
 
-    Employee findById(long id);
-
+    Employee findByEmployeeId(String idEmployee);
     Employee findByEmail(String email);
 
-    @Query("SELECT e.projects FROM Employee e WHERE e.id = :employeeId")
-    List<Project> findProjectByEmployeeId(long employeeId);
+    @Query("SELECT e.projects FROM Employee e WHERE e.employeeId = :employeeId")
+    List<Project> findProjectByEmployeeId(String employeeId);
 
     @Query(
-            "SELECT NEW com.fincons.dto.EmployeeProjectDTO(e.lastName, e.id, p.name, p.id)" +
+            "SELECT NEW com.fincons.dto.EmployeeProjectDTO(e.lastName, e.employeeId, p.name, p.projectId)" +
                     "FROM Employee e " +
                     "JOIN e.projects p"
     )
@@ -35,5 +34,6 @@ public interface EmployeeRepository extends JpaRepository <Employee, Long> {
     List<Employee> findEmployeesByTodayBirthday(@Param("birthDate") LocalDate birthDate);
 
     boolean  existsByEmail(String emailId);
+
 
 }

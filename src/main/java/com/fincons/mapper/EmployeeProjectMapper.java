@@ -11,9 +11,9 @@ public class EmployeeProjectMapper {
     public EmployeeProjectDTO mapEmployeeProject(Employee employee, Project project){
         return new EmployeeProjectDTO(
                 employee.getLastName(),
-                employee.getId(),
+                employee.getEmployeeId(),
                 project.getName(),
-                project.getId()
+                project.getProjectId()
                 );
     }
 }

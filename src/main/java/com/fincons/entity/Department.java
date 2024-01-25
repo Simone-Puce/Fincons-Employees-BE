@@ -5,11 +5,20 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
+
 import java.util.List;
 import java.util.Objects;
 
 
-
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "department")
 public class Department {
@@ -17,6 +26,11 @@ public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "department_uuid")
+    @UuidGenerator
+    private String departmentId;
+
     @Column
     private String name;
     @Column
@@ -28,17 +42,9 @@ public class Department {
             mappedBy = "department",
             fetch = FetchType.LAZY)
     @JsonManagedReference(value = "department-employee")
-    @JsonIgnore
     private List<Employee> employees;
-    public Department() {
-    }
 
-    public Department(Long id, String name, String address, String city) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-        this.city = city;
-    }
+
     public Department(Long id, String name, String address) {
         this.id = id;
         this.name = name;

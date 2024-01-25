@@ -1,5 +1,6 @@
 package com.fincons.controller;
 
+import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Project;
 import com.fincons.service.employeeService.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,8 @@ public class ProjectController {
     ProjectService projectService;
 
     @GetMapping(value = "${project.find-project-by-id}")
-    public ResponseEntity<Object> getProjectById(@RequestParam long id){
-        return projectService.getProjectById(id);
+    public ResponseEntity<Object> getProjectById(@RequestParam String idProject){
+        return projectService.getProjectById(idProject);
     }
 
     @GetMapping(value="${project.list}")
@@ -23,16 +24,16 @@ public class ProjectController {
         return projectService.getAllProjects();
     }
     @PostMapping(value = "${project.create}")
-    public ResponseEntity<Object> createProject(@RequestBody Project project){
-        return projectService.createProject(project);
+    public ResponseEntity<Object> createProject(@RequestBody ProjectDTO projectDTO){
+        return projectService.createProject(projectDTO);
     }
     @PutMapping(value = "${project.update}")
-    public ResponseEntity<Object> updateProjectById(@RequestParam long id, @RequestBody Project project) throws Exception {
-        return projectService.updateProjectById(id, project);
+    public ResponseEntity<Object> updateProjectById(@RequestParam String idProject, @RequestBody ProjectDTO projectDTO) {
+        return projectService.updateProjectById(idProject, projectDTO);
     }
     @DeleteMapping(value = "${project.delete}")
-    public ResponseEntity<Object> deleteProjectById(@RequestParam long id){
-        return projectService.deleteProjectById(id);
+    public ResponseEntity<Object> deleteProjectById(@RequestParam String idProject){
+        return projectService.deleteProjectById(idProject);
     }
     
     

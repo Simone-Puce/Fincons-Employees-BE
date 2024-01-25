@@ -5,15 +5,29 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
+
 import java.util.List;
 
-
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "position")
 public class Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "position_uuid")
+    @UuidGenerator
+    private String positionId;
+
     @Column
     private String name;
     @Column
@@ -24,7 +38,6 @@ public class Position {
             mappedBy = "position",
             fetch = FetchType.LAZY)
     @JsonManagedReference(value = "position-employee")
-    @JsonIgnore
     private List<Employee> employees;
 
     public List<Employee> getEmployees() {
@@ -43,24 +56,10 @@ public class Position {
         this.employees = employees;
     }
 
-    public Position() {
-    }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
+    public Position(Long id, String name, Double salary) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
+        this.salary = salary;
     }
-
-
 }

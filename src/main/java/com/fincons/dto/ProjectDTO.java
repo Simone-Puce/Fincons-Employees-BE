@@ -1,69 +1,39 @@
 package com.fincons.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fincons.entity.Employee;
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 
 public class ProjectDTO {
 
-    private Long id;
+
+    private String projectId;
     private String name;
     private String area;
     private String priority;
-    private Set<Employee> employees;
+    private List<EmployeeDTO> employees;
 
-    public ProjectDTO(Long id, String name, String area, String priority, Set<Employee> employees) {
-        this.id = id;
+    public ProjectDTO(String name, String area, String priority) {
+        this.name=name;
+        this.area=area;
+        this.priority=priority;
+    }
+
+    public ProjectDTO(String projectId, String name, String area, String priority) {
+        this.projectId = projectId;
         this.name = name;
         this.area = area;
         this.priority = priority;
-        this.employees = employees;
-    }
-
-    public ProjectDTO(Long id, String name, String area, String priority) {
-        this.id = id;
-        this.name = name;
-        this.area = area;
-        this.priority = priority;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    public String getPriority() {
-        return priority;
-    }
-
-    public void setPriority(String priority) {
-        this.priority = priority;
-    }
-
-    public Set<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(Set<Employee> employees) {
-        this.employees = employees;
     }
 }

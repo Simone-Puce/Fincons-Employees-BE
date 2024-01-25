@@ -1,6 +1,7 @@
 package com.fincons.controller;
 
 import com.fincons.dto.ImportResultDTO;
+import com.fincons.dto.EmployeeDTO;
 import com.fincons.entity.Employee;
 import com.fincons.dto.EmployeeProjectDTO;
 import com.fincons.enums.ProcessingStatus;
@@ -23,6 +24,9 @@ public class EmployeeController {
     @Autowired
     ProjectService projectService;
 
+    @GetMapping(value = "${employee.find-project-by-id}")
+    public ResponseEntity<Object> getEmployeeById(@RequestParam String idEmployee){
+        return employeeService.getEmployeeById(idEmployee);
     @Autowired
     private ImportService importService;
 
@@ -31,7 +35,7 @@ public class EmployeeController {
     public ResponseEntity<Object> getEmployeeById(@RequestParam long id){
         return employeeService.getEmployeeById(id);
     }
-    @GetMapping(value = "${employee.find-project-by-email}")
+    @GetMapping(value = "{employee.find-project-by-email}")
     public ResponseEntity<Object> getDepartmentByEmail(@RequestParam String email){
         return employeeService.getEmployeeByEmail(email);
     }
@@ -40,36 +44,36 @@ public class EmployeeController {
         return employeeService.getAllEmployees();
     }
     @PostMapping(value = "${employee.create}")
-    public ResponseEntity<Object> createEmployee(@RequestBody Employee employee){
-        return employeeService.createEmployee(employee);
+    public ResponseEntity<Object> createEmployee(@RequestBody EmployeeDTO employeeDTO){
+        return employeeService.createEmployee(employeeDTO);
     }
     @PutMapping(value = "${employee.update}")
-    public ResponseEntity<Object> updateEmployeeById(@RequestParam long id, @RequestBody Employee employee) throws Exception {
-        return employeeService.updateEmployeeById(id, employee);
+    public ResponseEntity<Object> updateEmployeeById(@RequestParam String idEmployee, @RequestBody EmployeeDTO employeeDTO) {
+        return employeeService.updateEmployeeById(idEmployee, employeeDTO);
     }
     @DeleteMapping(value = "${employee.delete}")
-    public  ResponseEntity<Object> deleteEmployeeById(@RequestParam long id){
-        return employeeService.deleteEmployeeById(id);
+    public  ResponseEntity<Object> deleteEmployeeById(@RequestParam String idEmployee){
+        return employeeService.deleteEmployeeById(idEmployee);
     }
 
     @GetMapping(value = "${employee.find-employee-project}")
-    public ResponseEntity<Object> getAllEmployeesProjects(@RequestParam long id){
-        return employeeService.findAllEmployeeProjects(id);
+    public ResponseEntity<Object> getAllEmployeesProjects(@RequestParam String idEmployee){
+        return employeeService.findAllEmployeeProjects(idEmployee);
     }
     @GetMapping(value = "${employee.list-employee-project}")
     public ResponseEntity<Object> getAllEmployeeProject(){
         return employeeService.getAllEmployeeProject();
     }
     @PostMapping(value= "${employee.create-employee-project}")
-    public ResponseEntity<Object> createEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
+    public ResponseEntity<Object> createEmployeeProject(@RequestParam String idEmployee, @RequestParam String idProject) {
         return employeeService.addEmployeeProject(idEmployee, idProject);
     }
     @PutMapping(value ="${employee.update-employee-project}")
-    public ResponseEntity<Object> updateEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject, @RequestBody EmployeeProjectDTO employeeProjectDTO){
+    public ResponseEntity<Object> updateEmployeeProject(@RequestParam String idEmployee, @RequestParam String idProject, @RequestBody EmployeeProjectDTO employeeProjectDTO){
         return employeeService.updateEmployeeProject(idEmployee, idProject, employeeProjectDTO);
     }
     @DeleteMapping(value= "${employee.delete-employee-project}")
-    public ResponseEntity<Object> deleteEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
+    public ResponseEntity<Object> deleteEmployeeProject(@RequestParam String idEmployee, @RequestParam String idProject) {
         return employeeService.deleteEmployeeProject(idEmployee, idProject);
     }
 
