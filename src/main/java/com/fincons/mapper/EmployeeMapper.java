@@ -1,59 +1,53 @@
 package com.fincons.mapper;
 
-import com.fincons.dto.DepartmentDTO;
 import com.fincons.dto.EmployeeDTO;
-import com.fincons.entity.Department;
+import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Employee;
+import com.fincons.entity.Project;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class EmployeeMapper {
+    @Autowired
+    private ModelMapper modelMapperEmployee;
 
+    public EmployeeMapper(ModelMapper modelMapperEmployee) {
+        this.modelMapperEmployee = modelMapperEmployee;
+        modelMapperEmployee.getConfiguration().setAmbiguityIgnored(true);
+        //modelMapperEmployee.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
+        modelMapperEmployee.addMappings(new PropertyMap<Project, ProjectDTO>() {
+            @Override
+            protected void configure() {
+                skip(destination.getEmployees());
+            }
+        });
 
-    public EmployeeDTO mapEmployeeToEmployeeDto(Employee employee){
-
-        return new EmployeeDTO(
-                employee.getId(),
-                employee.getFirstName(),
-                employee.getLastName(),
-                employee.getGender(),
-                employee.getEmail(),
-                employee.getBirthDate(),
-                employee.getStartDate(),
-                employee.getEndDate(),
-                employee.getDepartment(),
-                employee.getPosition(),
-                employee.getProjects(),
-                employee.getFileList());
     }
-    public Employee mapEmployeeDtoToEmployee(EmployeeDTO employeeDTO){
-        return new Employee(
-                employeeDTO.getId(),
-                employeeDTO.getFirstName(),
-                employeeDTO.getLastName(),
-                employeeDTO.getGender(),
-                employeeDTO.getEmail(),
-                employeeDTO.getBirthDate(),
-                employeeDTO.getStartDate(),
-                employeeDTO.getEndDate(),
-                employeeDTO.getDepartment(),
-                employeeDTO.getPosition(),
-                employeeDTO.getProjects());
+    public EmployeeDTO mapToDTO(Employee employee) {
+
+        EmployeeDTO employeeDTO = modelMapperEmployee.map(employee, EmployeeDTO.class);
+
+        List<ProjectDTO> projectDTOs = employee.getProjects().stream()
+                .map(project -> modelMapperEmployee.map(project, ProjectDTO.class))
+                .collect(Collectors.toList());
+
+        employeeDTO.setProjects(projectDTOs);
+
+        return employeeDTO;
     }
-    public EmployeeDTO mapEmployeeToEmployeeDtoWithoutObjects(Employee employee){
-        return new EmployeeDTO(
-                employee.getId(),
-                employee.getFirstName(),
-                employee.getLastName(),
-                employee.getGender(),
-                employee.getEmail(),
-                employee.getBirthDate(),
-                employee.getStartDate(),
-                employee.getEndDate());
+
+    public Employee mapToEntity(EmployeeDTO employeeDTO){
+
+        Employee employee = modelMapperEmployee.map(employeeDTO, Employee.class);
+
+        return employee;
     }
 }

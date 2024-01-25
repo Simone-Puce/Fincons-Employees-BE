@@ -28,9 +28,10 @@ public class File {
     private String description;
 
 
-    @JsonBackReference(value = "file-employee")
+
     @ManyToOne
-    @JoinColumn(name = "employee_id", nullable = true)
+    @JsonBackReference(value = "file-employee")
+    @JoinColumn(name = "employee_id")
     private Employee empId;
 
 

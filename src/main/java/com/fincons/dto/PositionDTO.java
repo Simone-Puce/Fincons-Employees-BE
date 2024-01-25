@@ -1,61 +1,27 @@
 package com.fincons.dto;
 
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.util.List;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PositionDTO {
-    private Long id;
+    private String positionId;
     private String name;
     private Double salary;
     private List<EmployeeDTO> employees;
-
-    public PositionDTO(Long id, String name, Double salary, List<EmployeeDTO> employees) {
-        this.id = id;
-        this.name = name;
-        this.salary = salary;
-        this.employees = employees;
-    }
-
-    public PositionDTO(Long id, String name, Double salary) {
-        this.id = id;
-        this.name = name;
-        this.salary = salary;
-    }
 
     public PositionDTO(String name, Double salary) {
         this.name = name;
         this.salary = salary;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Double getSalary() {
-        return salary;
-    }
-
-    public void setSalary(Double salary) {
-        this.salary = salary;
-    }
-
-    public List<EmployeeDTO> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(List<EmployeeDTO> employees) {
-        this.employees = employees;
-    }
 }

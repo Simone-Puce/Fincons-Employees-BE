@@ -11,15 +11,15 @@ import java.util.List;
 @Service
 public interface EmployeeService {
 
-    ResponseEntity<Object> getEmployeeById(long id);
+    ResponseEntity<Object> getEmployeeById(String idEmployee);
     ResponseEntity<Object> getEmployeeByEmail(String email);
     ResponseEntity<Object> getAllEmployees();
-    ResponseEntity<Object> createEmployee(Employee employee);
-    ResponseEntity<Object> updateEmployeeById(long id, Employee employee);
-    ResponseEntity<Object> deleteEmployeeById(long id);
-    ResponseEntity<Object> findAllEmployeeProjects(long id);
+    ResponseEntity<Object> createEmployee(EmployeeDTO employeeDTO);
+    ResponseEntity<Object> updateEmployeeById(String idEmployee, EmployeeDTO employeeDTO);
+    ResponseEntity<Object> deleteEmployeeById(String idEmployee);
+    ResponseEntity<Object> findAllEmployeeProjects(String idEmployee);
     ResponseEntity<Object> getAllEmployeeProject();
-    ResponseEntity<Object> addEmployeeProject(long idEmployee, long idProject);
-    ResponseEntity<Object> updateEmployeeProject(long idEmployee, long idProject, EmployeeProjectDTO employeeProjectDTO);
-    ResponseEntity<Object> deleteEmployeeProject(long idEmployee, long idProject);
+    ResponseEntity<Object> addEmployeeProject(String idEmployee, String idProject);
+    ResponseEntity<Object> updateEmployeeProject(String idEmployee, String idProject, EmployeeProjectDTO employeeProjectDTO);
+    ResponseEntity<Object> deleteEmployeeProject(String idEmployee, String idProject);
 }

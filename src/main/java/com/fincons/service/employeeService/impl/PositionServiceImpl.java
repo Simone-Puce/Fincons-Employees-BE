@@ -26,15 +26,16 @@ public class PositionServiceImpl implements PositionService {
     private PositionRepository positionRepository;
 
     @Autowired
-    private PositionMapper positionMapper;
+    private PositionMapper modelMapperPosition;
 
     @Override
-    public ResponseEntity<Object> getPositionById(long id) {
+    public ResponseEntity<Object> getPositionById(String idPosition) {
 
-        Position existingPosition = validatePositionById(id);
-        PositionDTO positionDTO = positionMapper.mapPosition(existingPosition);
+        Position existingPosition = validatePositionById(idPosition);
+        PositionDTO positionDTO = modelMapperPosition.mapToDTO(existingPosition);
+
         return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Found position with ID " + id + ".",
+                "Success: Found position with ID " + idPosition + ".",
                 (HttpStatus.OK),
                 positionDTO);
     }
@@ -46,7 +47,7 @@ public class PositionServiceImpl implements PositionService {
         //Check if the list of department is empty
         for (Position position : positions){
             if(position != null){
-                PositionDTO positionDTO = positionMapper.mapPosition(position);
+                PositionDTO positionDTO = modelMapperPosition.mapToDTO(position);
                 newListPosition.add(positionDTO);
             } else{
                 throw new IllegalArgumentException("There aren't Positions");
@@ -60,49 +61,54 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public ResponseEntity<Object> createPosition(Position position) {
+    public ResponseEntity<Object> createPosition(PositionDTO positionDTO) {
+
         //Contition for not have null attribute
-        validatePositionFields(position);
+        validatePositionFields(positionDTO);
 
         List<Position> positions = positionRepository.findAll();
         //Condition if there are positions with name same
-        checkForDuplicatePosition(position, positions);
+        checkForDuplicatePosition(positionDTO, positions);
 
-        PositionDTO positionDTO = positionMapper.mapPosition(position);
+        Position position = modelMapperPosition.mapToEntity(positionDTO);
+
         positionRepository.save(position);
+
+        positionDTO.setPositionId(position.getPositionId());
+
         return ResponseHandler.generateResponse(LocalDateTime.now(),
                 "Success: Position with ID "+ position.getId() +" has been successfully updated!",
                 (HttpStatus.OK), positionDTO);
     }
 
     @Override
-    public ResponseEntity<Object> updatePositionById(long id, Position position) {
+    public ResponseEntity<Object> updatePositionById(String idPosition, PositionDTO positionDTO) {
 
         //Condition for not have null attributes
-        validatePositionFields(position);
-
-        PositionDTO positionDTO;
-        //Check if the specified ID exists
-        Position existingPosition = validatePositionById(id);
+        validatePositionFields(positionDTO);
 
         List<Position> positions = positionRepository.findAll();
 
+        //Check if the specified ID exists
+        Position existingPosition = validatePositionById(idPosition);
 
-        existingPosition.setId(id);
-        existingPosition.setName(position.getName());
-        existingPosition.setSalary(position.getSalary());
+
+        existingPosition.setPositionId(idPosition);
+        existingPosition.setName(positionDTO.getName());
+        existingPosition.setSalary(positionDTO.getSalary());
 
 
         List<Position> positionsWithoutPositionIdChosed = new ArrayList<>();
 
         for(Position p: positions){
-            if(p.getId() != id){
+            if(!Objects.equals(p.getPositionId(), idPosition)){
                 positionsWithoutPositionIdChosed.add(p);
             }
         }
 
         if(positionsWithoutPositionIdChosed.isEmpty()){
             positionRepository.save(existingPosition);
+            positionDTO.setPositionId(existingPosition.getPositionId());
         }
         else {
             for (Position p : positionsWithoutPositionIdChosed) {
@@ -112,49 +118,48 @@ public class PositionServiceImpl implements PositionService {
                     throw new IllegalArgumentException("The position existing yet");
                 } else {
                     positionRepository.save(existingPosition);
+                    positionDTO.setPositionId(existingPosition.getPositionId());
                 }
             }
         }
 
-        positionDTO = positionMapper.mapPosition(position);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Position with ID "+ id +" has been successfully updated!",
+                "Success: Position with ID "+ idPosition +" has been successfully updated!",
                 (HttpStatus.OK),
                 positionDTO);
     }
 
     @Override
-    public ResponseEntity<Object> deletePositionById(long id) {
-        List<Position> positions = positionRepository.findAll();
+    public ResponseEntity<Object> deletePositionById(String idPosition) {
 
-        Position position = validatePositionById(id);
-        positionRepository.deleteById(id);
+        Position position = validatePositionById(idPosition);
+        positionRepository.deleteById(position.getId());
         return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Position with ID "+ id +" has been successfully deleted!",
+                "Success: Position with ID "+ idPosition +" has been successfully deleted!",
                 (HttpStatus.OK),
                 null);
     }
 
-    private Position validatePositionById(long id) {
-        Position existingPosition = positionRepository.findById(id);
+    private Position validatePositionById(String idPosition) {
+        Position existingPosition = positionRepository.findByPositionId(idPosition);
 
         if (existingPosition == null) {
-            throw new ResourceNotFoundException("Position with ID: " + id + " not found");
+            throw new ResourceNotFoundException("Position with ID: " + idPosition + " not found");
         }
         return existingPosition;
     }
 
-    private void validatePositionFields(Position position){
+    private void validatePositionFields(PositionDTO positionDTO){
         //If one field is true run Exception
-        if (Strings.isEmpty(position.getName()) ||
-                Objects.isNull(position.getSalary())) {
+        if (Strings.isEmpty(positionDTO.getName()) ||
+                Objects.isNull(positionDTO.getSalary())) {
             throw new IllegalArgumentException("The fields of the Position can't be null or empty");
         }
     }
 
-    private void checkForDuplicatePosition(Position position, List<Position> positions){
+    private void checkForDuplicatePosition(PositionDTO positionDTO, List<Position> positions){
         for(Position position1 : positions){
-            if(position1.getName().equals(position.getName())){
+            if(position1.getName().equals(positionDTO.getName())){
                 throw new IllegalArgumentException("Position with the same name, already exists");
             }
         }
