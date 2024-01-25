@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -89,42 +90,51 @@ public class UserServiceImpl  implements UserService{
     }
 
     @Override
-    public UserDTO updateUser(String email, UserDTO userModified) throws Exception {
+    public UserDTO updateUser(String email, UserDTO userModified, String passwordForAdmin) throws Exception {
+        if (!email.isEmpty() && EmailValidator.isValidEmail(email)) {
 
-        if(!email.isEmpty() && EmailValidator.isValidEmail(email)){
+            // Cerco l'utente nella repository
+            User userFounded = userRepo.findByEmail(email);
 
-            //Recupero l'user con la mail selezionata
-            User userToModify = userRepo.findByEmail(email);
-
-            //Setto il nuovo user
-            userToModify.setFirstName(userModified.getFirstName());
-            userToModify.setLastName(userModified.getLastName());
-            userToModify.setEmail(userModified.getEmail());
-            userToModify.setPassword(userModified.getPassword());
-
-            List<User> users = userRepo.findAll();
-
-            List<User> listUsersWithoutUserWithEmailChosed = new ArrayList<>();
-
-            // lista senza l'oggetto user con la mail
-            for (User s : users) {
-                if(!s.getEmail().equals(email)){
-                    listUsersWithoutUserWithEmailChosed.add(s);
-                }
+            if (userFounded == null) {
+                throw new Exception("There isn't user with this email!");
             }
 
-            for (User u : listUsersWithoutUserWithEmailChosed) {
-                if(u.getEmail().equals(email)) {
-                    throw new Exception("The Email exist yet");
-                }else {
-                    userRepo.save(userToModify);
-                }
+            // Controllo che la nuova email non sia già presente nel DB
+            String newEmailByUser = userModified.getEmail();
+            User existingUserWithEmail = userRepo.findByEmail(newEmailByUser);
+
+            if (existingUserWithEmail != null && (existingUserWithEmail.getId() != (userFounded.getId()))) {
+                throw new IllegalArgumentException("Email already exists!");
             }
-                 return userToUserDto(userToModify);
-        }else{
-            throw new Exception("There isn't user with this email!");
+
+            // Aggiorno i dati dell'utente
+            userFounded.setFirstName(userModified.getFirstName());
+            userFounded.setLastName(userModified.getLastName());
+            userFounded.setEmail(newEmailByUser);
+            userFounded.setPassword(passwordEncoder.encode(userModified.getPassword()));
+
+            if (passwordForAdmin != null && passwordForAdmin.equals(passwordAdmin)) {
+                // Trasformo i ruoli DTO in ruoli e li assegno all'utente
+                List<RoleDTO> rolesDTO = userModified.getRoles();
+                List<Role> roles = new ArrayList<>();
+
+                for (RoleDTO rDto: rolesDTO) {
+                    roles.add(dtoToRole(rDto));
+                }
+                userFounded.setRoles(roles);
+            }
+
+            // Salvo l'utente aggiornato
+            userRepo.save(userFounded);
+
+            return userToUserDto(userFounded);
+
+        } else {
+            throw new Exception("Invalid email!");
         }
     }
+
 
     @Override
     public List<UserDTO> getAllUsers() {

@@ -63,6 +63,9 @@ public class SecurityConfiguration {
                     authz.requestMatchers(HttpMethod.DELETE, "/company-employee-management/v1/position/**").hasRole("USER");
                     authz.requestMatchers(HttpMethod.DELETE, "/company-employee-management/v1/project/**").hasRole("USER");
 
+                    //Endpoints for modify user
+                    authz.requestMatchers(HttpMethod.PUT, "/company-employee-management/v1/update-user").permitAll();
+
                     authz.requestMatchers("/company-employee-management/v1/department/**").hasRole("USER");
                     authz.requestMatchers("/company-employee-management/v1/employee/**").hasRole("USER");
                     authz.requestMatchers("/company-employee-management/v1/position/**").hasRole("USER");
@@ -76,7 +79,7 @@ public class SecurityConfiguration {
                     authz.requestMatchers("/company-employee-management/v1/register").permitAll();
                     authz.requestMatchers("/company-employee-management/v1/employees").authenticated();
                     authz.requestMatchers("/company-employee-management/v1/error").permitAll();
-                    authz.requestMatchers("/company-employee-management/v1/registered-users").hasAnyRole("ADMIN");
+                    authz.requestMatchers("/company-employee-management/v1/registered-users").hasAnyRole("ADMIN","USER");
 
                     authz.requestMatchers("/company-employee-management/v1/login").permitAll();
                     authz.requestMatchers("/company-employee-management/v1/logout").permitAll().anyRequest().authenticated();
