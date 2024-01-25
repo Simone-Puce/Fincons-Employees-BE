@@ -42,23 +42,19 @@ public class JwtTokenProvider {
         return token;
     }
 
-    // key for JWT token generation and verification
-    private Key key(){
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
-    }
 
     // get email from JWT token
     public String getEmailFromJWT(String token) {
 
-       Claims claims =
-               (Claims) Jwts.parserBuilder()
-                .setSigningKey(key())
-                .build()
-                .parse(token)
-                .getBody();
+        Claims claims =
+                (Claims) Jwts.parserBuilder()
+                        .setSigningKey(key())
+                        .build()
+                        .parse(token)
+                        .getBody();
 
 
-               String email = claims.getSubject();
+        String email = claims.getSubject();
 
         return email;
     }
@@ -76,6 +72,10 @@ public class JwtTokenProvider {
             // if analysis goes down return false and exception
             return false;
         }
+    }
+    // key for JWT token generation and verification
+    private Key key(){
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
 
