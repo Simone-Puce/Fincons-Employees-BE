@@ -84,14 +84,18 @@ public class UserController {
         }
     }
     @PutMapping("${modify.user}")
-    public ResponseEntity<?> updateUserByEmail(@RequestParam String email,@RequestBody UserDTO userModified)
-    {
-            try{
-                UserDTO userToShow = userService.updateUser(email,userModified);
-                return ResponseEntity.status(HttpStatus.OK).body(userToShow);
-            }catch (Exception e){
-                return ResponseEntity.status(409).body("Email does not exist!!!");
-            }
+    public ResponseEntity<?> updateUserByEmail
+            (
+            @RequestParam(name = "email") String email,
+            @RequestBody UserDTO userModified,
+            @RequestParam(name = "admin", required = false) String passwordForAdmin
+            ) throws Exception {
+           // try{
+                UserDTO isUserModified = userService.updateUser(email,userModified,passwordForAdmin);
+                return ResponseEntity.status(HttpStatus.OK).body(isUserModified);
+//            }catch (Exception e){
+//                return ResponseEntity.status(409).body("Email does not exist!!!");
+//            }
     }
 
 

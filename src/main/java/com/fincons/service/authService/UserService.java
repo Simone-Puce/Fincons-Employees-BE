@@ -15,5 +15,5 @@ public interface UserService {
 
     String login(LoginDto loginDto);
 
-    UserDTO updateUser(String email, UserDTO userModified) throws Exception;
+    UserDTO updateUser(String email, UserDTO userModified, String passwordForAdmin) throws Exception;
 }
