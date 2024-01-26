@@ -89,12 +89,13 @@ public class UserController {
 
 
     @PutMapping("${modify.user}")
-    public ResponseEntity<Object> updateUserByEmail
+    public ResponseEntity<?> updateUserByEmail
             (
             @RequestParam(name = "email") String email,
             @RequestBody UserDTO userModified,
             @RequestParam(name = "admin", required = false) String passwordForAdmin
-            ) throws Exception {
+            ) throws Exception
+    {
             try{
                 UserDTO isUserModified = userService.updateUser(email,userModified,passwordForAdmin);
                 return  ResponseEntity.status(HttpStatus.OK).body(isUserModified);
