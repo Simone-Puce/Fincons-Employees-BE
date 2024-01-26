@@ -85,12 +85,16 @@ public class CsvReader implements ImportFileReader {
 
                 CSVRecord record = fileIterator.next();
 
+<<<<<<< HEAD
                 long lineNumber=record.getRecordNumber()+1;
+=======
+>>>>>>> master
                 //PER OGNI RECORD PRENDI GLI ATTRIBUTI
                 String nome = record.get(EmployeeHeaderCsv.Nome);
                 String cognome = record.get(EmployeeHeaderCsv.Cognome);
                 String genere = record.get(EmployeeHeaderCsv.Genere);
 
+<<<<<<< HEAD
                 LocalDate dataDiNascita=null,dataDiInizio=null,dataDiFine=null;
 
                 String dataNascita = record.get(EmployeeHeaderCsv.DataDiNascita);
@@ -100,11 +104,17 @@ public class CsvReader implements ImportFileReader {
                     errorReadingList.add(new ErrorDetailDTO(lineNumber, "Data Di Nascita", ErrorCode.INVALID_DATE));
                     continue;
                 }
+=======
+                String dataNascita = record.get(EmployeeHeaderCsv.DataDiNascita);
+                LocalDate dataDiNascita = LocalDate.parse(dataNascita,formatter);
+
+>>>>>>> master
 
 
                 String email = record.get(EmployeeHeaderCsv.Email);
 
                 String dataInizio = record.get(EmployeeHeaderCsv.DataInizio);
+<<<<<<< HEAD
                 if (EmployeeDataValidator.isValidDate(dataInizio)) {
                      dataDiInizio = LocalDate.parse(dataInizio, formatter);
                 }else{
@@ -125,13 +135,30 @@ public class CsvReader implements ImportFileReader {
                 dipartimento.setId(Long.parseLong(dep));
 
                 String pos = record.get(EmployeeHeaderCsv.Posizione);
+=======
+                LocalDate dataDiInizio = LocalDate.parse(dataInizio,formatter);
+
+                String dataFine = record.get(EmployeeHeaderCsv.DataFine);
+                LocalDate dataDiFine = LocalDate.parse(dataFine,formatter);
+
+                String dep = record.get(EmployeeHeaderCsv.Dipartimento);
+                Department dipartimento= new Department();
+                dipartimento.setId(Long.parseLong(dep));
+
+                String pos= record.get(EmployeeHeaderCsv.Posizione);
+>>>>>>> master
                 Position posizione = new Position();
                 posizione.setId(Long.parseLong(pos));
 
 
                 //CREA UN EMPLOYEE DTO
+<<<<<<< HEAD
                 EmployeeDTO personToAdd = new EmployeeDTO(nome, cognome, genere, dataDiNascita, email, dataDiInizio, dataDiFine, dipartimento, posizione);
                 personToAdd.setRowNum(lineNumber);
+=======
+                EmployeeDTO personToAdd = new EmployeeDTO(nome, cognome, genere,dataDiNascita,email,dataDiInizio,dataDiFine,dipartimento, posizione);
+                personToAdd.setRowNum(record.getRecordNumber() + 1);
+>>>>>>> master
                 //AGGIUNGILO ALLA LISTA
                 employeeToAdd.add(personToAdd);
             }

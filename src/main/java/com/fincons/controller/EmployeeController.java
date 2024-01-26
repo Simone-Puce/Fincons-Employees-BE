@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("${employee.uri}")
+@CrossOrigin(origins = "*")
 public class EmployeeController {
 
     @Autowired
@@ -78,11 +79,12 @@ public class EmployeeController {
     public ResponseEntity<ImportResultDTO> addEmployeeFromFile(@RequestBody MultipartFile importedFile) {
 
         ImportResultDTO importResult = importService.processImport(importedFile);
-        if (importResult.getStatus() == ProcessingStatus.NOT_LOADED) {
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(importResult);
-        } else {
+        if (importResult.getStatus() == ProcessingStatus.NOT_LOADED
+            || importResult.getStatus()== ProcessingStatus.LOADED_WITH_ERRORS
+            || importResult.getStatus()== ProcessingStatus.LOADED) {
             return ResponseEntity.ok(importResult);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(importResult);
         }
     }
 
