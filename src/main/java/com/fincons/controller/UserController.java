@@ -7,16 +7,13 @@ import com.fincons.exception.DuplicateEmailException;
 import com.fincons.jwt.JwtAuthResponse;
 import com.fincons.jwt.LoginDto;
 
-
+import com.fincons.utility.GenericResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @CrossOrigin("http://localhost:81")
@@ -39,7 +36,6 @@ public class UserController {
     public String adminEndpoint() {
         return "Admin!";
     }
-
 
     @GetMapping("${user.uri}")
     public String userEndpoint() {
@@ -64,14 +60,19 @@ public class UserController {
 
     // Login
     @PostMapping(value = "${login.uri}")
-    public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<GenericResponse<JwtAuthResponse>> login(@RequestBody LoginDto loginDto) {
         // your code goes here
         String token = userService.login(loginDto);
 
         JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
         jwtAuthResponse.setAccessToken(token);
 
-        return new ResponseEntity<>(jwtAuthResponse, HttpStatus.OK);
+        return ResponseEntity.ok(GenericResponse.<JwtAuthResponse>builder()
+                .status(HttpStatus.OK)
+                .success(true)
+                .message("Logged Succesfully!!!")
+                .data(jwtAuthResponse)
+                .build());
     }
 
 
