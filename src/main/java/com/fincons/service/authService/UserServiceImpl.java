@@ -6,12 +6,12 @@ import com.fincons.dto.UserDTO;
 import com.fincons.entity.Role;
 import com.fincons.entity.User;
 import com.fincons.exception.DuplicateEmailException;
+import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.jwt.LoginDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -97,13 +97,14 @@ public class UserServiceImpl  implements UserService{
             User userFounded = userRepo.findByEmail(email);
 
             if (userFounded == null) {
-                throw new Exception("There isn't user with this email!");
+                throw new ResourceNotFoundException("There isn't an user with this email!");
             }
 
             // Controllo che la nuova email non sia già presente nel DB
             String newEmailByUser = userModified.getEmail();
             User existingUserWithEmail = userRepo.findByEmail(newEmailByUser);
 
+            // Se l'email esiste già genera un eccezione
             if (existingUserWithEmail != null && (existingUserWithEmail.getId() != (userFounded.getId()))) {
                 throw new IllegalArgumentException("Email already exists!");
             }
