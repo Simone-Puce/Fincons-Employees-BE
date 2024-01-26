@@ -27,21 +27,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
-        // upload user from repo thanks to email
         User user = userRepository.findByEmail(email);
-
-        // if not exist generates an exception
         if(user == null){
             throw new UsernameNotFoundException("User not found!!!");
         }
-        // if exists crete an object userdetails with information of user
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
                 getAuthorities(user.getRoles()));
     }
-    // method for get authorization of user
+
     private Collection<? extends GrantedAuthority> getAuthorities(List<Role> roles) {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))

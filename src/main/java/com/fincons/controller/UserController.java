@@ -1,5 +1,6 @@
 package com.fincons.controller;
 
+import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.service.authService.UserService;
 import com.fincons.dto.UserDTO;
 import com.fincons.exception.DuplicateEmailException;
@@ -13,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("http://localhost:81")
@@ -75,7 +79,6 @@ public class UserController {
     public ResponseEntity<?> register(
             @RequestBody UserDTO userDTO,
             @RequestParam(name = "admin", required = false) String passwordForAdmin) {
-        //boolean, isUserInRole(java.lang.String role) Returns a boolean indicating whether the authenticated user is included in the specified logical "role"
         try {
             UserDTO userToShow = userService.registerNewUser(userDTO, passwordForAdmin);
             return ResponseEntity.status(HttpStatus.CREATED).body(userToShow);
@@ -83,22 +86,24 @@ public class UserController {
             return ResponseEntity.status(409).body("Invalid or existing email!!");
         }
     }
+
+
     @PutMapping("${modify.user}")
-    public ResponseEntity<?> updateUserByEmail
+    public ResponseEntity<Object> updateUserByEmail
             (
             @RequestParam(name = "email") String email,
             @RequestBody UserDTO userModified,
             @RequestParam(name = "admin", required = false) String passwordForAdmin
             ) throws Exception {
-           // try{
+            try{
                 UserDTO isUserModified = userService.updateUser(email,userModified,passwordForAdmin);
-                return ResponseEntity.status(HttpStatus.OK).body(isUserModified);
-//            }catch (Exception e){
-//                return ResponseEntity.status(409).body("Email does not exist!!!");
-//            }
+                return  ResponseEntity.status(HttpStatus.OK).body(isUserModified);
+            }catch (ResourceNotFoundException r){
+                return ResponseEntity.status(409).body(r.getMessage());
+            }catch(Exception e){
+                return ResponseEntity.status(409).body("Email does not exist!!!");
+            }
     }
-
-
 
 
     @GetMapping("${session.uri}")

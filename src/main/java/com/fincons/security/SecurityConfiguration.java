@@ -24,6 +24,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -63,8 +64,9 @@ public class SecurityConfiguration {
                     authz.requestMatchers(HttpMethod.DELETE, "/company-employee-management/v1/position/**").hasRole("USER");
                     authz.requestMatchers(HttpMethod.DELETE, "/company-employee-management/v1/project/**").hasRole("USER");
 
-                    //Endpoints for modify user
+
                     authz.requestMatchers(HttpMethod.PUT, "/company-employee-management/v1/update-user").permitAll();
+
 
                     authz.requestMatchers("/company-employee-management/v1/department/**").hasRole("USER");
                     authz.requestMatchers("/company-employee-management/v1/employee/**").hasRole("USER");
@@ -86,18 +88,8 @@ public class SecurityConfiguration {
 
 
                 }).httpBasic(Customizer.withDefaults());
-//        http
-//                .formLogin(form -> form
-//                        .loginPage("/company-employee-management/v1/login")
-//                        .loginProcessingUrl("/company-employee-management/v1/login")
-//                        .failureUrl("/company-employee-management/v1/error")
-//                        .defaultSuccessUrl("/company-employee-management/v1/home").permitAll());
-//        http
-//                .logout(logout -> logout
-//                        .logoutUrl("/company-employee-management/v1/logout")
-//                        .logoutSuccessUrl("/company-employee-management/v1/home")
-//                        .invalidateHttpSession(true)
-//                        .deleteCookies("JSESSIONID").permitAll());
+
+        //http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);  To knoww Why and what it is
         http
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint));
@@ -106,17 +98,5 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-/*
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
-    }
-    //per inserire il provider di autenticazione
-    @Autowired
-    public void configure (AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider((AuthenticationProvider) customAuthenticationProvider);
-    }
- */
 
 }
