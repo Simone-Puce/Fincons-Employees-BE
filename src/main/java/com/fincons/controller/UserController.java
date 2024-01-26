@@ -61,30 +61,51 @@ public class UserController {
     // Login
     @PostMapping(value = "${login.uri}")
     public ResponseEntity<GenericResponse<JwtAuthResponse>> login(@RequestBody LoginDto loginDto) {
-        // your code goes here
-        String token = userService.login(loginDto);
+        try{
+            // your code goes here
+            String token = userService.login(loginDto);
 
-        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
-        jwtAuthResponse.setAccessToken(token);
+            JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+            jwtAuthResponse.setAccessToken(token);
 
-        return ResponseEntity.ok(GenericResponse.<JwtAuthResponse>builder()
-                .status(HttpStatus.OK)
-                .success(true)
-                .message("Logged Succesfully!!!")
-                .data(jwtAuthResponse)
-                .build());
+            return ResponseEntity.ok(GenericResponse.<JwtAuthResponse>builder()
+                    .status(HttpStatus.OK)
+                    .success(true)
+                    .message("Logged Succesfully!!!")
+                    .data(jwtAuthResponse)
+                    .build());
+        }catch(Exception e){
+            return ResponseEntity.status(409).body(GenericResponse.<JwtAuthResponse>builder()
+                    .status(HttpStatus.resolve(409))
+                    .success(false)
+                    .message("Invalid or existing email!!")
+                    .build());
+        }
+
     }
 
 
     @PostMapping(value = "${register.uri}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> register(
+    public ResponseEntity<GenericResponse<UserDTO>> register(
             @RequestBody UserDTO userDTO,
             @RequestParam(name = "admin", required = false) String passwordForAdmin) {
         try {
             UserDTO userToShow = userService.registerNewUser(userDTO, passwordForAdmin);
-            return ResponseEntity.status(HttpStatus.CREATED).body(userToShow);
+            return ResponseEntity.ok(GenericResponse.<UserDTO>builder()
+                    .status(HttpStatus.OK)
+                    .success(true)
+                    .message("Logged Succesfully!!!")
+                    .data(userToShow)
+                    .build());
+
         }catch (DuplicateEmailException e) {
-            return ResponseEntity.status(409).body("Invalid or existing email!!");
+
+            return ResponseEntity.status(409).body(GenericResponse.<UserDTO>builder()
+                    .status(HttpStatus.resolve(409))
+                    .success(false)
+                    .message("Invalid or existing email!!")
+                    .build());
+
         }
     }
 
