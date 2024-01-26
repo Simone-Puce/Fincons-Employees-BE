@@ -2,10 +2,16 @@ package com.fincons.jwt;
 
 import com.fincons.auth.CustomAuthenticationProvider;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +29,8 @@ public class JwtTokenProvider {
     @Value("${app.jwt-expiration-milliseconds}")
     private long jwtExpirationDate; // changed in long because expireDate is long
 
+    Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
+
     // Generate JWT token
     public String generateToken(Authentication authentication) {
         String email = authentication.getName();
@@ -31,41 +39,32 @@ public class JwtTokenProvider {
 
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
 
-        // Generate JWT token
-        String token =  Jwts.builder()
+        return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(expireDate)
                 .signWith(key())
                 .compact();
-
-        return token;
     }
-
 
     // get email from JWT token
     public String getEmailFromJWT(String token) {
 
-        Claims claims =
-                (Claims) Jwts.parserBuilder()
-                        .setSigningKey(key())
-                        .build()
-                        .parse(token)
-                        .getBody();
-
-
-        String email = claims.getSubject();
-
-        return email;
+        return Jwts.parserBuilder()
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(token)
+                .getBody().getSubject();
     }
 
+    // Validate JWT token
     // Validate JWT token
     public boolean validateToken(String token){
         try {
             Jwts.parserBuilder()
                     .setSigningKey(key())
                     .build()
-                    .parse(token);
+                    .parseClaimsJws(token);
             // if analysis goes up return  true
             return true;
         } catch (JwtException e) {
@@ -73,6 +72,7 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
     // key for JWT token generation and verification
     private Key key(){
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));

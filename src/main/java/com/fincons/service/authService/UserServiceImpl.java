@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl  implements UserService{
@@ -84,56 +85,30 @@ public class UserServiceImpl  implements UserService{
         ));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String token = jwtTokenProvider.generateToken(authentication);
-
-        return token;
+        return jwtTokenProvider.generateToken(authentication);
     }
 
     @Override
-    public UserDTO updateUser(String email, UserDTO userModified, String passwordForAdmin) throws Exception {
-        if (!email.isEmpty() && EmailValidator.isValidEmail(email)) {
-
-            // Cerco l'utente nella repository
-            User userFounded = userRepo.findByEmail(email);
-
-            if (userFounded == null) {
+    public UserDTO updateUser(String email, UserDTO userModified, String passwordForAdmin) {
+        if (email.isEmpty() && !EmailValidator.isValidEmail(email)) {
+            throw new ResourceNotFoundException("Invalid email!");
+        }
+            User userFound = userRepo.findByEmail(email);
+            if (userFound == null) {
                 throw new ResourceNotFoundException("There isn't an user with this email!");
             }
-
-            // Controllo che la nuova email non sia già presente nel DB
-            String newEmailByUser = userModified.getEmail();
-            User existingUserWithEmail = userRepo.findByEmail(newEmailByUser);
-
-            // Se l'email esiste già genera un eccezione
-            if (existingUserWithEmail != null && (existingUserWithEmail.getId() != (userFounded.getId()))) {
-                throw new IllegalArgumentException("Email already exists!");
-            }
-
-            // Aggiorno i dati dell'utente
-            userFounded.setFirstName(userModified.getFirstName());
-            userFounded.setLastName(userModified.getLastName());
-            userFounded.setEmail(newEmailByUser);
-            userFounded.setPassword(passwordEncoder.encode(userModified.getPassword()));
-
+            userFound.setFirstName(userModified.getFirstName());
+            userFound.setLastName(userModified.getLastName());
+            userFound.setPassword(passwordEncoder.encode(userModified.getPassword()));
             if (passwordForAdmin != null && passwordForAdmin.equals(passwordAdmin)) {
-                // Trasformo i ruoli DTO in ruoli e li assegno all'utente
-                List<RoleDTO> rolesDTO = userModified.getRoles();
-                List<Role> roles = new ArrayList<>();
 
-                for (RoleDTO rDto: rolesDTO) {
-                    roles.add(dtoToRole(rDto));
-                }
-                userFounded.setRoles(roles);
+                userFound.setRoles(userModified.getRoles()
+                        .stream()
+                        .map(this::dtoToRole)
+                        .collect(Collectors.toList()));
             }
-
-            // Salvo l'utente aggiornato
-            userRepo.save(userFounded);
-
-            return userToUserDto(userFounded);
-
-        } else {
-            throw new Exception("Invalid email!");
-        }
+            userRepo.save(userFound);
+            return userToUserDto(userFound);
     }
 
 
@@ -146,13 +121,11 @@ public class UserServiceImpl  implements UserService{
             return users.stream().map(this::userToUserDto).toList();
         }
     }
-
     @Override
     public UserDTO getUserDtoByEmail(String email) {
         User userFounded = userRepo.findByEmail(email);
         return userToUserDto(userFounded);
     }
-
     public User dtoToUser(UserDTO userDTO) {
         ModelMapper modelMapper = new ModelMapper();
         User userToSave = modelMapper.map(userDTO, User.class);
@@ -166,7 +139,6 @@ public class UserServiceImpl  implements UserService{
         userDTO.setRoles(user.getRoles().stream().map(this::roleToRoleDto).toList());
         return userDTO;
     }
-
     public Role roleToAssign(String nomeRuolo) {
         Role role = roleRepo.findByName(nomeRuolo);
         if (role == null) {
@@ -176,17 +148,12 @@ public class UserServiceImpl  implements UserService{
         }
         return role;
     }
-
     public RoleDTO roleToRoleDto(Role role) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(role, RoleDTO.class);
     }
-
     public Role dtoToRole(RoleDTO roleDTO) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(roleDTO, Role.class);
     }
-
-
-
 }
