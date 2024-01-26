@@ -15,13 +15,14 @@ import java.util.stream.Collectors;
 
 @Component
 public class EmployeeMapper {
-    @Autowired
-    private ModelMapper modelMapperEmployee;
+
+
+    private final ModelMapper modelMapperEmployee;
 
     public EmployeeMapper(ModelMapper modelMapperEmployee) {
         this.modelMapperEmployee = modelMapperEmployee;
         modelMapperEmployee.getConfiguration().setAmbiguityIgnored(true);
-        //modelMapperEmployee.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        //modelMapperEmployee.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
 
         modelMapperEmployee.addMappings(new PropertyMap<Project, ProjectDTO>() {
             @Override
@@ -34,12 +35,6 @@ public class EmployeeMapper {
     public EmployeeDTO mapToDTO(Employee employee) {
 
         EmployeeDTO employeeDTO = modelMapperEmployee.map(employee, EmployeeDTO.class);
-
-        List<ProjectDTO> projectDTOs = employee.getProjects().stream()
-                .map(project -> modelMapperEmployee.map(project, ProjectDTO.class))
-                .collect(Collectors.toList());
-
-        employeeDTO.setProjects(projectDTOs);
 
         return employeeDTO;
     }

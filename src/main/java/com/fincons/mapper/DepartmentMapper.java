@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class DepartmentMapper {
 
 
-    private ModelMapper modelMapperDepartment;
+    private final ModelMapper modelMapperDepartment;
 
     public DepartmentMapper(ModelMapper modelMapperDepartment) {
         this.modelMapperDepartment = modelMapperDepartment;
@@ -39,15 +39,6 @@ public class DepartmentMapper {
     public DepartmentDTO mapToDTO(Department department) {
 
         DepartmentDTO departmentDTO = modelMapperDepartment.map(department, DepartmentDTO.class);
-
-
-        List<EmployeeDTO> employeeDTOs = department.getEmployees().stream()
-                .map(employee -> modelMapperDepartment.map(employee, EmployeeDTO.class))
-                .collect(Collectors.toList());
-
-        departmentDTO.setEmployees(employeeDTOs);
-
-
 
         return departmentDTO;
     }

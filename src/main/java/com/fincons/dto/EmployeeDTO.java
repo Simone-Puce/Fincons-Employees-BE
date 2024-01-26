@@ -28,8 +28,8 @@ public class EmployeeDTO {
     private String email;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Long idDepartment;
-    private Long idPosition;
+    private String departmentId;
+    private String positionId;
     private List<ProjectDTO> Projects;
     private List<File> fileList;
 

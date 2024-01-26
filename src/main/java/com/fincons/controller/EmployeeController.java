@@ -20,8 +20,8 @@ public class EmployeeController {
     ProjectService projectService;
 
     @GetMapping(value = "/find-by-id")
-    public ResponseEntity<Object> getEmployeeById(@RequestParam String idEmployee){
-        return employeeService.getEmployeeById(idEmployee);
+    public ResponseEntity<Object> getEmployeeById(@RequestParam String employeeId){
+        return employeeService.getEmployeeById(employeeId);
     }
     @GetMapping(value = "/find-by-email")
     public ResponseEntity<Object> getDepartmentByEmail(@RequestParam String email){
@@ -36,33 +36,33 @@ public class EmployeeController {
         return employeeService.createEmployee(employeeDTO);
     }
     @PutMapping(value = "/update")
-    public ResponseEntity<Object> updateEmployeeById(@RequestParam String idEmployee, @RequestBody EmployeeDTO employeeDTO) {
-        return employeeService.updateEmployeeById(idEmployee, employeeDTO);
+    public ResponseEntity<Object> updateEmployeeById(@RequestParam String employeeId, @RequestBody EmployeeDTO employeeDTO) {
+        return employeeService.updateEmployeeById(employeeId, employeeDTO);
     }
     @DeleteMapping(value = "/delete")
-    public  ResponseEntity<Object> deleteEmployeeById(@RequestParam String idEmployee){
-        return employeeService.deleteEmployeeById(idEmployee);
+    public  ResponseEntity<Object> deleteEmployeeById(@RequestParam String employeeId){
+        return employeeService.deleteEmployeeById(employeeId);
     }
 
     @GetMapping(value = "/find/employee-project")
-    public ResponseEntity<Object> getAllEmployeesProjects(@RequestParam String idEmployee){
-        return employeeService.findAllEmployeeProjects(idEmployee);
+    public ResponseEntity<Object> getAllEmployeesProjects(@RequestParam String employeeId){
+        return employeeService.findAllEmployeeProjects(employeeId);
     }
     @GetMapping(value = "/list/employee-project")
     public ResponseEntity<Object> getAllEmployeeProject(){
         return employeeService.getAllEmployeeProject();
     }
     @PostMapping(value= "/create/employee-project")
-    public ResponseEntity<Object> createEmployeeProject(@RequestParam String idEmployee, @RequestParam String idProject) {
-        return employeeService.addEmployeeProject(idEmployee, idProject);
+    public ResponseEntity<Object> createEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId) {
+        return employeeService.addEmployeeProject(employeeId, projectId);
     }
     @PutMapping(value ="/update/employee-project")
-    public ResponseEntity<Object> updateEmployeeProject(@RequestParam String idEmployee, @RequestParam String idProject, @RequestBody EmployeeProjectDTO employeeProjectDTO){
-        return employeeService.updateEmployeeProject(idEmployee, idProject, employeeProjectDTO);
+    public ResponseEntity<Object> updateEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId, @RequestBody EmployeeProjectDTO employeeProjectDTO){
+        return employeeService.updateEmployeeProject(employeeId, projectId, employeeProjectDTO);
     }
     @DeleteMapping(value= "/delete/employee-project")
-    public ResponseEntity<Object> deleteEmployeeProject(@RequestParam String idEmployee, @RequestParam String idProject) {
-        return employeeService.deleteEmployeeProject(idEmployee, idProject);
+    public ResponseEntity<Object> deleteEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId) {
+        return employeeService.deleteEmployeeProject(employeeId, projectId);
     }
 
 

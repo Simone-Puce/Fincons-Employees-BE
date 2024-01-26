@@ -15,8 +15,8 @@ public class ProjectController {
     ProjectService projectService;
 
     @GetMapping(value = "/find-by-id")
-    public ResponseEntity<Object> getProjectById(@RequestParam String idProject){
-        return projectService.getProjectById(idProject);
+    public ResponseEntity<Object> getProjectById(@RequestParam String projectId){
+        return projectService.getProjectById(projectId);
     }
 
     @GetMapping(value="/list")
@@ -28,12 +28,12 @@ public class ProjectController {
         return projectService.createProject(projectDTO);
     }
     @PutMapping(value = "/update")
-    public ResponseEntity<Object> updateProjectById(@RequestParam String idProject, @RequestBody ProjectDTO projectDTO) {
-        return projectService.updateProjectById(idProject, projectDTO);
+    public ResponseEntity<Object> updateProjectById(@RequestParam String projectId, @RequestBody ProjectDTO projectDTO) {
+        return projectService.updateProjectById(projectId, projectDTO);
     }
     @DeleteMapping(value = "/delete")
-    public ResponseEntity<Object> deleteProjectById(@RequestParam String idProject){
-        return projectService.deleteProjectById(idProject);
+    public ResponseEntity<Object> deleteProjectById(@RequestParam String projectId){
+        return projectService.deleteProjectById(projectId);
     }
     
     

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class PositionMapper {
 
 
-    private ModelMapper modelMapperPosition;
+    private final ModelMapper modelMapperPosition;
 
     public PositionMapper(ModelMapper modelMapperPosition) {
         this.modelMapperPosition = modelMapperPosition;
@@ -37,12 +37,6 @@ public class PositionMapper {
     public PositionDTO mapToDTO(Position position) {
 
         PositionDTO positionDTO = modelMapperPosition.map(position, PositionDTO.class);
-
-        List<EmployeeDTO> employeeDTOs = position.getEmployees().stream()
-                .map(employee -> modelMapperPosition.map(employee, EmployeeDTO.class))
-                .collect(Collectors.toList());
-
-        positionDTO.setEmployees(employeeDTOs);
 
         return positionDTO;
     }

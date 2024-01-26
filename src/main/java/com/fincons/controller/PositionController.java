@@ -16,8 +16,8 @@ public class PositionController {
     PositionService positionService;
 
     @GetMapping(value = "/find-by-id")
-    public ResponseEntity<Object> getPositionById(@RequestParam String idPosition){
-        return positionService.getPositionById(idPosition);
+    public ResponseEntity<Object> getPositionById(@RequestParam String positionId){
+        return positionService.getPositionById(positionId);
     }
     @GetMapping(value="/list")
     public ResponseEntity<Object> getAllPositions(){
@@ -28,12 +28,12 @@ public class PositionController {
         return positionService.createPosition(positionDTO);
     }
     @PutMapping(value = "/update")
-    public ResponseEntity<Object> updatePositionById(@RequestParam String idPosition, @RequestBody PositionDTO positionDTO) {
-        return positionService.updatePositionById(idPosition, positionDTO);
+    public ResponseEntity<Object> updatePositionById(@RequestParam String positionId, @RequestBody PositionDTO positionDTO) {
+        return positionService.updatePositionById(positionId, positionDTO);
     }
     @DeleteMapping(value = "/delete")
-    public ResponseEntity<Object> deletePositionById(@RequestParam String idPosition){
-        return positionService.deletePositionById(idPosition);
+    public ResponseEntity<Object> deletePositionById(@RequestParam String positionId){
+        return positionService.deletePositionById(positionId);
     }
 
     

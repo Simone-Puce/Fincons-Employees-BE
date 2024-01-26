@@ -35,19 +35,25 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
 
     @Autowired
-    private ProjectRepository projectRepository; //
+    private ProjectRepository projectRepository;
 
     @Autowired
     private EmployeeMapper modelMapperEmployee;
 
     @Autowired
-    private ProjectMapper projectMapper; //
+    private ProjectMapper projectMapper;
 
     @Autowired
     private EmployeeProjectMapper employeeProjectMapper;
 
     @Autowired
-    private ProjectServiceImpl projectServiceImpl; //
+    private ProjectServiceImpl projectServiceImpl;
+
+    @Autowired
+    private DepartmentServiceImpl departmentServiceImpl;
+
+    @Autowired
+    private PositionServiceImpl positionServiceImpl;
 
     @Autowired
     public void EmployeeService(EmployeeMapper modelMapperEmployee) {
@@ -109,11 +115,26 @@ public class EmployeeServiceImpl implements EmployeeService {
         //Condition if there are employee with same firstName && lastName && birthDate
         checkForDuplicateEmployee(employeeDTO, employees);
 
+        //Save uuid for DTO
+        String idDepartmentUuid = employeeDTO.getDepartmentId();
+        String idPositionUuid = employeeDTO.getPositionId();
+
+        Department department;
+        department = departmentServiceImpl.validateDepartmentById(employeeDTO.getDepartmentId());
+        employeeDTO.setDepartmentId(department.getId().toString());
+
+        Position position;
+        position = positionServiceImpl.validatePositionById(employeeDTO.getPositionId());
+        employeeDTO.setPositionId(position.getId().toString());
+
+
         Employee employee = modelMapperEmployee.mapToEntity(employeeDTO);
 
         employeeRepository.save(employee);
 
         employeeDTO.setEmployeeId(employee.getEmployeeId());
+        employeeDTO.setDepartmentId(idDepartmentUuid);
+        employeeDTO.setPositionId(idPositionUuid);
 
 
         return ResponseHandler.generateResponse(LocalDateTime.now(),
@@ -132,6 +153,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         //Check if the specified ID exists
         Employee existingEmployee = validateEmployeeById(idEmployee);
 
+        //Save uuid for DTO
+        String idDepartmentUuid = employeeDTO.getDepartmentId();
+        String idPositionUuid = employeeDTO.getPositionId();
+
 
         existingEmployee.setEmployeeId(idEmployee);
         existingEmployee.setFirstName(employeeDTO.getFirstName());
@@ -142,15 +167,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         existingEmployee.setStartDate(employeeDTO.getStartDate());
         existingEmployee.setEndDate(employeeDTO.getEndDate());
 
-        Department newDepartment = new Department();
-        newDepartment.setId(employeeDTO.getIdDepartment());
-        existingEmployee.setDepartment(newDepartment);
 
-        Position newPosition = new Position();
-        newPosition.setId(employeeDTO.getIdPosition());
-        existingEmployee.setPosition(newPosition);
+        Department department;
+        department = departmentServiceImpl.validateDepartmentById(employeeDTO.getDepartmentId());
+        existingEmployee.setDepartment(department);
 
-
+        Position position;
+        position = positionServiceImpl.validatePositionById(employeeDTO.getPositionId());
+        existingEmployee.setPosition(position);
 
         List<Employee> employeesWithoutEmployeeIdChosed = new ArrayList<>();
 
@@ -203,7 +227,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new IllegalArgumentException("The ID " + idEmployee + " doesn't work in any project.");
         } else {
             for (Project project : projects) {
-                ProjectDTO projectDTO = projectMapper.mapProjectWithoutEmployees(project);
+                ProjectDTO projectDTO = projectMapper.mapToDTO(project);
                 newListProjects.add(projectDTO);
             }
         }
@@ -357,8 +381,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                 Strings.isEmpty(employeeDTO.getEmail()) ||
                 Objects.isNull(employeeDTO.getBirthDate()) ||
                 Objects.isNull(employeeDTO.getStartDate()) ||
-                Objects.isNull(employeeDTO.getIdDepartment()) ||
-                Objects.isNull(employeeDTO.getIdPosition())) {
+                Objects.isNull(employeeDTO.getDepartmentId()) ||
+                Objects.isNull(employeeDTO.getPositionId())) {
             throw new IllegalArgumentException("The fields of the employee can't be null or empty.");
         }
     }
