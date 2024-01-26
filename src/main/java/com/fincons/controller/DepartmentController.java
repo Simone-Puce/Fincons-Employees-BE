@@ -17,8 +17,8 @@ public class DepartmentController {
     private DepartmentService departmentService;
 
     @GetMapping(value = "${department.find-by-id}")
-    public ResponseEntity<Object> getDepartmentById(@RequestParam String idDepartment){
-        return departmentService.getDepartmentById(idDepartment);
+    public ResponseEntity<Object> getDepartmentById(@RequestParam String departmentId){
+        return departmentService.getDepartmentById(departmentId);
     }
     @GetMapping(value="${department.list}")
     public ResponseEntity<Object> getAllDepartment(){
@@ -29,16 +29,16 @@ public class DepartmentController {
         return departmentService.createDepartment(departmentDTO);
     }
     @PutMapping(value = "${department.update}")
-    public ResponseEntity<Object> updateDepartmentById(@RequestParam String idDepartment, @RequestBody DepartmentDTO departmentDTO) {
-        return departmentService.updateDepartmentById(idDepartment, departmentDTO);
+    public ResponseEntity<Object> updateDepartmentById(@RequestParam String departmentId, @RequestBody DepartmentDTO departmentDTO) {
+        return departmentService.updateDepartmentById(departmentId, departmentDTO);
     }
     @DeleteMapping(value = "${department.delete}")
-    public ResponseEntity<Object> deleteDepartmentById(@RequestParam String idDepartment){
-       return departmentService.deleteDepartmentById(idDepartment);
+    public ResponseEntity<Object> deleteDepartmentById(@RequestParam String departmentId){
+       return departmentService.deleteDepartmentById(departmentId);
     }
     @GetMapping(value = "${department.find-employee-by-iddepartment}")
-    public ResponseEntity<Object> getDepartmentFindEmployee(@RequestParam String idDepartment){
-        return departmentService.getDepartmentEmployeesFindByIdDepartment(idDepartment);
+    public ResponseEntity<Object> getDepartmentFindEmployee(@RequestParam String departmentId){
+        return departmentService.getDepartmentEmployeesFindByIdDepartment(departmentId);
     }
 
 }

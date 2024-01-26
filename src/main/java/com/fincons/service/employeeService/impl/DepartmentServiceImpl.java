@@ -102,8 +102,6 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department existingDepartment = validateDepartmentById(idDepartment);
 
 
-
-
         existingDepartment.setDepartmentId(idDepartment);
         existingDepartment.setName(departmentDTO.getName());
         existingDepartment.setAddress(departmentDTO.getAddress());
@@ -171,7 +169,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     public Department validateDepartmentById(String idDepartment){
-        Department existingDepartment = departmentRepository.findByDepartmentId(idDepartment);
+        Department existingDepartment = departmentRepository.findDepartmentByDepartmentId(idDepartment);
 
         if(Objects.isNull(existingDepartment)){
             throw new ResourceNotFoundException("Department with ID: " + idDepartment + " not found");

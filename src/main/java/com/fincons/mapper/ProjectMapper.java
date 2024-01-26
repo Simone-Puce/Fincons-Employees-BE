@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @Component
 public class ProjectMapper {
 
-    @Autowired
-    private ModelMapper modelMapperProject;
+
+    private final ModelMapper modelMapperProject;
 
     public ProjectMapper(ModelMapper modelMapperProject) {
         this.modelMapperProject = modelMapperProject;
@@ -35,12 +35,6 @@ public class ProjectMapper {
 
         ProjectDTO projectDTO = modelMapperProject.map(project, ProjectDTO.class);
 
-        List<EmployeeDTO> employeeDTOs = project.getEmployees().stream()
-                .map(employee -> modelMapperProject.map(employee, EmployeeDTO.class))
-                .collect(Collectors.toList());
-
-        projectDTO.setEmployees(employeeDTOs);
-
         return projectDTO;
     }
 
@@ -49,13 +43,6 @@ public class ProjectMapper {
         Project project = modelMapperProject.map(projectDTO, Project.class);
 
         return project;
-    }
-    public ProjectDTO mapProjectWithoutEmployees(Project project){
-        return new ProjectDTO(
-                project.getProjectId(),
-                project.getName(),
-                project.getArea(),
-                project.getPriority());
     }
 
 }

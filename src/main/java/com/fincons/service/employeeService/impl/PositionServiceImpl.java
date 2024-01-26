@@ -139,8 +139,8 @@ public class PositionServiceImpl implements PositionService {
                 null);
     }
 
-    private Position validatePositionById(String idPosition) {
-        Position existingPosition = positionRepository.findByPositionId(idPosition);
+    public Position validatePositionById(String idPosition) {
+        Position existingPosition = positionRepository.findPositionByPositionId(idPosition);
 
         if (existingPosition == null) {
             throw new ResourceNotFoundException("Position with ID: " + idPosition + " not found");
