@@ -1,5 +1,6 @@
 package com.fincons.controller;
 
+import com.fincons.exception.NoPermissionException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.service.authService.UserService;
 import com.fincons.dto.UserDTO;
@@ -23,12 +24,12 @@ public class UserController {
     UserService userService;
 
     @GetMapping("${home.uri}")
-    public String home(){
+    public String home() {
         return "You are on the home page";
     }
 
     @GetMapping("${registered.users.uri}")
-    public String registeredUsers(){
+    public String registeredUsers() {
         return "Registered users";
     }
 
@@ -61,7 +62,7 @@ public class UserController {
     // Login
     @PostMapping(value = "${login.uri}")
     public ResponseEntity<GenericResponse<JwtAuthResponse>> login(@RequestBody LoginDto loginDto) {
-        try{
+        try {
             // your code goes here
             String token = userService.login(loginDto);
 
@@ -74,7 +75,7 @@ public class UserController {
                     .message("Logged Succesfully!!!")
                     .data(jwtAuthResponse)
                     .build());
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(409).body(GenericResponse.<JwtAuthResponse>builder()
                     .status(HttpStatus.resolve(409))
                     .success(false)
@@ -98,7 +99,7 @@ public class UserController {
                     .data(userToShow)
                     .build());
 
-        }catch (DuplicateEmailException e) {
+        } catch (DuplicateEmailException e) {
 
             return ResponseEntity.status(409).body(GenericResponse.<UserDTO>builder()
                     .status(HttpStatus.resolve(409))
@@ -111,31 +112,66 @@ public class UserController {
 
 
     @PutMapping("${modify.user}")
-    public ResponseEntity<?> updateUserByEmail
+    public ResponseEntity<GenericResponse<UserDTO>> updateUserByEmail
             (
-            @RequestParam(name = "email") String email,
-            @RequestBody UserDTO userModified,
-            @RequestParam(name = "admin", required = false) String passwordForAdmin
-            ) throws Exception
-    {
-            try{
-                UserDTO isUserModified = userService.updateUser(email,userModified,passwordForAdmin);
-                return  ResponseEntity.status(HttpStatus.OK).body(isUserModified);
-            }catch (ResourceNotFoundException r){
-                return ResponseEntity.status(409).body(r.getMessage());
-            }catch(Exception e){
-                return ResponseEntity.status(409).body("Email does not exist!!!");
-            }
+                    @RequestParam(name = "email") String email,
+                    @RequestBody UserDTO userModified,
+                    @RequestParam(name = "admin", required = false) String passwordForAdmin
+            ) throws Exception {
+        try {
+
+            UserDTO isUserModified = userService.updateUser(email, userModified, passwordForAdmin);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    GenericResponse.<UserDTO>builder()
+                            .status(HttpStatus.OK)
+                            .success(true)
+                            .message("User modified succesfully!")
+                            .data(isUserModified).build()
+            );
+
+        } catch (NoPermissionException npe) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                    GenericResponse.<UserDTO>builder()
+                            .status(HttpStatus.FORBIDDEN)
+                            .success(false)
+                            .message(npe.getMessage())
+                            .build());
+        } catch (ResourceNotFoundException r) {
+            return ResponseEntity.status(409).body(
+                    GenericResponse.<UserDTO>builder()
+                            .status(HttpStatus.resolve(409))
+                            .success(false)
+                            .message("Resource not found!")
+                            .build()
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(409).body(
+                    GenericResponse.<UserDTO>builder()
+                            .status(HttpStatus.resolve(409))
+                            .success(false)
+                            .message(e.getMessage())
+                            .build()
+            );
+        }
     }
 
 
     @GetMapping("${session.uri}")
-    public String session(HttpSession session){
+    public String session(HttpSession session) {
         return session.getId();
     }
 
     @GetMapping("${detail.userdto.uri}")
-    public UserDTO userDetails( @RequestParam String email){
-        return userService.getUserDtoByEmail(email);
+    public ResponseEntity<GenericResponse<UserDTO>> userDetails(@RequestParam String email) {
+        UserDTO userDTO = userService.getUserDtoByEmail(email);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                GenericResponse.<UserDTO>builder()
+                        .status(HttpStatus.OK)
+                        .success(true)
+                        .message("User fuond!")
+                        .data(userDTO)
+                        .build()
+        );
     }
 }
+
