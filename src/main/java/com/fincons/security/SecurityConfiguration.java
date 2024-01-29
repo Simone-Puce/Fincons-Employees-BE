@@ -1,35 +1,32 @@
 package com.fincons.security;
 
-import com.fincons.auth.CustomAuthenticationProvider;
 import com.fincons.jwt.JwtAuthenticationEntryPoint;
 import com.fincons.jwt.JwtAuthenticationFilter;
 
-import com.fincons.auth.CustomAuthenticationProvider;
-import com.fincons.jwt.JwtAuthenticationEntryPoint;
-import com.fincons.jwt.JwtAuthenticationFilter;
+import com.fincons.utility.Endpoint;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -45,55 +42,55 @@ public class SecurityConfiguration {
         return configuration.getAuthenticationManager();
     }
 
-    private UserDetailsService userDetailsService;
+    private   UserDetailsService userDetailsService;
 
-    private CustomAuthenticationProvider customAuthenticationProvider;
+    private   JwtAuthenticationEntryPoint authenticationEntryPoint;
 
-    private JwtAuthenticationEntryPoint authenticationEntryPoint;
-
-    private JwtAuthenticationFilter jwtAuthFilter;
-
+    private   JwtAuthenticationFilter jwtAuthFilter;
+    private final  String baseUri = "/company-employee-management/v1";
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        //http.cors(AbstractHttpConfigurer::disable);
+
+        http.cors(AbstractHttpConfigurer::disable);
         http.csrf(AbstractHttpConfigurer::disable);
-        http
-                .authorizeHttpRequests((authz) -> {
-                    authz.requestMatchers(HttpMethod.DELETE, "/company-employee-management/v1/department/**").hasRole("USER");
-                    authz.requestMatchers(HttpMethod.DELETE, "/company-employee-management/v1/employee/**").hasRole("USER");
-                    authz.requestMatchers(HttpMethod.DELETE, "/company-employee-management/v1/position/**").hasRole("USER");
-                    authz.requestMatchers(HttpMethod.DELETE, "/company-employee-management/v1/project/**").hasRole("USER");
+
+        List<Endpoint> endpoints = Arrays.asList(
+                new Endpoint(baseUri + "/department/**", "USER"),  // Di seguito  HttpMethod. e le opzioni  un esempio potrebbe essere  new Endpoint(baseUri + "/department/**", "USER","PUT"),
+                new Endpoint(baseUri  + "/employee/**","USER"),
+                new Endpoint(baseUri  + "/position/**","USER"),
+                new Endpoint(baseUri  + "/project/**","USER"),
+                new Endpoint(baseUri  + "/update-user","AUTHENTICATED"),
+                new Endpoint(baseUri  + "/file/**","USER"),
+                new Endpoint(baseUri  + "/email","USER"),
+                new Endpoint(baseUri  + "/register","USER"),
+                new Endpoint(baseUri  + "/employees","USER"),
+                new Endpoint(baseUri  + "/error","USER"),
+                new Endpoint(baseUri + "/registered-users", "ADMIN,USER"),
+                new Endpoint(baseUri + "/login", ""),
+                new Endpoint(baseUri +  "/logout", "")
+                );
 
 
-                    authz.requestMatchers(HttpMethod.PUT, "/company-employee-management/v1/update-user").permitAll();
+        http.authorizeHttpRequests(authz -> {
 
-
-                    authz.requestMatchers("/company-employee-management/v1/department/**").hasRole("USER");
-                    authz.requestMatchers("/company-employee-management/v1/employee/**").hasRole("USER");
-                    authz.requestMatchers("/company-employee-management/v1/position/**").hasRole("USER");
-                    authz.requestMatchers("/company-employee-management/v1/project/**").hasRole("USER");
-                    authz.requestMatchers("/company-employee-management/v1/file/**").hasRole("USER");
-
-
-                    authz.requestMatchers("/company-employee-management/v1/email").permitAll();
-                    authz.requestMatchers("/company-employee-management/v1/session-value").permitAll();
-                    authz.requestMatchers("/company-employee-management/v1/home").permitAll();
-                    authz.requestMatchers("/company-employee-management/v1/register").permitAll();
-                    authz.requestMatchers("/company-employee-management/v1/employees").authenticated();
-                    authz.requestMatchers("/company-employee-management/v1/error").permitAll();
-                    authz.requestMatchers("/company-employee-management/v1/registered-users").hasAnyRole("ADMIN","USER");
-
-                    authz.requestMatchers("/company-employee-management/v1/login").permitAll();
-                    authz.requestMatchers("/company-employee-management/v1/logout").permitAll().anyRequest().authenticated();
-
-
+            for (int i = 0; i < endpoints.size(); i++) {
+                if (endpoints.get(i).getRole().contains("USER") && endpoints.get(i).getRole().contains("ADMIN")) {
+                    authz.requestMatchers(endpoints.get(i).getPath()).hasAnyRole(endpoints.get(i).getRole().split(","));
+                } else if (endpoints.get(i).getRole().equals("USER")) {
+                    authz.requestMatchers(endpoints.get(i).getPath()).hasRole(endpoints.get(i).getRole());
+                } else if (endpoints.get(i).getRole().equals("ADMIN")) {
+                    authz.requestMatchers(endpoints.get(i).getPath()).hasRole(endpoints.get(i).getRole());
+                }else if(endpoints.get(i).getRole().equals("AUTHENTICATED")){
+                    authz.requestMatchers(endpoints.get(i).getPath()).authenticated();
+                }
+            }
+                    authz.requestMatchers(baseUri + "/login").permitAll();
+                    authz.requestMatchers(baseUri + "/logout").permitAll().anyRequest().authenticated();
                 }).httpBasic(Customizer.withDefaults());
 
-        //http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);  To knoww Why and what it is
         http
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint));
-
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

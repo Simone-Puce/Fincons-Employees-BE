@@ -1,20 +1,11 @@
 package com.fincons.jwt;
 
-import com.fincons.auth.CustomAuthenticationProvider;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
+
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import java.security.Key;
@@ -28,8 +19,6 @@ public class JwtTokenProvider {
 
     @Value("${app.jwt-expiration-milliseconds}")
     private long jwtExpirationDate; // changed in long because expireDate is long
-
-    Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
 
     // Generate JWT token
     public String generateToken(Authentication authentication) {

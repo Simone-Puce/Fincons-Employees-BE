@@ -12,6 +12,7 @@ import com.fincons.jwt.LoginDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,14 +30,14 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl  implements UserService{
 
-    public UserServiceImpl(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder, CustomAuthenticationProvider customAuthenticationProvider, JwtTokenProvider jwtTokenProvider) {
+    public UserServiceImpl(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
         this.roleRepo = roleRepo;
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
-        this.customAuthenticationProvider = customAuthenticationProvider;
+        this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
     }
-    private CustomAuthenticationProvider customAuthenticationProvider;
+    private AuthenticationManager authenticationManager;
     private RoleRepository roleRepo;
     private UserRepository userRepo;
     private PasswordEncoder passwordEncoder;
@@ -79,7 +80,7 @@ public class UserServiceImpl  implements UserService{
 
     @Override
     public String login(LoginDto loginDto) {
-        Authentication authentication = customAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getEmail(),
                 loginDto.getPassword()
         ));

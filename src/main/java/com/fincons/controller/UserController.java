@@ -17,16 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("http://localhost:81")
+//@CrossOrigin("http://localhost:81")
+@CrossOrigin("*")
 @RequestMapping("/company-employee-management")
 public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("${home.uri}")
-    public String home() {
-        return "You are on the home page";
-    }
 
     @GetMapping("${registered.users.uri}")
     public String registeredUsers() {
@@ -153,12 +150,6 @@ public class UserController {
                             .build()
             );
         }
-    }
-
-
-    @GetMapping("${session.uri}")
-    public String session(HttpSession session) {
-        return session.getId();
     }
 
     @GetMapping("${detail.userdto.uri}")

@@ -26,7 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     https://www.baeldung.com/spring-enablemethodsecurity   To SEE !!!
      */
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email)  throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);
         if(user == null){
             throw new UsernameNotFoundException("User not found!!!");
@@ -42,5 +42,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
     }
+
+
 
 }
