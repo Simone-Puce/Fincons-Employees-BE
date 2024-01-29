@@ -7,6 +7,7 @@ import com.fincons.utility.Endpoint;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -31,8 +32,15 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@AllArgsConstructor
+@PropertySource("application.properties")
 public class SecurityConfiguration {
+
+    public SecurityConfiguration(UserDetailsService userDetailsService, JwtAuthenticationEntryPoint authenticationEntryPoint, JwtAuthenticationFilter jwtAuthFilter) {
+        this.userDetailsService = userDetailsService;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
+
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -48,6 +56,8 @@ public class SecurityConfiguration {
 
     private   JwtAuthenticationFilter jwtAuthFilter;
     private final  String baseUri = "/company-employee-management/v1";
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -55,19 +65,19 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
 
         List<Endpoint> endpoints = Arrays.asList(
-                new Endpoint(baseUri + "/department/**", "USER"),  // Di seguito  HttpMethod. e le opzioni  un esempio potrebbe essere  new Endpoint(baseUri + "/department/**", "USER","PUT"),
-                new Endpoint(baseUri  + "/employee/**","USER"),
-                new Endpoint(baseUri  + "/position/**","USER"),
-                new Endpoint(baseUri  + "/project/**","USER"),
-                new Endpoint(baseUri  + "/update-user","AUTHENTICATED"),
-                new Endpoint(baseUri  + "/file/**","USER"),
-                new Endpoint(baseUri  + "/email","USER"),
-                new Endpoint(baseUri  + "/register","USER"),
-                new Endpoint(baseUri  + "/employees","USER"),
-                new Endpoint(baseUri  + "/error","USER"),
-                new Endpoint(baseUri + "/registered-users", "ADMIN,USER"),
-                new Endpoint(baseUri + "/login", ""),
-                new Endpoint(baseUri +  "/logout", "")
+                new Endpoint("${department.uri}", "USER"),  // Di seguito  HttpMethod. e le opzioni  un esempio potrebbe essere  new Endpoint(baseUri + "/department/**", "USER","PUT"),
+                new Endpoint("${employee.uri}","USER"),
+                new Endpoint("${position.uri}","USER"),
+                new Endpoint("${project.uri}","USER"),
+                new Endpoint("${modify.uri}","AUTHENTICATED"),
+                new Endpoint("${file.uri}","USER"),
+                new Endpoint("${email.uri}","USER"),
+                new Endpoint("${register.uri}","USER"),
+                new Endpoint("${employees.uri}","USER"),
+                new Endpoint("${error.uri}","USER"),
+                new Endpoint("${registered.users.uri}", "ADMIN,USER"),
+                new Endpoint("${login.uri}", ""),
+                new Endpoint("${logout.uri}", "")
                 );
 
 

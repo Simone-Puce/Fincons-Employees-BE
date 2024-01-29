@@ -79,7 +79,6 @@ public class UserController {
                     .message("Invalid or existing email!!")
                     .build());
         }
-
     }
 
 
@@ -98,7 +97,7 @@ public class UserController {
 
         } catch (DuplicateEmailException e) {
 
-            return ResponseEntity.status(409).body(GenericResponse.<UserDTO>builder()
+            return ResponseEntity.status(200).body(GenericResponse.<UserDTO>builder()
                     .status(HttpStatus.resolve(409))
                     .success(false)
                     .message("Invalid or existing email!!")
