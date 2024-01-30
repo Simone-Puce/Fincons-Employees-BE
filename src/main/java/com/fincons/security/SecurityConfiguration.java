@@ -75,9 +75,7 @@ public class SecurityConfiguration {
                 new Endpoint("${register.uri}","USER"),
                 new Endpoint("${employees.uri}","USER"),
                 new Endpoint("${error.uri}","USER"),
-                new Endpoint("${registered.users.uri}", "ADMIN,USER"),
-                new Endpoint("${login.uri}", ""),
-                new Endpoint("${logout.uri}", "")
+                new Endpoint("${registered.users.uri}", "ADMIN,USER")
                 );
 
 
@@ -86,9 +84,7 @@ public class SecurityConfiguration {
             for (int i = 0; i < endpoints.size(); i++) {
                 if (endpoints.get(i).getRole().contains("USER") && endpoints.get(i).getRole().contains("ADMIN")) {
                     authz.requestMatchers(endpoints.get(i).getPath()).hasAnyRole(endpoints.get(i).getRole().split(","));
-                } else if (endpoints.get(i).getRole().equals("USER")) {
-                    authz.requestMatchers(endpoints.get(i).getPath()).hasRole(endpoints.get(i).getRole());
-                } else if (endpoints.get(i).getRole().equals("ADMIN")) {
+                } else if (endpoints.get(i).getRole().equals("USER")  ||  endpoints.get(i).getRole().equals("ADMIN") ) {
                     authz.requestMatchers(endpoints.get(i).getPath()).hasRole(endpoints.get(i).getRole());
                 }else if(endpoints.get(i).getRole().equals("AUTHENTICATED")){
                     authz.requestMatchers(endpoints.get(i).getPath()).authenticated();
