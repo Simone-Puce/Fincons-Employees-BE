@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
  * @RestController viene utilizzato per creare servizi web che restituiscono dati JSON o XML
  */
 @RestController
-@RequestMapping("${department.uri}")
+@RequestMapping("/company-employee-management")
 public class DepartmentController {
 
     /**
@@ -20,27 +20,27 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
-    @GetMapping(value = "/find-by-id")
+    @GetMapping(value = "${department.find-by-id}")
     public ResponseEntity<Object> getDepartmentById(@RequestParam long id){
         return departmentService.getDepartmentById(id);
     }
-    @GetMapping(value="/list")
+    @GetMapping(value="${department.list}")
     public ResponseEntity<Object> getAllDepartment(){
         return  departmentService.getAllDepartment();
     }
-    @PostMapping(value = "/create")
+    @PostMapping(value = "${department.create}")
     public ResponseEntity<Object> createDepartment(@RequestBody Department department){
         return departmentService.createDepartment(department);
     }
-    @PutMapping(value = "/update")
+    @PutMapping(value = "${department.update}")
     public ResponseEntity<Object> updateDepartmentById(@RequestParam long id, @RequestBody Department department) throws Exception {
         return departmentService.updateDepartmentById(id, department);
     }
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "${department.delete}")
     public ResponseEntity<Object> deleteDepartmentById(@RequestParam long id){
        return departmentService.deleteDepartmentById(id);
     }
-    @GetMapping(value = "/find-employees")
+    @GetMapping(value = "${department.find-employee-by-iddepartment}")
     public ResponseEntity<Object> getDepartmentFindEmployee(@RequestParam long id){
         return departmentService.getDepartmentEmployeesFindByIdDepartment(id);
     }

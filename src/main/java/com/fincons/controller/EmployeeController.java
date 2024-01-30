@@ -29,53 +29,53 @@ public class EmployeeController {
     private ImportService importService;
 
 
-    @GetMapping(value = "/find-by-id")
+    @GetMapping(value = "${employee.find-project-by-id}")
     public ResponseEntity<Object> getEmployeeById(@RequestParam long id){
         return employeeService.getEmployeeById(id);
     }
-    @GetMapping(value = "/find-by-email")
+    @GetMapping(value = "${employee.find-project-by-email}")
     public ResponseEntity<Object> getDepartmentByEmail(@RequestParam String email){
         return employeeService.getEmployeeByEmail(email);
     }
-    @GetMapping(value="/list")
+    @GetMapping(value="${employee.list}")
     public ResponseEntity<Object> getAllEmployees(){
         return employeeService.getAllEmployees();
     }
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/${employee.create}")
     public ResponseEntity<Object> createEmployee(@RequestBody Employee employee){
         return employeeService.createEmployee(employee);
     }
-    @PutMapping(value = "/update")
+    @PutMapping(value = "${employee.update}")
     public ResponseEntity<Object> updateEmployeeById(@RequestParam long id, @RequestBody Employee employee) throws Exception {
         return employeeService.updateEmployeeById(id, employee);
     }
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "${employee.delete}")
     public  ResponseEntity<Object> deleteEmployeeById(@RequestParam long id){
         return employeeService.deleteEmployeeById(id);
     }
 
-    @GetMapping(value = "/find/employee-project")
+    @GetMapping(value = "${employee.find-employee-project}")
     public ResponseEntity<Object> getAllEmployeesProjects(@RequestParam long id){
         return employeeService.findAllEmployeeProjects(id);
     }
-    @GetMapping(value = "/list/employee-project")
+    @GetMapping(value = "${employee.list-employee-project}")
     public ResponseEntity<Object> getAllEmployeeProject(){
         return employeeService.getAllEmployeeProject();
     }
-    @PostMapping(value= "/create/employee-project")
+    @PostMapping(value= "${employee.create-employee-project}")
     public ResponseEntity<Object> createEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
         return employeeService.addEmployeeProject(idEmployee, idProject);
     }
-    @PutMapping(value ="/update/employee-project")
+    @PutMapping(value ="${employee.update-employee-project}")
     public ResponseEntity<Object> updateEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject, @RequestBody EmployeeProjectDTO employeeProjectDTO){
         return employeeService.updateEmployeeProject(idEmployee, idProject, employeeProjectDTO);
     }
-    @DeleteMapping(value= "/delete/employee-project")
+    @DeleteMapping(value= "${employee.delete-employee-project}")
     public ResponseEntity<Object> deleteEmployeeProject(@RequestParam long idEmployee, @RequestParam long idProject) {
         return employeeService.deleteEmployeeProject(idEmployee, idProject);
     }
 
-    @PostMapping("/importfile")
+    @PostMapping("${employee.importfile}")
     public ResponseEntity<ImportResultDTO> addEmployeeFromFile(@RequestBody MultipartFile importedFile) {
 
         ImportResultDTO importResult = importService.processImport(importedFile);

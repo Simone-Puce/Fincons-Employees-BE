@@ -9,7 +9,7 @@ import com.fincons.jwt.JwtAuthResponse;
 import com.fincons.jwt.LoginDto;
 
 import com.fincons.utility.GenericResponse;
-import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     UserService userService;
-
 
     @GetMapping("${registered.users.uri}")
     public String registeredUsers() {
@@ -57,7 +56,7 @@ public class UserController {
     }
 
     // Login
-    @PostMapping(value = "${login.uri}")
+    @PostMapping("${login.uri}")
     public ResponseEntity<GenericResponse<JwtAuthResponse>> login(@RequestBody LoginDto loginDto) {
         try {
             // your code goes here

@@ -17,10 +17,10 @@ import javax.sql.DataSource;
 @Configuration
 @EnableScheduling //Abilita la schedulazione delle attività
 @EnableSchedulerLock(defaultLockAtMostFor = "PT5M")// Abilita ShedLock per i lock sulle attività schedulate, con un lock massimo di 5 minuti
-@PropertySource("retryConfig.properties")
-@PropertySource("email.properties")
-@PropertySource("scheduler.properties")
-@PropertySource("template.properties")
+@PropertySource("classpath:retryConfig.properties")
+@PropertySource("classpath:email.properties")
+@PropertySource("classpath:scheduler.properties")
+@PropertySource("classpath:template.properties")
 public class AppConfig {
 
     // Metodo per configurare il LockProvider utilizzando JdbcTemplate
