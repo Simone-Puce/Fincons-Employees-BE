@@ -48,7 +48,6 @@ public class DepartmentServiceImpl implements DepartmentService {
             throw new IllegalArgumentException("There aren't Departments");
         }
         return departments;
-
     }
 
     @Override
@@ -67,7 +66,6 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         return department;
     }
-
 
     @Override
     public Department updateDepartmentById(String departmentId, DepartmentDTO departmentDTO) {
@@ -110,7 +108,6 @@ public class DepartmentServiceImpl implements DepartmentService {
                 }else{
                     departmentRepository.save(department);
                     break;
-
                 }
             }
         }

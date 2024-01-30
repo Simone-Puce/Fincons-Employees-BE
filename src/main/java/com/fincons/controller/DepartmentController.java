@@ -35,20 +35,20 @@ public class DepartmentController {
 
         try{
             Department department = departmentService.getDepartmentById(departmentId);
-            DepartmentDTO departmentDTO =  modelMapperDepartment.mapToDTO(department);
+            DepartmentDTO departmentDTO = modelMapperDepartment.mapToDTO(department);
 
             GenericResponse<DepartmentDTO> response = GenericResponse.success(
                     departmentDTO,
                     "Success: Found position with ID " + departmentId + ".",
-                    HttpStatus.OK.value());
-
+                    HttpStatus.OK.value()
+            );
             return ResponseEntity.ok(response);
         }
         catch (ResourceNotFoundException rnfe){
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NO_CONTENT.value())
+                            HttpStatus.NOT_FOUND.value())
             );
         }
     }
@@ -74,7 +74,7 @@ public class DepartmentController {
             return ResponseEntity.status(200).body(
                     GenericResponse.empty(
                             "There aren't Departments",
-                            HttpStatus.NO_CONTENT.value()));
+                            HttpStatus.NOT_FOUND.value()));
         }
     }
     @PostMapping(value = "${department.create}")
@@ -114,6 +114,7 @@ public class DepartmentController {
             Department department = departmentService.updateDepartmentById(departmentId, departmentDTO);
 
             DepartmentDTO departmentDTO2 = modelMapperDepartment.mapToDTO(department);
+
             GenericResponse<DepartmentDTO> response = GenericResponse.success(
                     departmentDTO2,
                     "Success: Department with ID "+ departmentId +" has been successfully updated!",
@@ -144,7 +145,8 @@ public class DepartmentController {
             departmentService.deleteDepartmentById(departmentId);
             GenericResponse<DepartmentDTO> response = GenericResponse.empty(
                     "Success: Department with ID " + departmentId+ " has been successfully deleted! ",
-                    HttpStatus.OK.value());
+                    HttpStatus.OK.value()
+            );
 
             return ResponseEntity.ok(response);
         } catch (ResourceNotFoundException rnfe){
@@ -152,7 +154,7 @@ public class DepartmentController {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NO_CONTENT.value()));
+                            HttpStatus.NOT_FOUND.value()));
         }
     }
     @GetMapping(value = "${department.find-employee-by-iddepartment}")
@@ -172,14 +174,14 @@ public class DepartmentController {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             "Department with ID: " + departmentId + " not found",
-                            HttpStatus.NO_CONTENT.value()
+                            HttpStatus.NOT_FOUND.value()
                     )
             );
         } catch (IllegalArgumentException iae) {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             "Department with ID: " + departmentId + " is Empty",
-                            HttpStatus.NO_CONTENT.value()
+                            HttpStatus.NOT_FOUND.value()
                     )
             );
         }

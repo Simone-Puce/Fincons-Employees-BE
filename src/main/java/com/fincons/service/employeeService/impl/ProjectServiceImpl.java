@@ -31,39 +31,21 @@ public class ProjectServiceImpl implements ProjectService {
 
 
     @Override
-    public ResponseEntity<Object> getProjectById(String idProject) {
-
-        Project existingProject = validateProjectById(idProject);
-        ProjectDTO projectDTO = modelMapperProject.mapToDTO(existingProject);
-
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Found project with ID " + idProject + ".",
-                (HttpStatus.OK),
-                projectDTO);
+    public Project getProjectById(String projectId) {
+        return validateProjectById(projectId);
     }
 
     @Override
-    public ResponseEntity<Object> getAllProjects() {
+    public List<Project> getAllProjects() {
         List<Project> projects = projectRepository.findAll();
-        List<ProjectDTO> newListProject = new ArrayList<>();
-        //Check if the list of projects is empty
-        for (Project project : projects) {
-            if (project != null) {
-                ProjectDTO projectsDTO = modelMapperProject.mapToDTO(project);
-                newListProject.add(projectsDTO);
-            } else {
-                throw new IllegalArgumentException("There aren't Project");
-            }
+        if(projects.isEmpty()){
+            throw new IllegalArgumentException("There aren't Project");
         }
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Found " + newListProject.size() +
-                        (newListProject.size() == 1 ? " project" : " projects") + " in the list.",
-                (HttpStatus.OK),
-                newListProject);
+        return projects;
     }
 
     @Override
-    public ResponseEntity<Object> createProject(ProjectDTO projectDTO) {
+    public Project createProject(ProjectDTO projectDTO) {
 
         //Condition for not have null attributes
         validateProjectFields(projectDTO);
@@ -75,77 +57,64 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = modelMapperProject.mapToEntity(projectDTO);
 
         projectRepository.save(project);
-
-        projectDTO.setProjectId(project.getProjectId());
-
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Project with ID "+ project.getProjectId() +" has been successfully updated!",
-                (HttpStatus.OK), projectDTO);
+        
+        return project;
     }
 
     @Override
-    public ResponseEntity<Object> updateProjectById(String idProject, ProjectDTO projectDTO) {
+    public Project updateProjectById(String projectId, ProjectDTO projectDTO) {
         
-
         //Condition for not have null attributes
         validateProjectFields(projectDTO);
 
         List<Project> projects = projectRepository.findAll();
 
         //Check if the specified ID exists
-        Project existingProject = validateProjectById(idProject);
+        Project project = validateProjectById(projectId);
 
-        existingProject.setProjectId(idProject);
-        existingProject.setName(projectDTO.getName());
-        existingProject.setArea(projectDTO.getArea());
-        existingProject.setPriority(projectDTO.getPriority());
+        project.setProjectId(projectId);
+        project.setName(projectDTO.getName());
+        project.setArea(projectDTO.getArea());
+        project.setPriority(projectDTO.getPriority());
 
         List<Project> projectstWithoutProjectIdChosed = new ArrayList<>();
 
         for (Project p : projects ) {
-            if(!Objects.equals(p.getProjectId(), idProject)){
+            if(!Objects.equals(p.getProjectId(), projectId)){
                 projectstWithoutProjectIdChosed.add(p);
             }
         }
         if(projectstWithoutProjectIdChosed.isEmpty()){
-            projectRepository.save(existingProject);
-            projectDTO.setProjectId(existingProject.getProjectId());
+            projectRepository.save(project);
         }
         else {
             for (Project p : projectstWithoutProjectIdChosed) {
-                if (p.getName().equals(existingProject.getName())
+                if (p.getName().equals(project.getName())
                 ) {
                     throw new IllegalArgumentException("The project existing yet");
                 } else {
-                    projectRepository.save(existingProject);
-                    projectDTO.setProjectId(existingProject.getProjectId());
+                    projectRepository.save(project);
+                    break;
                 }
             }
         }
 
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Project with ID "+ idProject +" has been successfully updated!",
-                (HttpStatus.OK),
-                projectDTO);
+        return project;
     }
 
     @Override
-    public ResponseEntity<Object> deleteProjectById(String idProject) {
+    public void deleteProjectById(String projectId) {
 
-        Project project = validateProjectById(idProject);
+        Project project = validateProjectById(projectId);
         projectRepository.deleteById(project.getId());
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Project with ID "+ idProject +" has been successfully deleted!",
-                (HttpStatus.OK),
-                null);
     }
 
-    public Project validateProjectById(String idProject){
-        Project existingProject = projectRepository.findByProjectId(idProject);
-        if (existingProject == null){
-            throw new ResourceNotFoundException("Project with ID: " + idProject + " not found");
+    public Project validateProjectById(String projectId){
+        Project project = projectRepository.findByProjectId(projectId);
+        if (project == null){
+            throw new ResourceNotFoundException("Project with ID: " + projectId + " not found");
         }
-        return existingProject;
+        return project;
     }
 
     private void validateProjectFields(ProjectDTO projectDTO){

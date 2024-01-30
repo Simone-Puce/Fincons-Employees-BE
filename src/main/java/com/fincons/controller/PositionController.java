@@ -45,7 +45,7 @@ public class PositionController {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NO_CONTENT.value())
+                            HttpStatus.NOT_FOUND.value())
             );
         }
     }
@@ -70,7 +70,7 @@ public class PositionController {
             return ResponseEntity.status(200).body(
                     GenericResponse.empty(
                             "There aren't Positions",
-                            HttpStatus.NO_CONTENT.value()));
+                            HttpStatus.NOT_FOUND.value()));
         }
     }
     @PostMapping(value = "${position.create}")
@@ -148,7 +148,7 @@ public class PositionController {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NO_CONTENT.value()));
+                            HttpStatus.NOT_FOUND.value()));
         }
     }
     
