@@ -8,25 +8,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("${email.uri}")
+@RequestMapping("/company-employee-management")
 public class EmailController {
 
     @Autowired
     private JobScheduler jobScheduler;
 
-    @PostMapping("/emailSenderBirth")
+    @PostMapping("${email.sender.birth.uri}")
     public ResponseEntity<String> emailSenderBirth() {
         jobScheduler.emailSenderBirth();
         return ResponseEntity.ok("Birthday emails have been sent successfully");
     }
 
-    @PostMapping("/emailSenderHire")
+    @PostMapping("${email.sender.hire.uri}")
     public ResponseEntity<String> emailSenderHire() {
         jobScheduler.emailSenderHire();
         return ResponseEntity.ok("Anniversary emails have been sent successfully");
     }
 
-    @PostMapping("/newEmployeeRandom")
+    @PostMapping("${new.employee.random.uri}")
     public ResponseEntity<String> newEmployeeRandom() {
         jobScheduler.newEmployeeRandom();
         return ResponseEntity.ok("New employees have been created successfully");

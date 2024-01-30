@@ -7,30 +7,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${project.uri}")
+@RequestMapping("/company-employee-management")
 public class ProjectController {
 
     @Autowired
     ProjectService projectService;
 
-    @GetMapping(value = "/find-by-id")
+    @GetMapping(value = "${project.find-project-by-id}")
     public ResponseEntity<Object> getProjectById(@RequestParam long id){
         return projectService.getProjectById(id);
     }
 
-    @GetMapping(value="/list")
+    @GetMapping(value="${project.list}")
     public ResponseEntity<Object> getAllProjects(){
         return projectService.getAllProjects();
     }
-    @PostMapping(value = "/create")
+    @PostMapping(value = "${project.create}")
     public ResponseEntity<Object> createProject(@RequestBody Project project){
         return projectService.createProject(project);
     }
-    @PutMapping(value = "/update")
+    @PutMapping(value = "${project.update}")
     public ResponseEntity<Object> updateProjectById(@RequestParam long id, @RequestBody Project project) throws Exception {
         return projectService.updateProjectById(id, project);
     }
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "${project.delete}")
     public ResponseEntity<Object> deleteProjectById(@RequestParam long id){
         return projectService.deleteProjectById(id);
     }
