@@ -18,31 +18,16 @@ import java.util.stream.Collectors;
 @Component
 public class ProjectMapper {
 
+    @Autowired
+    ModelMapper modelMapper;
 
-    private final ModelMapper modelMapperProject;
-
-    public ProjectMapper(ModelMapper modelMapperProject) {
-        this.modelMapperProject = modelMapperProject;
-        modelMapperProject.addMappings(new PropertyMap<Employee, EmployeeDTO>() {
-            @Override
-            protected void configure() {
-                skip(destination.getProjects());
-
-            }
-        });
-    }
     public ProjectDTO mapToDTO(Project project) {
-
-        ProjectDTO projectDTO = modelMapperProject.map(project, ProjectDTO.class);
-
-        return projectDTO;
+        return modelMapper.map(project, ProjectDTO.class);
     }
 
     public Project mapToEntity(ProjectDTO projectDTO){
-
-        Project project = modelMapperProject.map(projectDTO, Project.class);
-
-        return project;
+        return modelMapper.map(projectDTO, Project.class);
     }
+
 
 }

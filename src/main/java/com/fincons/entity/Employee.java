@@ -33,7 +33,6 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(name = "employee_uuid")
     @UuidGenerator
     private String employeeId;

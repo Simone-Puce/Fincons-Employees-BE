@@ -8,6 +8,7 @@ import com.fincons.entity.Employee;
 import com.fincons.entity.Position;
 import com.fincons.entity.Project;
 import com.fincons.dto.EmployeeProjectDTO;
+import com.fincons.exception.DuplicateNameException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.EmployeeMapper;
@@ -53,13 +54,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private PositionServiceImpl positionServiceImpl;
 
+
     @Autowired
     public void EmployeeService(EmployeeMapper modelMapperEmployee) {
         this.modelMapperEmployee = modelMapperEmployee;
 
     }
-
-
     @Override
     public ResponseEntity<Object> getEmployeeById(String idEmployee) {
 
@@ -289,7 +289,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         //Delete the relationship
-        Employee oldEmployee = employeeRepository.findByEmployeeId(idEmployee);
+        Employee oldEmployee = employeeRepository.findEmployeeByEmployeeId(idEmployee);
         Project oldProject = projectRepository.findByProjectId(idProject);
         oldEmployee.getProjects().remove(oldProject);
         employeeRepository.save(oldEmployee);
@@ -321,7 +321,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         validateEmployeeProjectRelationship(idEmployee, idProject);
 
         //Delete relationship
-        Employee oldEmployee = employeeRepository.findByEmployeeId(idEmployee);
+        Employee oldEmployee = employeeRepository.findEmployeeByEmployeeId(idEmployee);
         Project oldProject = projectRepository.findByProjectId(idProject);
         oldEmployee.getProjects().remove(oldProject);
         employeeRepository.save(oldEmployee);
@@ -354,7 +354,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private Employee validateEmployeeById(String idEmployee){
-        Employee existingEmployee = employeeRepository.findByEmployeeId(idEmployee);
+        Employee existingEmployee = employeeRepository.findEmployeeByEmployeeId(idEmployee);
 
         if (existingEmployee == null){
             throw new ResourceNotFoundException("Employee with ID: " + idEmployee + " not found.");
@@ -388,7 +388,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private void checkForDuplicateEmployee(EmployeeDTO employeeDTO, List<Employee> employees) {
         for (Employee employee1 : employees) {
             if (employee1.getEmail().equals(employeeDTO.getEmail()))  {
-                throw new IllegalArgumentException("Employee with this email is already taken.");
+                throw new DuplicateNameException("Employee with this email is already taken.");
             }
         } //Manage in feature email
     }

@@ -51,47 +51,19 @@ public class Department {
         this.address = address;
     }
 
-
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Department(String name, String address, String city) {
         this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
         this.city = city;
     }
 
+    public Department(Long id, String departmentId, String name, String address, String city) {
+        this.id = id;
+        this.departmentId = departmentId;
+        this.name = name;
+        this.address = address;
+        this.city = city;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

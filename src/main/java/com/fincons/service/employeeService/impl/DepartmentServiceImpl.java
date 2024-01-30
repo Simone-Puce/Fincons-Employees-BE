@@ -4,6 +4,7 @@ import com.fincons.Handler.ResponseHandler;
 import com.fincons.dto.DepartmentDTO;
 import com.fincons.entity.Department;
 import com.fincons.dto.EmployeeDepartmentDTO;
+import com.fincons.exception.DuplicateNameException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.DepartmentMapper;
@@ -36,39 +37,22 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ResponseEntity<Object> getDepartmentById(String idDepartment) {
-
-        Department existingDepartment = validateDepartmentById(idDepartment);
-        DepartmentDTO departmentDTO = modelMapperProject.mapToDTO(existingDepartment);
-
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Found department with ID " + idDepartment + ".",
-                (HttpStatus.OK),
-                departmentDTO);
+    public Department getDepartmentById(String departmentId) {
+        return validateDepartmentById(departmentId);
     }
 
     @Override
-    public ResponseEntity<Object> getAllDepartment() {
+    public List<Department> getAllDepartment(){
         List<Department> departments = departmentRepository.findAll();
-        List<DepartmentDTO> newListDepartment = new ArrayList<>();
-        //Check if the list of department is empty
-        for (Department department : departments) {
-            if (department != null) {
-                DepartmentDTO departmentDTO = modelMapperProject.mapToDTO(department);
-                newListDepartment.add(departmentDTO);
-            } else {
-                throw new IllegalArgumentException("There aren't Departments");
-            }
+        if(departments.isEmpty()){
+            throw new IllegalArgumentException("There aren't Departments");
         }
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Found " + newListDepartment.size() +
-                        (newListDepartment.size() == 1 ? " department" : " departments") + " in the list.",
-                (HttpStatus.OK),
-                newListDepartment);
+        return departments;
+
     }
 
     @Override
-    public ResponseEntity<Object> createDepartment(DepartmentDTO departmentDTO) {
+    public Department createDepartment(DepartmentDTO departmentDTO) {
 
         //Condition for not have null attributes
         validateDepartmentFields(departmentDTO);
@@ -81,17 +65,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         departmentRepository.save(department);
 
-        departmentDTO.setDepartmentId(department.getDepartmentId());
-
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Department with ID "+ departmentDTO.getDepartmentId() +" has been successfully updated!",
-                (HttpStatus.OK), departmentDTO);
+        return department;
     }
 
 
     @Override
-    public ResponseEntity<Object> updateDepartmentById(String idDepartment, DepartmentDTO departmentDTO) {
-
+    public Department updateDepartmentById(String departmentId, DepartmentDTO departmentDTO) {
 
         //Condition for not have null attributes
         validateDepartmentFields(departmentDTO);
@@ -99,80 +78,69 @@ public class DepartmentServiceImpl implements DepartmentService {
         List<Department> departments = departmentRepository.findAll();
 
         //Check if the specified ID exists
-        Department existingDepartment = validateDepartmentById(idDepartment);
+        Department department = validateDepartmentById(departmentId);
 
 
         existingDepartment.setDepartmentId(idDepartment);
         existingDepartment.setName(departmentDTO.getName());
         existingDepartment.setAddress(departmentDTO.getAddress());
         existingDepartment.setCity(departmentDTO.getCity());
+        department.setDepartmentId(departmentId);
+        department.setName(departmentDTO.getName());
+        department.setAddress(departmentDTO.getAddress());
+        department.setCity(departmentDTO.getCity());
 
         List<Department> departmentsWithoutDepartmentIdChosed = new ArrayList<>();
 
         for (Department d : departments ) {
-            if(!Objects.equals(d.getDepartmentId(), idDepartment)){
+            if(!Objects.equals(d.getDepartmentId(), departmentId)){
                 departmentsWithoutDepartmentIdChosed.add(d);
             }
         }
-
         if(departmentsWithoutDepartmentIdChosed.isEmpty()){
-            departmentRepository.save(existingDepartment);
-            departmentDTO.setDepartmentId(existingDepartment.getDepartmentId());
+            departmentRepository.save(department);
         }
         else {
             for (Department d : departmentsWithoutDepartmentIdChosed ) {
-                if(d.getName().equals(existingDepartment.getName()) &&
-                        d.getAddress().equals(existingDepartment.getAddress()) &&
-                        d.getCity().equals(existingDepartment.getCity())
+                if(d.getName().equals(department.getName()) &&
+                        d.getAddress().equals(department.getAddress()) &&
+                        d.getCity().equals(department.getCity())
                 ){
-                    throw new IllegalArgumentException("The department existing yet");
+                    throw new DuplicateNameException("The department existing yet");
                 }else{
-                    departmentRepository.save(existingDepartment);
-                    departmentDTO.setDepartmentId(existingDepartment.getDepartmentId());
+                    departmentRepository.save(department);
+                    break;
+
                 }
             }
         }
-
-
-
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Department with ID "+ idDepartment +" has been successfully updated!",
-                (HttpStatus.OK),
-                departmentDTO);
+        return department;
     }
 
     @Override
-    public ResponseEntity<Object> deleteDepartmentById(String idDepartment) {
+    public void deleteDepartmentById(String departmentId) {
 
-        Department department = validateDepartmentById(idDepartment);
+        Department department = validateDepartmentById(departmentId);
         departmentRepository.deleteById(department.getId());
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Department with ID "+ idDepartment +" has been successfully deleted!",
-                (HttpStatus.OK),
-                null);
     }
 
     @Override
-    public ResponseEntity<Object> getDepartmentEmployeesFindByIdDepartment(String idDepartment) {
-        Department department = validateDepartmentById(idDepartment);
+    public List<EmployeeDepartmentDTO> getDepartmentEmployeesFindByIdDepartment(String departmentId) {
+        Department department = validateDepartmentById(departmentId);
 
-        List<EmployeeDepartmentDTO> idDepartmentForEmployee = departmentRepository.getDepartmentEmployeesFindByIdDepartment(department.getId());
+        List<EmployeeDepartmentDTO> employeeDepartmentDTOList = departmentRepository.getDepartmentEmployeesFindByIdDepartment(department.getId());
 
-        if(idDepartmentForEmployee.isEmpty()){
-            throw new IllegalArgumentException("Department with ID: " + idDepartment + " is Empty");
+        if(employeeDepartmentDTOList.isEmpty()){
+            throw new IllegalArgumentException("Department with ID: " + departmentId + " is Empty");
         }
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: This Department has " + idDepartmentForEmployee.size() +
-                        (idDepartmentForEmployee.size() == 1 ? " employee." : " employees."),
-                (HttpStatus.OK),
-                idDepartmentForEmployee);
+        return employeeDepartmentDTOList;
     }
 
-    public Department validateDepartmentById(String idDepartment){
-        Department existingDepartment = departmentRepository.findDepartmentByDepartmentId(idDepartment);
+    public Department validateDepartmentById(String departmentId){
+        Department existingDepartment = departmentRepository.findDepartmentByDepartmentId(departmentId);
 
         if(Objects.isNull(existingDepartment)){
-            throw new ResourceNotFoundException("Department with ID: " + idDepartment + " not found");
+            throw new ResourceNotFoundException("Department with ID: " + departmentId + " not found");
         }
         return existingDepartment;
     }
@@ -188,7 +156,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public void checkForDuplicateDepartment(DepartmentDTO departmentDTO, List<Department> departments){
         for (Department department1 : departments) {
             if (department1.getName().equals(departmentDTO.getName())) {
-                throw new IllegalArgumentException("Department with the same name, already exists");
+                throw new DuplicateNameException("Department with the same name, already exists");
             }
         }
     }

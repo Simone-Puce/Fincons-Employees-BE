@@ -1,5 +1,9 @@
 package com.fincons.config;
 
+import com.fincons.dto.EmployeeDTO;
+import com.fincons.dto.ProjectDTO;
+import com.fincons.entity.Employee;
+import com.fincons.entity.Project;
 import com.fincons.dto.RoleDTO;
 import com.fincons.dto.UserDTO;
 import com.fincons.entity.Role;
@@ -8,6 +12,7 @@ import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -29,7 +34,7 @@ public class AppConfig {
 
     // Metodo per configurare il LockProvider utilizzando JdbcTemplate
     @Bean
-    public LockProvider lockProvider( final DataSource dataSource) {
+    public LockProvider lockProvider(final DataSource dataSource) {
         return new JdbcTemplateLockProvider(dataSource);
     }
 
@@ -64,21 +69,30 @@ public class AppConfig {
     }
 
     @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.addMappings(new PropertyMap<Employee, EmployeeDTO>() {
+            @Override
+            protected void configure() {
+                skip(destination.getProjects());
+            }
+        });
+        return modelMapper;
+    }
+    @Bean
     public ModelMapper modelMapperEmployee() {
-        return new ModelMapper();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.addMappings(new PropertyMap<Project, ProjectDTO>() {
+            @Override
+            protected void configure() {
+                skip(destination.getEmployees());
+            }
+        });
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
+        return modelMapper;
     }
-    @Bean
-    public ModelMapper modelMapperProject() {
-        return new ModelMapper();
-    }
-    @Bean
-    public ModelMapper modelMapperDepartment() {
-        return new ModelMapper();
-    }
-    @Bean
-    public ModelMapper modelMapperPosition() {
-        return new ModelMapper();
-    }
+
+
 
 
 

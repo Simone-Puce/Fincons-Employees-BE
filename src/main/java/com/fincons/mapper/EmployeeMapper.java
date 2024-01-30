@@ -16,33 +16,14 @@ import java.util.stream.Collectors;
 @Component
 public class EmployeeMapper {
 
-
-    private final ModelMapper modelMapperEmployee;
-
-    public EmployeeMapper(ModelMapper modelMapperEmployee) {
-        this.modelMapperEmployee = modelMapperEmployee;
-        modelMapperEmployee.getConfiguration().setAmbiguityIgnored(true);
-        //modelMapperEmployee.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
-
-        modelMapperEmployee.addMappings(new PropertyMap<Project, ProjectDTO>() {
-            @Override
-            protected void configure() {
-                skip(destination.getEmployees());
-            }
-        });
-
-    }
+    @Autowired
+    ModelMapper modelMapperEmployee;
+    
     public EmployeeDTO mapToDTO(Employee employee) {
-
-        EmployeeDTO employeeDTO = modelMapperEmployee.map(employee, EmployeeDTO.class);
-
-        return employeeDTO;
+        return modelMapperEmployee.map(employee, EmployeeDTO.class);
     }
 
     public Employee mapToEntity(EmployeeDTO employeeDTO){
-
-        Employee employee = modelMapperEmployee.map(employeeDTO, Employee.class);
-
-        return employee;
+        return modelMapperEmployee.map(employeeDTO, Employee.class);
     }
 }
