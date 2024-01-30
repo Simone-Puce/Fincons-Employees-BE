@@ -63,50 +63,26 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
     @Override
-    public ResponseEntity<Object> getEmployeeById(String idEmployee) {
-
-        Employee existingEmployee = validateEmployeeById(idEmployee);
-        EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTO(existingEmployee);
-
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Found employee with ID " + idEmployee + ".",
-                (HttpStatus.OK),
-                employeeDTO);
+    public Employee getEmployeeById(String employeeId) {
+        return validateEmployeeById(employeeId);
     }
 
     @Override
-    public ResponseEntity<Object> getEmployeeByEmail(String email) {
-        Employee existingEmployee = validateEmployeeByEmail(email);
-        EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTO(existingEmployee);
-
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Found employee with email " + email + ".",
-                (HttpStatus.OK),
-                employeeDTO);
+    public Employee getEmployeeByEmail(String email) {
+        return validateEmployeeByEmail(email);
     }
 
     @Override
-    public ResponseEntity<Object> getAllEmployees() {
+    public List<Employee> getAllEmployees() {
         List<Employee> employees = employeeRepository.findAll();
-        List<EmployeeDTO> newListEmployee = new ArrayList<>();
-        //Check if the list of employee is empty
-        for (Employee employee : employees) {
-            if (employee != null) {
-                EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTO(employee);
-                newListEmployee.add(employeeDTO);
-            } else {
-                throw new IllegalArgumentException("There aren't Employees");
-            }
+        if(employees.isEmpty()) {
+            throw new IllegalArgumentException("There aren't Employees");
         }
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Found " + newListEmployee.size() +
-                        (newListEmployee.size() == 1 ? " employee" : " employees") + " in the list.",
-                (HttpStatus.OK),
-                newListEmployee);
+        return employees;
     }
 
     @Override
-    public ResponseEntity<Object> createEmployee(EmployeeDTO employeeDTO) {
+    public Employee createEmployee(EmployeeDTO employeeDTO) {
 
         //Condition for not have null attributes
         validateEmployeeFields(employeeDTO);
@@ -115,7 +91,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         //Condition if there are employee with same firstName && lastName && birthDate
         checkForDuplicateEmployee(employeeDTO, employees);
 
-        //Save uuid for DTO
+        //TODO Save uuid for DTO
         String idDepartmentUuid = employeeDTO.getDepartmentId();
         String idPositionUuid = employeeDTO.getPositionId();
 
@@ -132,18 +108,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employeeRepository.save(employee);
 
-        employeeDTO.setEmployeeId(employee.getEmployeeId());
-        employeeDTO.setDepartmentId(idDepartmentUuid);
-        employeeDTO.setPositionId(idPositionUuid);
-
-
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Employee with ID "+ employeeDTO.getEmployeeId() +" has been successfully updated!",
-                (HttpStatus.OK), employeeDTO);
+        return employee;
     }
 
     @Override
-    public ResponseEntity<Object> updateEmployeeById(String idEmployee, EmployeeDTO employeeDTO) {
+    public Employee updateEmployeeById(String employeeId, EmployeeDTO employeeDTO) {
 
         //Condition for not have null attributes
         validateEmployeeFields(employeeDTO);
@@ -151,80 +120,70 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<Employee> employees = employeeRepository.findAll();
 
         //Check if the specified ID exists
-        Employee existingEmployee = validateEmployeeById(idEmployee);
+        Employee employee = validateEmployeeById(employeeId);
 
         //Save uuid for DTO
         String idDepartmentUuid = employeeDTO.getDepartmentId();
         String idPositionUuid = employeeDTO.getPositionId();
 
 
-        existingEmployee.setEmployeeId(idEmployee);
-        existingEmployee.setFirstName(employeeDTO.getFirstName());
-        existingEmployee.setLastName(employeeDTO.getLastName());
-        existingEmployee.setGender(employeeDTO.getGender());
-        existingEmployee.setEmail(employeeDTO.getEmail());
-        existingEmployee.setBirthDate(employeeDTO.getBirthDate());
-        existingEmployee.setStartDate(employeeDTO.getStartDate());
-        existingEmployee.setEndDate(employeeDTO.getEndDate());
+        employee.setEmployeeId(employeeId);
+        employee.setFirstName(employeeDTO.getFirstName());
+        employee.setLastName(employeeDTO.getLastName());
+        employee.setGender(employeeDTO.getGender());
+        employee.setEmail(employeeDTO.getEmail());
+        employee.setBirthDate(employeeDTO.getBirthDate());
+        employee.setStartDate(employeeDTO.getStartDate());
+        employee.setEndDate(employeeDTO.getEndDate());
 
 
         Department department;
         department = departmentServiceImpl.validateDepartmentById(employeeDTO.getDepartmentId());
-        existingEmployee.setDepartment(department);
+        employee.setDepartment(department);
 
         Position position;
         position = positionServiceImpl.validatePositionById(employeeDTO.getPositionId());
-        existingEmployee.setPosition(position);
+        employee.setPosition(position);
 
         List<Employee> employeesWithoutEmployeeIdChosed = new ArrayList<>();
 
-        //Lista senza employee scelto
         for(Employee e : employees){
-            if(!Objects.equals(e.getEmployeeId(), idEmployee)){
+            if(!Objects.equals(e.getEmployeeId(), employeeId)){
                 employeesWithoutEmployeeIdChosed.add(e);
             }
         }
         if(employeesWithoutEmployeeIdChosed.isEmpty()){
-            employeeRepository.save(existingEmployee);
-            employeeDTO.setEmployeeId(existingEmployee.getEmployeeId());
+            employeeRepository.save(employee);
         }
         else {
             for (Employee s : employeesWithoutEmployeeIdChosed) {
-                if (s.getEmail().equals(existingEmployee.getEmail())) {
-                    throw new IllegalArgumentException("This email: " + existingEmployee.getEmail()  +" already exist");
+                if (s.getEmail().equals(employee.getEmail())) {
+                    throw new IllegalArgumentException("This email: " + employee.getEmail()  +" already exist");
                 } else {
-                    employeeRepository.save(existingEmployee);
-                    employeeDTO.setEmployeeId(existingEmployee.getEmployeeId());
+                    employeeRepository.save(employee);
+                    break;
                 }
             }
         }
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Employee with ID "+ idEmployee +" has been successfully updated!",
-                (HttpStatus.OK),
-                employeeDTO);
+        return employee;
     }
 
-
     @Override
-    public ResponseEntity<Object> deleteEmployeeById(String idEmployee) {
+    public void deleteEmployeeById(String employeeId) {
 
-        Employee employee = validateEmployeeById(idEmployee);
+        Employee employee = validateEmployeeById(employeeId);
         employeeRepository.deleteById(employee.getId());
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Employee with ID "+ idEmployee +" has been successfully deleted!",
-                (HttpStatus.OK),
-                null);
     }
 
     @Override
-    public ResponseEntity<Object> findAllEmployeeProjects(String idEmployee) {
+    public ResponseEntity<Object> findAllEmployeeProjects(String employeeId) {
 
-        validateEmployeeById(idEmployee);
+        validateEmployeeById(employeeId);
         List<ProjectDTO> newListProjects = new ArrayList<>();
 
-        List<Project> projects = employeeRepository.findProjectByEmployeeId(idEmployee);
+        List<Project> projects = employeeRepository.findProjectByEmployeeId(employeeId);
         if (projects.isEmpty()) {
-            throw new IllegalArgumentException("The ID " + idEmployee + " doesn't work in any project.");
+            throw new IllegalArgumentException("The ID " + employeeId + " doesn't work in any project.");
         } else {
             for (Project project : projects) {
                 ProjectDTO projectDTO = projectMapper.mapToDTO(project);
@@ -251,16 +210,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseEntity<Object> addEmployeeProject(String idEmployee, String idProject) {
+    public ResponseEntity<Object> addEmployeeProject(String employeeId, String projectId) {
 
-        Employee existingEmployee = validateEmployeeById(idEmployee);
+        Employee existingEmployee = validateEmployeeById(employeeId);
 
-        Project existingProject = projectServiceImpl.validateProjectById(idProject);
+        Project existingProject = projectServiceImpl.validateProjectById(projectId);
 
         List<EmployeeProjectDTO> employeeProject = employeeRepository.getAllEmployeeProject();
 
         for (EmployeeProjectDTO employeeProjectDTO : employeeProject) {
-            if (Objects.equals(idEmployee,employeeProjectDTO.getEmployeeId()) && (Objects.equals(idProject, employeeProjectDTO.getProjectId()))) {
+            if (Objects.equals(employeeId,employeeProjectDTO.getEmployeeId()) && (Objects.equals(projectId, employeeProjectDTO.getProjectId()))) {
                 throw new IllegalArgumentException("The relationship already exists");
             }
         }
@@ -268,19 +227,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.save(existingEmployee);
         EmployeeProjectDTO employeeProjectDTO = employeeProjectMapper.mapEmployeeProject(existingEmployee, existingProject);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Addition of relationship between employee with ID: " + idEmployee + " and project with ID: " + idProject,
+                "Success: Addition of relationship between employee with ID: " + employeeId + " and project with ID: " + projectId,
                 (HttpStatus.OK),
                 employeeProjectDTO);
     }
 
     @Override
-    public ResponseEntity<Object> updateEmployeeProject(String idEmployee, String idProject, EmployeeProjectDTO employeeProjectDTO) {
+    public ResponseEntity<Object> updateEmployeeProject(String employeeId, String projectId, EmployeeProjectDTO employeeProjectDTO) {
 
         //Check if the fields are correct
         validateEmployeeProjectFields(employeeProjectDTO);
 
-        //Check if the relationship idEmployee+idProject exist
-        List<EmployeeProjectDTO> employeesProjectDTOS = validateEmployeeProjectRelationship(idEmployee, idProject);
+        //Check if the relationship employeeId+projectId exist
+        List<EmployeeProjectDTO> employeesProjectDTOS = validateEmployeeProjectRelationship(employeeId, projectId);
 
         //Check if the relationship employeeProjectDTO exist
         for(EmployeeProjectDTO employeeProject : employeesProjectDTOS){
@@ -291,8 +250,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         //Delete the relationship
-        Employee oldEmployee = employeeRepository.findEmployeeByEmployeeId(idEmployee);
-        Project oldProject = projectRepository.findByProjectId(idProject);
+        Employee oldEmployee = employeeRepository.findEmployeeByEmployeeId(employeeId);
+        Project oldProject = projectRepository.findByProjectId(projectId);
         oldEmployee.getProjects().remove(oldProject);
         employeeRepository.save(oldEmployee);
 
@@ -308,7 +267,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeProjectDTO.setNameProject(newProject.getName());
 
         return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Relationship updated between employee with ID " + idEmployee + " and project with ID " + idProject + ". " +
+                "Success: Relationship updated between employee with ID " + employeeId + " and project with ID " + projectId + ". " +
                         "Updated details for employee with ID " + employeeProjectDTO.getEmployeeId() + " and project with ID " + employeeProjectDTO.getProjectId() + ".",
 
                 (HttpStatus.OK),
@@ -317,18 +276,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseEntity<Object> deleteEmployeeProject(String idEmployee, String idProject) {
+    public ResponseEntity<Object> deleteEmployeeProject(String employeeId, String projectId) {
 
-        //Check if the relationship idEmployee+idProject exist
-        validateEmployeeProjectRelationship(idEmployee, idProject);
+        //Check if the relationship employeeId+projectId exist
+        validateEmployeeProjectRelationship(employeeId, projectId);
 
         //Delete relationship
-        Employee oldEmployee = employeeRepository.findEmployeeByEmployeeId(idEmployee);
-        Project oldProject = projectRepository.findByProjectId(idProject);
+        Employee oldEmployee = employeeRepository.findEmployeeByEmployeeId(employeeId);
+        Project oldProject = projectRepository.findByProjectId(projectId);
         oldEmployee.getProjects().remove(oldProject);
         employeeRepository.save(oldEmployee);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Relationship deleted between employee with ID " + idEmployee + " and project with ID " + idProject + ".",
+                "Success: Relationship deleted between employee with ID " + employeeId + " and project with ID " + projectId + ".",
                 (HttpStatus.OK),
                 null
         );
@@ -343,23 +302,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-    private List<EmployeeProjectDTO> validateEmployeeProjectRelationship(String idEmployee, String idProject) {
+    private List<EmployeeProjectDTO> validateEmployeeProjectRelationship(String employeeId, String projectId) {
         //The employeeProject must be exist
         List<EmployeeProjectDTO> employeesProjects = employeeRepository.getAllEmployeeProject();
         for (EmployeeProjectDTO employeeProject : employeesProjects) {
-            if (Objects.equals(employeeProject.getEmployeeId(), idEmployee) &&
-                    Objects.equals(employeeProject.getProjectId(), idProject)) {
+            if (Objects.equals(employeeProject.getEmployeeId(), employeeId) &&
+                    Objects.equals(employeeProject.getProjectId(), projectId)) {
                 return employeesProjects;
             }
         }
-        throw new IllegalArgumentException("Relationship with ID Employee: "+ idEmployee+ " and ID Project: " + idProject + " don't exists.");
+        throw new IllegalArgumentException("Relationship with ID Employee: "+ employeeId+ " and ID Project: " + projectId + " don't exists.");
     }
 
-    private Employee validateEmployeeById(String idEmployee){
-        Employee existingEmployee = employeeRepository.findEmployeeByEmployeeId(idEmployee);
+    private Employee validateEmployeeById(String employeeId){
+        Employee existingEmployee = employeeRepository.findEmployeeByEmployeeId(employeeId);
 
         if (existingEmployee == null){
-            throw new ResourceNotFoundException("Employee with ID: " + idEmployee + " not found.");
+            throw new ResourceNotFoundException("Employee with ID: " + employeeId + " not found.");
         }
         return existingEmployee;
     }
