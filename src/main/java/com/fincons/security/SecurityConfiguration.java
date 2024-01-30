@@ -65,16 +65,16 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
 
         List<Endpoint> endpoints = Arrays.asList(
-//                new Endpoint( "".concat(String.valueOf(EnumUri.APP_CONTEXT)) + "".concat(String.valueOf(EnumUri.DEPARTMENT_URI)) + "/**", "USER"),  // Di seguito  HttpMethod. e le opzioni  un esempio potrebbe essere  new Endpoint(baseUri + "/department/**", "USER","PUT")
-//                new Endpoint( String.valueOf(EnumUri.APP_CONTEXT) + (EnumUri.EMPLOYEE_URI) + "/**", "USER"),
-//               // new Endpoint( String.valueOf().APP_CONTEXT +  (EnumUri.POSITION_URI) + "/**", "USER"),
-//                new Endpoint( EnumUri.APP_CONTEXT +  String.valueOf(EnumUri.PROJECT_URI) + "/**", "USER"),
-//                new Endpoint( EnumUri.APP_CONTEXT +  String.valueOf(EnumUri.MODIFY_USER) + "/**", "AUTHENTICATED"),
-//                new Endpoint( EnumUri.APP_CONTEXT +  String.valueOf(EnumUri.FILE_URI) + "/**", "USER"),
-//                new Endpoint( EnumUri.APP_CONTEXT +  String.valueOf(EnumUri.EMAIL_SENDER_URI) + "/**", "USER"),
-//                new Endpoint( EnumUri.APP_CONTEXT +  String.valueOf(EnumUri.EMPLOYEES_URI) + "/**", "USER"),
-//                new Endpoint( EnumUri.APP_CONTEXT +  String.valueOf(EnumUri.ERROR_URI) + "/**", "USER"),
-//                new Endpoint( EnumUri.APP_CONTEXT +  String.valueOf(EnumUri.REGISTERED_USERS_URI) + "/**", "ADMIN,USER")
+                new Endpoint( cp.getAPP_CONTEXT() + cp.getDEPARTMENT_URI() + "/**", "USER"),  // Di seguito  HttpMethod. e le opzioni  un esempio potrebbe essere  new Endpoint(baseUri + "/department/**", "USER","PUT")
+                new Endpoint( cp.getAPP_CONTEXT() + cp.getEMPLOYEE_URI() + "/**", "USER"),
+                new Endpoint( cp.getAPP_CONTEXT() +  cp.getPOSITION_URI() + "/**", "USER"),
+                new Endpoint( cp.getAPP_CONTEXT() +  cp.getPROJECT_URI() + "/**", "USER"),
+                new Endpoint( cp.getAPP_CONTEXT() +  cp.getMODIFY_USER() , "AUTHENTICATED"),
+                new Endpoint( cp.getAPP_CONTEXT() +  cp.getFILE_URI() + "/**", "USER"),
+                new Endpoint( cp.getAPP_CONTEXT() + cp.getEMAIL_SENDER_URI() + "/**", "USER"),
+                new Endpoint( cp.getAPP_CONTEXT() +  cp.getEMPLOYEES_URI() + "/**", "USER"),
+                new Endpoint( cp.getAPP_CONTEXT() +  cp.getERROR_URI(), "USER"),
+                new Endpoint( cp.getAPP_CONTEXT() +  cp.getREGISTERED_USERS_URI() , "ADMIN,USER")
                 );
 
 
@@ -90,7 +90,7 @@ public class SecurityConfiguration {
                 }
             }
                     authz.requestMatchers(cp.getAPP_CONTEXT() + cp.getLOGIN_URI()).permitAll();
-                    //authz.requestMatchers(classpath.getAPP_CONTEXT() + classpath.getLOGOUT_URI()).permitAll();
+                    authz.requestMatchers(cp.getAPP_CONTEXT() + cp.getLOGOUT_URI()).permitAll();
                     authz.requestMatchers(cp.getAPP_CONTEXT() + cp.getREGISTER_URI()).permitAll().anyRequest().authenticated();
         }).httpBasic(Customizer.withDefaults());
 
