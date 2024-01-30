@@ -20,30 +20,13 @@ import java.util.stream.Collectors;
 @Component
 public class DepartmentMapper {
 
+    @Autowired
+    ModelMapper modelMapper;
 
-    private final ModelMapper modelMapperDepartment;
-
-    public DepartmentMapper(ModelMapper modelMapperDepartment) {
-        this.modelMapperDepartment = modelMapperDepartment;
-
-        modelMapperDepartment.addMappings(new PropertyMap<Employee, EmployeeDTO>() {
-            @Override
-            protected void configure() {
-                skip(destination.getProjects());
-
-            }
-        });
-
-
-    }
     public DepartmentDTO mapToDTO(Department department) {
-
-        DepartmentDTO departmentDTO = modelMapperDepartment.map(department, DepartmentDTO.class);
-
-        return departmentDTO;
+        return modelMapper.map(department, DepartmentDTO.class);
     }
     public Department mapToEntity(DepartmentDTO departmentDTO){
-        Department department = modelMapperDepartment.map(departmentDTO, Department.class);
-        return department;
+        return modelMapper.map(departmentDTO, Department.class);
     }
 }

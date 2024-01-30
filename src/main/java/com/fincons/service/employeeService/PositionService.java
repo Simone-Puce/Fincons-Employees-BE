@@ -5,13 +5,15 @@ import com.fincons.entity.Position;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface PositionService {
 
-    ResponseEntity<Object> getPositionById(String idPosition);
-    ResponseEntity<Object> getAllPositions();
-    ResponseEntity<Object> createPosition(PositionDTO positionDTO);
-    ResponseEntity<Object> updatePositionById(String idPosition, PositionDTO positionDTO);
-    ResponseEntity<Object> deletePositionById(String idPosition);
+    Position getPositionById(String positionId);
+    List<Position> getAllPositions();
+    Position createPosition(PositionDTO positionDTO);
+    Position updatePositionById(String positionId, PositionDTO positionDTO);
+    void deletePositionById(String positionId);
 
 }

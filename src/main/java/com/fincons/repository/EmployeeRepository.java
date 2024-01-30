@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface EmployeeRepository extends JpaRepository <Employee, Long> {
 
-    Employee findByEmployeeId(String idEmployee);
+    Employee findEmployeeByEmployeeId(String idEmployee);
     Employee findByEmail(String email);
 
     @Query("SELECT e.projects FROM Employee e WHERE e.employeeId = :employeeId")

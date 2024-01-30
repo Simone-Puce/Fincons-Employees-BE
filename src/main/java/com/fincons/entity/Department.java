@@ -59,5 +59,11 @@ public class Department {
         this.city = city;
     }
 
-
+    public Department(Long id, String departmentId, String name, String address, String city) {
+        this.id = id;
+        this.departmentId = departmentId;
+        this.name = name;
+        this.address = address;
+        this.city = city;
+    }
 }

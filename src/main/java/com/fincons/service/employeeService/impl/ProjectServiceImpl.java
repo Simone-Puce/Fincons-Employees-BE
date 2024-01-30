@@ -4,6 +4,7 @@ import com.fincons.Handler.ResponseHandler;
 import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Department;
 import com.fincons.entity.Project;
+import com.fincons.exception.DuplicateNameException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ProjectMapper;
@@ -161,7 +162,7 @@ public class ProjectServiceImpl implements ProjectService {
     private void checkForDuplicateProject(ProjectDTO projectDTO, List<Project> projects){
         for (Project project1 : projects){
             if(project1.getName().equals(projectDTO.getName())){
-                throw new IllegalArgumentException("Project with the same name, already exists");
+                throw new DuplicateNameException("Project with the same name, already exists");
             }
         }
     }

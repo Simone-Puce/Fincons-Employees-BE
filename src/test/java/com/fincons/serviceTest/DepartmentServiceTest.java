@@ -1,5 +1,6 @@
 package com.fincons.serviceTest;
 
+import com.fincons.controller.DepartmentController;
 import com.fincons.dto.DepartmentDTO;
 import com.fincons.entity.Department;
 import com.fincons.entity.Employee;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -54,29 +56,30 @@ public class DepartmentServiceTest {
     static class TestConfig {
     }
 
+    private DepartmentController departmentController;
     private DepartmentServiceImpl departmentService;
     @Mock
     private DepartmentRepository departmentRepository;
     @Spy
-    private DepartmentMapper departmentMapper;
+    private DepartmentMapper modelMapperDepartment;
+
+
 
     @BeforeEach
     void init() {
         departmentRepository = mock(DepartmentRepository.class);
 
         // Initialize the service with mocks
-        departmentService = new DepartmentServiceImpl(departmentRepository, departmentMapper);
+        departmentService = new DepartmentServiceImpl(departmentRepository, modelMapperDepartment);
 
-        // Real implementation
-        departmentMapper = spy(new DepartmentMapper());
     }
 
     @Test
     void testGetDepartmentByIdExist() {
 
         // Configures the behavior of the mock for repository
-        long departmentId = 3L;
-        Department existingDepartment = new Department(3L, "name", "address", "city");
+        String departmentId = "testing-uuid";
+        Department existingDepartment = new Department(1L ,"testing-uuid", "name", "address", "city");
         Position position = new Position(3L, "Web Developer", 1500.0);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date1 = LocalDate.parse("1942-03-10", formatter);
@@ -88,7 +91,8 @@ public class DepartmentServiceTest {
         newListEmployee.add(employee);
         existingDepartment.setEmployees(newListEmployee);
         //Il test emula un findById e dice cosa vuole che ritorni
-        when(departmentRepository.findById(departmentId)).thenReturn(existingDepartment);
+
+        when(departmentController.getDepartmentById(departmentId)).thenReturn(existingDepartment);
 
         // Finally run the method from service and save response
         ResponseEntity<Object> response = departmentService.getDepartmentById(departmentId);

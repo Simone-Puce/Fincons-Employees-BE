@@ -19,29 +19,13 @@ import java.util.stream.Collectors;
 @Component
 public class PositionMapper {
 
+    @Autowired
+    ModelMapper modelMapper;
 
-    private final ModelMapper modelMapperPosition;
-
-    public PositionMapper(ModelMapper modelMapperPosition) {
-        this.modelMapperPosition = modelMapperPosition;
-
-        modelMapperPosition.addMappings(new PropertyMap<Employee, EmployeeDTO>() {
-            @Override
-            protected void configure() {
-                skip(destination.getProjects());
-            }
-        });
-
-
-    }
     public PositionDTO mapToDTO(Position position) {
-
-        PositionDTO positionDTO = modelMapperPosition.map(position, PositionDTO.class);
-
-        return positionDTO;
+        return modelMapper.map(position, PositionDTO.class);
     }
     public Position mapToEntity(PositionDTO positionDTO){
-        Position position = modelMapperPosition.map(positionDTO, Position.class);
-        return position;
+        return modelMapper.map(positionDTO, Position.class);
     }
 }
