@@ -1,18 +1,17 @@
 package com.fincons.utility;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Data
 @Component
-public class Classpath {
+public class ApplicationUri {
 
+    // TODO Script for transform every UPPER CASE to CamelCase in python/Java
     // APPLICATION CONTEXT
     @Value("${application.context}")
-    private   String APP_CONTEXT ;
+    private String APP_CONTEXT;
 
     // LOGIN/REGISTER END POINTS
     @Value("${base.uri.version}")
@@ -45,8 +44,10 @@ public class Classpath {
     private  String DETAIL_USERDTO_URI;
 
     @Value("${modify.user}")
-    private  String MODIFY_USER;
+    private  String MODIFY_USER_URI;
 
+    @Value("${update.user.password.uri}")
+    private String UPDATE_USER_PASSWORD_URI;
     // DEPARTMENT
     @Value("${department.uri}")
     private  String DEPARTMENT_URI;

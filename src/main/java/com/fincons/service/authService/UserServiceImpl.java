@@ -6,9 +6,14 @@ import com.fincons.dto.UserDTO;
 import com.fincons.entity.Role;
 import com.fincons.entity.User;
 import com.fincons.exception.DuplicateEmailException;
+import com.fincons.exception.EmailDoesNotExistException;
+import com.fincons.exception.IncorrectPasswordException;
+import com.fincons.exception.PasswordDoesNotRespectRegexException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.jwt.LoginDto;
+import com.fincons.utility.PasswordValidator;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -56,7 +61,7 @@ public class UserServiceImpl  implements UserService{
 
 
     @Override
-    public UserDTO registerNewUser(UserDTO userDTO, String passwordForAdmin) {
+    public UserDTO registerNewUser(UserDTO userDTO, String passwordForAdmin) throws PasswordDoesNotRespectRegexException {
 
         String emailDto = userDTO.getEmail().toLowerCase().replace(" ", "");
 
@@ -64,6 +69,9 @@ public class UserServiceImpl  implements UserService{
         if (!emailDto.isEmpty() && EmailValidator.isValidEmail(emailDto) && !userRepo.existsByEmail(emailDto)) {
             User userToSave = dtoToUser(userDTO);
             Role role;
+            if(!PasswordValidator.isValidPassword(userDTO.getPassword())){
+                throw new PasswordDoesNotRespectRegexException();
+            }
             if (passwordForAdmin != null && passwordForAdmin.equals(passwordAdmin)) {
                 role = roleToAssign("ROLE_ADMIN");
             } else {
@@ -108,8 +116,35 @@ public class UserServiceImpl  implements UserService{
                         .map(this::dtoToRole)
                         .collect(Collectors.toList()));
             }
-            userRepo.save(userFound);
-            return userToUserDto(userFound);
+            User userSaved = userRepo.save(userFound);
+            return userToUserDto(userSaved);
+    }
+
+    @Override
+    public UserDTO updateUserPassword(String email, String password, String newPassword) throws EmailDoesNotExistException, IncorrectPasswordException, PasswordDoesNotRespectRegexException {
+
+        //if email exist
+        if(userRepo.findByEmail(email) == null && !EmailValidator.isValidEmail(email)) {
+            throw new EmailDoesNotExistException();
+        }
+
+        User userToModify = userRepo.findByEmail(email);
+
+        boolean passwordMatch = passwordEncoder.matches(password , userToModify.getPassword());
+
+        if(!passwordMatch){
+            throw new IncorrectPasswordException();
+        }
+
+        if(!PasswordValidator.isValidPassword(newPassword)){
+            throw new PasswordDoesNotRespectRegexException();
+        }
+
+        userToModify.setPassword(passwordEncoder.encode(newPassword));
+
+        User userSaved = userRepo.save(userToModify);
+
+        return userToUserDto(userSaved);
     }
 
 

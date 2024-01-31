@@ -1,6 +1,9 @@
 package com.fincons.controller;
 
+import com.fincons.exception.EmailDoesNotExistException;
+import com.fincons.exception.IncorrectPasswordException;
 import com.fincons.exception.NoPermissionException;
+import com.fincons.exception.PasswordDoesNotRespectRegexException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.service.authService.UserService;
 import com.fincons.dto.UserDTO;
@@ -102,6 +105,12 @@ public class UserController {
                     .message("Invalid or existing email!!")
                     .build());
 
+        } catch (PasswordDoesNotRespectRegexException pdnre) {
+            return ResponseEntity.status(200).body(GenericResponse.<UserDTO>builder()
+                    .status(HttpStatus.resolve(409))
+                    .success(false)
+                    .message(pdnre.getMessage())
+                    .build());
         }
     }
 
@@ -149,6 +158,31 @@ public class UserController {
             );
         }
     }
+
+    @PutMapping("${update.user.password.uri}")
+    public ResponseEntity<GenericResponse<UserDTO>> updateUserPassword(
+            @RequestParam String email,
+            @RequestParam  String password,
+            @RequestParam String newPassword){
+        try{
+            UserDTO userDTO = userService.updateUserPassword(email, password, newPassword);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    GenericResponse.<UserDTO>builder()
+                            .status(HttpStatus.resolve(200))
+                            .success(true)
+                            .message("Password changed succesfully")
+                            .data(userDTO)
+                            .build()
+            );
+        }catch(EmailDoesNotExistException | IncorrectPasswordException | PasswordDoesNotRespectRegexException ednee){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    GenericResponse.<UserDTO>builder()
+                            .status(HttpStatus.resolve(409))
+                            .success(false)
+                            .message(ednee.getMessage()).build());
+        }
+    }
+
 
     @GetMapping("${detail.userdto.uri}")
     public ResponseEntity<GenericResponse<UserDTO>> userDetails(@RequestParam String email) {

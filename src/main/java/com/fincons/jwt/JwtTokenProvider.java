@@ -46,7 +46,7 @@ public class JwtTokenProvider {
                 .getBody().getSubject();
     }
 
-    // Validate JWT token
+
     // Validate JWT token
     public boolean validateToken(String token){
         try {
@@ -57,7 +57,7 @@ public class JwtTokenProvider {
             // if analysis goes up return  true
             return true;
         } catch (JwtException e) {
-            // if analysis goes down return false and exception
+            // if analysis goes down return false and exception TODO create Custom Exception for token and log it on console
             return false;
         }
     }
