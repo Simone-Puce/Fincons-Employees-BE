@@ -42,7 +42,7 @@ public class JobScheduler {
 
     @Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderHire}")
     @SchedulerLock(name = "hireEmailScheduler", lockAtLeastFor = "PT1M", lockAtMostFor = "PT5M")
-    @Retryable(retryFor = IllegalArgumentException.class, maxAttemptsExpression = "${retry.maxAttempts}", backoff = @Backoff(delayExpression = "${retry.maxDelay}"))
+    @Retryable(retryFor = IllegalArgumentException.class, maxAttemptsExpression = "4", backoff = @Backoff(delayExpression = "${retry.maxDelay}"))
     public void emailSenderHire() throws IllegalArgumentException {
         logger.info("Looking for Anniversaries...");
         iEmailStartDate.sendAnniversaryGreetings();

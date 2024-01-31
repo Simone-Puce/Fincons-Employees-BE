@@ -26,7 +26,7 @@ public class EmailBirthDate implements IEmailBirthDate {
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired
-    private EmailSend emailSend;
+    private EmailSender emailSender;
     @Autowired
     private EmailContentBuilder emailContentBuilder;
 
@@ -42,10 +42,9 @@ public class EmailBirthDate implements IEmailBirthDate {
         Map<String, Object> emailContent = new HashMap<>();
         emailContent.put("name", employee.getFirstName());
         emailContent.put("lastName", employee.getLastName());
-        emailContent.put("personalizedText", EMAIL_CONTENT_BIRTHDATE);
         emailContent.put("personalizedTextSub", EMAIL_SUBCONTENT_BIRTHDATE);
-        String htmlContent = emailContentBuilder.buildEmailContent(emailContent);
-        emailSend.sendEmail(employee.getEmail(), EMAIL_SUBJECT_BIRTHDATE, htmlContent, IMG_BIRTHDATE);
+        String htmlContent = emailContentBuilder.buildEmailContent(emailContent, "email-template");
+        emailSender.sendEmail(employee.getEmail(), EMAIL_SUBJECT_BIRTHDATE, htmlContent, IMG_BIRTHDATE);
         logger.info("Email sent to {}", employee.getFirstName());
     };
 }

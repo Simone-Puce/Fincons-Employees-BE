@@ -13,10 +13,10 @@ public class EmailContentBuilder {
     @Autowired
     private TemplateEngine templateEngine;
 
-    public String buildEmailContent(Map<String, Object> emailContent) {
+    public String buildEmailContent(Map<String, Object> emailContent, String template) {
         Context context = new Context();
         context.setVariables(emailContent);
 
-        return templateEngine.process("email-template", context);
+        return templateEngine.process(template, context);
     }
 }

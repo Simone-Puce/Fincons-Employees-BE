@@ -27,7 +27,7 @@ public class EmailStartDate implements IEmailStartDate {
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired
-    private EmailSend emailSend;
+    private EmailSender emailSender;
     @Autowired
     private EmailContentBuilder emailContentBuilder;
 
@@ -44,9 +44,8 @@ public class EmailStartDate implements IEmailStartDate {
         emailContent.put("name", employee.getFirstName());
         emailContent.put("lastName", employee.getLastName());
         emailContent.put("personalizedText", EMAIL_CONTENT_HIREDATE);
-        emailContent.put("personalizedTextSub", EMAIL_SUBCONTENT_HIREDATE);
-        String htmlContent = emailContentBuilder.buildEmailContent(emailContent);
-        emailSend.sendEmail(employee.getEmail(), EMAIL_SUBJECT_HIREDATE, htmlContent, IMG_HIREDATE);
+        String htmlContent = emailContentBuilder.buildEmailContent(emailContent, "email-template");
+        emailSender.sendEmail(employee.getEmail(), EMAIL_SUBJECT_HIREDATE, htmlContent, IMG_HIREDATE);
         logger.info("Email sent to {}", employee.getFirstName());
     };
 

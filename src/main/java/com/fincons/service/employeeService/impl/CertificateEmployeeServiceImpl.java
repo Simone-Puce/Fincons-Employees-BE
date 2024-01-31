@@ -1,22 +1,25 @@
 package com.fincons.service.employeeService.impl;
 
-import com.fincons.dto.CertificateDTO;
 import com.fincons.dto.CertificateEmployeeDTO;
-import com.fincons.entity.Certificate;
 import com.fincons.entity.CertificateEmployee;
 import com.fincons.mapper.CertificateEmployeeMapper;
 import com.fincons.repository.CertificateEmployeeRepository;
 import com.fincons.service.employeeService.CertificateEmployeeService;
+import com.fincons.service.pdfCertificate.IPdfCertificateEmployee;
+import jakarta.servlet.http.HttpServletResponse;
 import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+
 @Service
 public class CertificateEmployeeServiceImpl implements CertificateEmployeeService {
 
@@ -27,57 +30,69 @@ public class CertificateEmployeeServiceImpl implements CertificateEmployeeServic
 
     @Autowired
     private CertificateEmployeeMapper certificateEmployeeMapper;
+    @Autowired
+    private IPdfCertificateEmployee iPdfCertificateEmployee;
 
     @Override
-    public ResponseEntity<Object> getAllCertificatesEmployees() {
+    public List<CertificateEmployeeDTO> getAllCertificatesEmployees() throws RuntimeException{
         List<CertificateEmployee> certificateEmployees = certificateEmployeeRepository.findAll();
-        //List<CertificateEmployeeDTO> certificateEmployeeDTOs = certificateEmployeeMapper.mapCertificateEmployeeListToCertificateEmployeeDtoList(certificateEmployees);
-        List<CertificateEmployeeDTO> certificateEmployeeDTOS = new ArrayList<>();
-        for (CertificateEmployee ce: certificateEmployees) {
-            CertificateEmployeeDTO ceDTO = certificateEmployeeMapper.mapCertificateEmployeeToCertificateEmployeeDto(ce);
-            certificateEmployeeDTOS.add(ceDTO);
-        }
-        return new ResponseEntity<>(certificateEmployeeDTOS, HttpStatus.OK);
+        return certificateEmployeeMapper.mapCertificateEmployeeListToCertificateEmployeeDtoList(certificateEmployees);
     }
 
     @Override
-    public ResponseEntity<Object> getCertificateEmployeeById(Long id) throws ServiceException {
+    public CertificateEmployeeDTO getCertificateEmployeeById(Long id) throws ServiceException {
         CertificateEmployee findCertificateEmployee = certificateEmployeeRepository.findById(id).orElse(null);
         if (findCertificateEmployee == null){
             throw new ServiceException("Certificate not found");
         }
-        CertificateEmployeeDTO certificateEmployeeDTO = certificateEmployeeMapper.mapCertificateEmployeeToCertificateEmployeeDto(findCertificateEmployee);
-        return new ResponseEntity<>(certificateEmployeeDTO, HttpStatus.OK);
+        return certificateEmployeeMapper.mapCertificateEmployeeToCertificateEmployeeDto(findCertificateEmployee);
     }
     @Override
-    public ResponseEntity<Object> addCertificateEmployee(CertificateEmployeeDTO certificateEmployeeDTO) {
+    public CertificateEmployee addCertificateEmployee(CertificateEmployeeDTO certificateEmployeeDTO) {
         CertificateEmployee savedCertificateEmployee = certificateEmployeeMapper.mapCertificateEmployeeDtoToCertificateEmployee(certificateEmployeeDTO);
-        savedCertificateEmployee =certificateEmployeeRepository.save(savedCertificateEmployee);
-        CertificateEmployeeDTO saveCertificateEmployeeDTO = certificateEmployeeMapper.mapCertificateEmployeeToCertificateEmployeeDto(savedCertificateEmployee);
-        return new ResponseEntity<>(saveCertificateEmployeeDTO, HttpStatus.CREATED);
+        return certificateEmployeeRepository.save(savedCertificateEmployee);
     }
 
     @Override
-    public ResponseEntity<Object> updateCertificateEmployee(Long id, CertificateEmployeeDTO certificateEmployeeDTO) {
+    public CertificateEmployee updateCertificateEmployee(Long id, CertificateEmployeeDTO certificateEmployeeDTO) {
         CertificateEmployee findCertificateEmployee = certificateEmployeeRepository.findById(id).orElse(null);
         if (findCertificateEmployee == null){
             throw new ServiceException("Certificate not found");
         }
         CertificateEmployee certificateEmployee = certificateEmployeeMapper.mapCertificateEmployeeDtoToCertificateEmployee(certificateEmployeeDTO);
-        certificateEmployee = certificateEmployeeRepository.save(certificateEmployee);
-        CertificateEmployeeDTO responseDTO = certificateEmployeeMapper.mapCertificateEmployeeToCertificateEmployeeDto(certificateEmployee);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+        return certificateEmployeeRepository.save(certificateEmployee);
+    }
+    @Override
+    public void deleteCertificateEmployee(Long id) throws RuntimeException{
+        CertificateEmployee certificateEmployee = certificateEmployeeRepository.findById(id).orElse(null);
+        if (certificateEmployee == null){
+            throw new RuntimeException("Not found CertificateEmployee with this id");
+        }
+        certificateEmployeeRepository.delete(certificateEmployee);
     }
 
     @Override
-    public ResponseEntity<Object> deleteCertificateEmployee(Long id) throws ServiceException{
-        CertificateEmployee certificateEmployee = certificateEmployeeRepository.findById(id).orElse(null);
-        if (certificateEmployee == null) {
-            throw new ServiceException("Certificate not found");
-        }
-        certificateEmployeeRepository.delete(certificateEmployee);
-        return new ResponseEntity<>("Certificate employee deleted", HttpStatus.OK);
+    public List<CertificateEmployeeDTO> listCertificateEmployeeByPreviousMonth(LocalDate dateFrom, LocalDate dateTo){
+        logger.info("{}-------------{}", dateFrom, dateTo);
+        List<CertificateEmployee> list = certificateEmployeeRepository.listCertificateEmployeeByDateRange(dateFrom, dateTo);
+        logger.info("-------------- {}",  list.size());
+        return certificateEmployeeMapper.mapCertificateEmployeeListToCertificateEmployeeDtoList(list);
     }
 
+    @Override
+    public void downloadListCertificateEmployeeByPreviousMonth(HttpServletResponse response, LocalDate dateFrom, LocalDate dateTo) throws ServiceException, IOException {
+        response.setContentType("application/pdf");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss");
+        String currentDateTime = dateFormat.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=listMonth" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+        List<CertificateEmployee> list = certificateEmployeeRepository.listCertificateEmployeeByDateRange(dateFrom, dateTo);
+        if (list.isEmpty()) {
+            throw new ServiceException("CertificationEmployee is empty for previous month");
+        }
+        List<CertificateEmployeeDTO> certificateEmployeeList = certificateEmployeeMapper.mapCertificateEmployeeListToCertificateEmployeeDtoList(list);
+        iPdfCertificateEmployee.generate(certificateEmployeeList, response);
+    }
 
 }

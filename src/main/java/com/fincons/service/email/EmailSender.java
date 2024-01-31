@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class EmailSend {
+public class EmailSender {
     @Autowired
     private JavaMailSender emailSender;
 

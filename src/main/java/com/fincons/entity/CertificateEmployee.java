@@ -69,6 +69,16 @@ public class CertificateEmployee {
     }
 
     @Override
+    public String toString() {
+        return "CertificateEmployee{" +
+                "id=" + id +
+                ", certificate=" + certificate +
+                ", employee=" + employee +
+                ", achieved=" + achieved +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

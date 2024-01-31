@@ -26,7 +26,7 @@ class EmailContentBuilderTest {
         textMessage.put("name", emp.getFirstName());
         textMessage.put("lastName", emp.getLastName());
 
-        String email = emailContentBuilder.buildEmailContent(textMessage);
+        String email = emailContentBuilder.buildEmailContent(textMessage, "email-template");
         System.out.println(email);
 
         assertThat(email).contains(emp.getFirstName());
