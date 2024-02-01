@@ -17,17 +17,13 @@ public enum ErrorCode {
     INVALID_NAME_SURNAME(1503, Gravity.WARNING, "Campo non valido", "Il campo inserito non è valido, controlla che non ci siano numeri e/o caratteri speciali"),
 
     INVALID_GENRE(1504, Gravity.WARNING, "Campo 'Genere' non valido", "Il campo 'Genere' inserito non è valido, deve corrispondere ai seguenti valori (M= Maschio, F=Femmina, O=Other)"),
-<<<<<<< HEAD
+
 
     INVALID_DATE(1505, Gravity.BLOCKING, "Campo 'Data' non valido", "Il campo 'Data' inserito non è valido, il dipendente associato non sarà inserito, correggere il campo e riprovare."),
     INVALID_ROW(1506, Gravity.BLOCKING, "Campi non validi", "La riga non risulta valida e verrà ignorata perché i campi fondamentali non rispettano i giusti criteri."),
 
     EMPTY_LIST_AFTER_VALIDATION(1507, Gravity.BLOCKING, "Nessun dipendente da aggiungere", "La lista dei dipendenti dopo la validazione, risulta vuota."),
-=======
-    INVALID_ROW(1505, Gravity.BLOCKING, "Campi non validi", "La riga non risulta valida e verrà ignorata perché i campi fondamentali non rispettano i giusti criteri."),
 
-    EMPTY_LIST_AFTER_VALIDATION(1506, Gravity.BLOCKING, "Nessun dipendente da aggiungere", "La lista dei dipendenti dopo la validazione, risulta vuota."),
->>>>>>> master
 
     //----------------------------PER I FILE-------------------------
     UNEXPECTED_FORMAT(2001, Gravity.BLOCKING, "Formato sbagliato", "Formato file non supportato. "),

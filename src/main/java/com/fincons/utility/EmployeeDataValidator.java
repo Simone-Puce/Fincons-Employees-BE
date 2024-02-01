@@ -1,17 +1,10 @@
 package com.fincons.utility;
-
 import com.fincons.dto.EmployeeDTO;
 import com.fincons.dto.ErrorDetailDTO;
 import com.fincons.enums.ErrorCode;
-<<<<<<< HEAD
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.springframework.util.StringUtils;
-
 import java.time.LocalDate;
-=======
-import org.springframework.util.StringUtils;
-
->>>>>>> master
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -52,10 +45,6 @@ public class EmployeeDataValidator {
             validationResultList.add(new ErrorDetailDTO(employeeToValidate.getRowNum(), "Genere", ErrorCode.INVALID_GENRE));
         }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> master
         return validationResultList;
     }
 
@@ -106,7 +95,7 @@ public class EmployeeDataValidator {
 
     }
 
-<<<<<<< HEAD
+
     public static boolean isValidDate(String date) {
 
         // Implementazione della validazione della data
@@ -158,6 +147,4 @@ public class EmployeeDataValidator {
 
     }
 
-=======
->>>>>>> master
 }

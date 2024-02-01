@@ -47,7 +47,7 @@ public class ImportServiceImpl implements ImportService {
         ImportResultDTO importResult = new ImportResultDTO(ImportServiceDateUtility.generateId(), file.getOriginalFilename(), file.getSize(), ImportServiceDateUtility.generateDate());
 
         List<ErrorDetailDTO> errorList = new ArrayList<>();
-
+        
         String ext = FileUtility.getExtension(file.getOriginalFilename());
         ImportFileReader fileReader = null;
         if ("csv".equalsIgnoreCase(ext)) {         // inizializza un csvReader se il file è un csv

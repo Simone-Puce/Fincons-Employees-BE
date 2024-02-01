@@ -31,6 +31,8 @@ public class User {
     private String password;
 
 
+
+
     @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     @JoinTable(
             name = "users_roles",
@@ -38,6 +40,13 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id",  referencedColumnName = "id" )
     )
     private List<Role> roles;
+
+    public User(String email, String firstName, String lastName, String password) {
+        setEmail(email);
+        setFirstName(firstName);
+        setLastName(lastName);
+        setPassword(password);
+    }
 
     public long getId() {
         return id;
