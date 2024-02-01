@@ -75,7 +75,7 @@ public class UserController {
                     .data(jwtAuthResponse)
                     .build());
         } catch (Exception e) {
-            return ResponseEntity.status(409).body(GenericResponse.<JwtAuthResponse>builder()
+            return ResponseEntity.status(200).body(GenericResponse.<JwtAuthResponse>builder()
                     .status(HttpStatus.resolve(409))
                     .success(false)
                     .message("Invalid or existing email!!")

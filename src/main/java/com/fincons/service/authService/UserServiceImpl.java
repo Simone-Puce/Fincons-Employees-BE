@@ -65,7 +65,6 @@ public class UserServiceImpl  implements UserService{
 
         String emailDto = userDTO.getEmail().toLowerCase().replace(" ", "");
 
-
         if (!emailDto.isEmpty() && EmailValidator.isValidEmail(emailDto) && !userRepo.existsByEmail(emailDto)) {
             User userToSave = dtoToUser(userDTO);
             Role role;
