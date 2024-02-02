@@ -1,5 +1,8 @@
 package com.fincons.controller;
 
+import com.fincons.dto.ProjectDTO;
+import com.fincons.entity.Project;
+import com.fincons.mapper.ProjectMapper;
 import com.fincons.utility.GenericResponse;
 import com.fincons.dto.EmployeeDTO;
 import com.fincons.entity.Employee;
@@ -31,11 +34,14 @@ public class EmployeeController {
     @Autowired
     private EmployeeMapper modelMapperEmployee;
 
+    @Autowired
+    private ProjectMapper projectMapper;
+
     @GetMapping(value = "/find-by-id")
     public ResponseEntity<GenericResponse<EmployeeDTO>> getEmployeeById(@RequestParam String employeeId){
         try{
             Employee employee = employeeService.getEmployeeById(employeeId);
-            EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTOWithFile(employee);
+            EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTO(employee);
 
             GenericResponse<EmployeeDTO> response = GenericResponse.success(
                     employeeDTO,
@@ -57,7 +63,7 @@ public class EmployeeController {
     public ResponseEntity<GenericResponse<EmployeeDTO>> getDepartmentByEmail(@RequestParam String email){
         try {
             Employee employee = employeeService.getEmployeeByEmail(email);
-            EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTOWithFile(employee);
+            EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTO(employee);
 
             GenericResponse<EmployeeDTO> response = GenericResponse.success(
                     employeeDTO,
@@ -186,13 +192,62 @@ public class EmployeeController {
     }
 
     @GetMapping(value = "/find/employee-project")
-    public ResponseEntity<Object> getAllEmployeesProjects(@RequestParam String employeeId){
-        return employeeService.findAllEmployeeProjects(employeeId);
+    public ResponseEntity<GenericResponse<List<ProjectDTO>>> getAllEmployeesProjects(@RequestParam String employeeId){
+        try {
+            List<Project> projects = employeeService.findAllEmployeeProjects(employeeId);
+
+            List<ProjectDTO> projectsDTO = new ArrayList<>();
+
+            for (Project project : projects) {
+                ProjectDTO projectDTO = projectMapper.mapToDTO(project);
+                projectsDTO.add(projectDTO);
+            }
+            GenericResponse<List<ProjectDTO>> response = GenericResponse.success(
+                    projectsDTO,
+                    "Success: This Employee works in " + projectsDTO.size() +
+                            (projectsDTO.size() == 1 ? " project." : " projects."),
+                    HttpStatus.OK.value()
+            );
+
+            return ResponseEntity.ok(response);
+        }
+        catch (ResourceNotFoundException rnfe){
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            rnfe.getMessage(),
+                            HttpStatus.NOT_FOUND.value()));
+        }
+        catch (IllegalArgumentException iae){
+            return ResponseEntity.ok(
+                    GenericResponse.empty(
+                            iae.getMessage(),
+                            HttpStatus.NO_CONTENT.value()
+                    )
+            );
+        }
     }
     @GetMapping(value = "/list/employee-project")
-    public ResponseEntity<Object> getAllEmployeeProject(){
-        return employeeService.getAllEmployeeProject();
+    public ResponseEntity<GenericResponse<List<EmployeeProjectDTO>>> getAllEmployeeProject(){
+        try {
+            List<EmployeeProjectDTO> employeeProjectDTO = employeeService.getAllEmployeeProject();
+
+            GenericResponse<List<EmployeeProjectDTO>> response = GenericResponse.success(
+                    employeeProjectDTO,
+                    "Success: Found "+ employeeProjectDTO.size() + " relationship in the search.",
+                    HttpStatus.OK.value()
+            );
+            return ResponseEntity.ok(response);
+        }
+        catch (IllegalArgumentException iae){
+            return ResponseEntity.ok(
+                    GenericResponse.empty(
+                            iae.getMessage(),
+                            HttpStatus.NO_CONTENT.value()
+                    )
+            );
+        }
     }
+
     @PostMapping(value= "/create/employee-project")
     public ResponseEntity<Object> createEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId) {
         return employeeService.addEmployeeProject(employeeId, projectId);

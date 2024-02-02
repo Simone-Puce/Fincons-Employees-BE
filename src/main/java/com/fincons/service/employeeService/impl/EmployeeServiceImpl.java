@@ -42,9 +42,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeMapper modelMapperEmployee;
 
     @Autowired
-    private ProjectMapper projectMapper;
-
-    @Autowired
     private EmployeeProjectMapper employeeProjectMapper;
 
     @Autowired
@@ -167,37 +164,23 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseEntity<Object> findAllEmployeeProjects(String employeeId) {
+    public List<Project> findAllEmployeeProjects(String employeeId) {
 
         validateEmployeeById(employeeId);
-        List<ProjectDTO> newListProjects = new ArrayList<>();
-
         List<Project> projects = employeeRepository.findProjectByEmployeeId(employeeId);
         if (projects.isEmpty()) {
             throw new IllegalArgumentException("The ID " + employeeId + " doesn't work in any project.");
-        } else {
-            for (Project project : projects) {
-                ProjectDTO projectDTO = projectMapper.mapToDTO(project);
-                newListProjects.add(projectDTO);
-            }
         }
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: This Employee works in " + newListProjects.size() +
-                        (newListProjects.size() == 1 ? " project." : " projects."),
-                (HttpStatus.OK),
-                newListProjects);
+        return projects;
     }
 
     @Override
-    public ResponseEntity<Object> getAllEmployeeProject() {
+    public List<EmployeeProjectDTO> getAllEmployeeProject() {
         List<EmployeeProjectDTO> employeeProject = employeeRepository.getAllEmployeeProject();
         if (employeeProject.isEmpty()) {
             throw new IllegalArgumentException("The table is empty.");
         }
-        return ResponseHandler.generateResponse(LocalDateTime.now(),
-                "Success: Found "+ employeeProject.size() + " relationship in the search.",
-                (HttpStatus.OK),
-                employeeProject);
+        return employeeProject;
     }
 
     @Override

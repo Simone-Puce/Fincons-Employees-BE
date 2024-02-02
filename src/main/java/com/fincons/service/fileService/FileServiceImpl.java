@@ -42,9 +42,11 @@ public class FileServiceImpl implements FileServiceApi {
 
     @Override
     public File uploadFile(FileDTO fileDTO) {
-        Employee employee = employeeServiceImpl.validateEmployeeById(fileDTO.getEmpDTO().getEmployeeId());
+        Employee employee = employeeServiceImpl.validateEmployeeById(fileDTO.getEmpId());
+        fileDTO.setEmpId(employee.getId().toString());
         File file = fileMapper.mapFileDtotoFile(fileDTO);
-        file.setEmp(employee);
+
+        //file.setEmp(employee);
         fileRepository.save(file);
         return file;
     }
@@ -69,7 +71,7 @@ public class FileServiceImpl implements FileServiceApi {
 
         List<FileDTO> fileDTOs = new ArrayList<>();
         for(File file : fileList){
-            FileDTO fileDTO = fileMapper.mapFileToFileDto(file);
+            FileDTO fileDTO = fileMapper.mapFileToFileDtoWithoutFile64(file);
             fileDTOs.add(fileDTO);
         }
         return fileDTOs;

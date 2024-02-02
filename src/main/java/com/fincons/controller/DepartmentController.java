@@ -45,7 +45,7 @@ public class DepartmentController {
         }
         catch (ResourceNotFoundException rnfe){
             return ResponseEntity.ok(
-                    GenericResponse.error(
+                    GenericResponse.empty(
                             rnfe.getMessage(),
                             HttpStatus.NOT_FOUND.value())
             );
