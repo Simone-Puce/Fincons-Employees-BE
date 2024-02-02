@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class PositionMapper {
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     public PositionDTO mapToDTO(Position position) {
         return modelMapper.map(position, PositionDTO.class);

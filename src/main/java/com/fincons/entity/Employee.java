@@ -2,15 +2,13 @@ package com.fincons.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UuidGenerator;
 
 
@@ -73,7 +71,7 @@ public class Employee {
     private Position position;
 
     @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+            cascade = {CascadeType.PERSIST , CascadeType.MERGE})
     @JoinTable(name = "employee_project",
             joinColumns = {
                 @JoinColumn(name = "id_employee", referencedColumnName = "id")
@@ -84,10 +82,10 @@ public class Employee {
     )
     private List<Project> projects;
 
-
     @OneToMany(
-            mappedBy = "empId",
-            fetch = FetchType.LAZY)
+            mappedBy = "emp",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.REMOVE)
     @JsonManagedReference(value = "file-employee")
     private List<File> fileList;
 

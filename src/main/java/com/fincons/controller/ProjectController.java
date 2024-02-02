@@ -1,6 +1,6 @@
 package com.fincons.controller;
 
-import com.fincons.Handler.GenericResponse;
+import com.fincons.utility.GenericResponse;
 import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Project;
 import com.fincons.exception.DuplicateNameException;
@@ -38,8 +38,9 @@ public class ProjectController {
                     HttpStatus.OK.value()
             );
             return ResponseEntity.ok(response);
-        } catch (ResourceNotFoundException rnfe) {
-            return ResponseEntity.status(200).body(
+        }
+        catch (ResourceNotFoundException rnfe) {
+            return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
                             HttpStatus.NOT_FOUND.value())
@@ -65,9 +66,9 @@ public class ProjectController {
                     HttpStatus.OK.value());
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException iax){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.empty(
-                            "There aren't Projects",
+                            iax.getMessage(),
                             HttpStatus.NOT_FOUND.value()));
         }
     }
@@ -85,18 +86,27 @@ public class ProjectController {
                     HttpStatus.OK.value());
             return ResponseEntity.ok(response);
 
-        } catch (IllegalArgumentException iae) {
+        }
+        catch (ResourceNotFoundException rfe){
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
-                            "The fields of the Project can't be null or empty",
+                            rfe.getMessage(),
+                            HttpStatus.NOT_FOUND.value()
+                    )
+            );
+        }
+        catch (IllegalArgumentException iae) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            iae.getMessage(),
                             HttpStatus.BAD_REQUEST.value()
                     )
             );
         }
         catch(DuplicateNameException dne){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
-                            "Project with the same name, already exists",
+                            dne.getMessage(),
                             HttpStatus.CONFLICT.value()
                     )
             );
@@ -117,17 +127,17 @@ public class ProjectController {
             return ResponseEntity.ok(response);
         }
         catch(IllegalArgumentException iae){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
-                            "The fields of the Project can't be null or empty",
+                            iae.getMessage(),
                             HttpStatus.BAD_REQUEST.value()
                     )
             );
         }
         catch(DuplicateNameException dne){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
-                            "The project existing yet",
+                            dne.getMessage(),
                             HttpStatus.CONFLICT.value()
                     )
             );
@@ -145,7 +155,7 @@ public class ProjectController {
             return ResponseEntity.ok(response);
         } catch (ResourceNotFoundException rnfe){
 
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
                             HttpStatus.NOT_FOUND.value()));

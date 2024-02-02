@@ -1,10 +1,6 @@
 package com.fincons.dto;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fincons.entity.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,18 +20,18 @@ public class EmployeeDTO {
     private String firstName;
     private String lastName;
     private String gender;
-    private LocalDate birthDate;
     private String email;
+    private LocalDate birthDate;
     private LocalDate startDate;
     private LocalDate endDate;
     private String departmentId;
     private String positionId;
-    private List<ProjectDTO> Projects;
-    private List<File> fileList;
+    private List<ProjectDTO> projects;
+    private List<FileDTO> fileList;
 
 
 
-    public EmployeeDTO(String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, List<File> fileList) {
+    public EmployeeDTO(String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, List<FileDTO> fileList) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;

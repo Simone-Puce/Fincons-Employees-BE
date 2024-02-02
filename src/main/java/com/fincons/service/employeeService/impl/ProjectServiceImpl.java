@@ -30,8 +30,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private ProjectMapper modelMapperProject;
 
-
-
     @Override
     public Project getProjectById(String projectId) {
         return validateProjectById(projectId);
@@ -112,7 +110,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     public Project validateProjectById(String projectId){
-        Project project = projectRepository.findByProjectId(projectId);
+        Project project = projectRepository.findProjectByProjectId(projectId);
         if (project == null){
             throw new ResourceNotFoundException("Project with ID: " + projectId + " not found");
         }

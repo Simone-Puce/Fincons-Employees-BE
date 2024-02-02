@@ -1,7 +1,6 @@
 package com.fincons.controller;
 
-import com.fincons.Handler.GenericResponse;
-import com.fincons.dto.DepartmentDTO;
+import com.fincons.utility.GenericResponse;
 import com.fincons.dto.EmployeeDTO;
 import com.fincons.entity.Employee;
 import com.fincons.dto.EmployeeProjectDTO;
@@ -36,7 +35,7 @@ public class EmployeeController {
     public ResponseEntity<GenericResponse<EmployeeDTO>> getEmployeeById(@RequestParam String employeeId){
         try{
             Employee employee = employeeService.getEmployeeById(employeeId);
-            EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTO(employee);
+            EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTOWithFile(employee);
 
             GenericResponse<EmployeeDTO> response = GenericResponse.success(
                     employeeDTO,
@@ -46,7 +45,7 @@ public class EmployeeController {
             return ResponseEntity.ok(response);
         }
         catch (ResourceNotFoundException rnfe){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
                             HttpStatus.NOT_FOUND.value())
@@ -58,7 +57,7 @@ public class EmployeeController {
     public ResponseEntity<GenericResponse<EmployeeDTO>> getDepartmentByEmail(@RequestParam String email){
         try {
             Employee employee = employeeService.getEmployeeByEmail(email);
-            EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTO(employee);
+            EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTOWithFile(employee);
 
             GenericResponse<EmployeeDTO> response = GenericResponse.success(
                     employeeDTO,
@@ -68,7 +67,7 @@ public class EmployeeController {
             return ResponseEntity.ok(response);
         }
         catch (ResourceNotFoundException rnfe){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
                             HttpStatus.NOT_FOUND.value())
@@ -93,9 +92,9 @@ public class EmployeeController {
             return ResponseEntity.ok(response);
         }
         catch(IllegalArgumentException iax){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.empty(
-                            "There aren't Employee",
+                            iax.getMessage(),
                             HttpStatus.NOT_FOUND.value()));
         }
     }
@@ -114,17 +113,17 @@ public class EmployeeController {
             return ResponseEntity.ok(response);
         }
         catch (IllegalArgumentException iae){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
-                            "The fields of the Employee can't be null or empty",
+                            iae.getMessage(),
                             HttpStatus.BAD_REQUEST.value()
                     )
             );
         }
         catch (DuplicateNameException dne){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
-                            "Employee with the same email, already exists",
+                            dne.getMessage(),
                             HttpStatus.CONFLICT.value()
                     )
             );
@@ -143,18 +142,26 @@ public class EmployeeController {
             );
             return ResponseEntity.ok(response);
         }
+        catch (ResourceNotFoundException rfe){
+            return ResponseEntity.status(200).body(
+                    GenericResponse.error(
+                            rfe.getMessage(),
+                            HttpStatus.NOT_FOUND.value()
+                    )
+            );
+        }
         catch (IllegalArgumentException iae){
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
-                            "The fields of the Employee can't be null or empty",
+                            iae.getMessage(),
                             HttpStatus.BAD_REQUEST.value()
                     )
             );
         }
         catch(DuplicateNameException dne){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
-                            "The employee existing yet",
+                            dne.getMessage(),
                             HttpStatus.CONFLICT.value()
                     )
             );
@@ -171,7 +178,7 @@ public class EmployeeController {
             return ResponseEntity.ok(response);
         } catch (ResourceNotFoundException rnfe){
 
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
                             HttpStatus.NOT_FOUND.value()));

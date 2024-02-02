@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class ProjectMapper {
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     public ProjectDTO mapToDTO(Project project) {
         return modelMapper.map(project, ProjectDTO.class);

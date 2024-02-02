@@ -17,7 +17,10 @@ import java.util.stream.Collectors;
 public class EmployeeMapper {
 
     @Autowired
-    ModelMapper modelMapperEmployee;
+    private ModelMapper modelMapperEmployee;
+
+    @Autowired
+    private ModelMapper modelMapperEmployeeWithFile;
     
     public EmployeeDTO mapToDTO(Employee employee) {
         return modelMapperEmployee.map(employee, EmployeeDTO.class);
@@ -26,4 +29,13 @@ public class EmployeeMapper {
     public Employee mapToEntity(EmployeeDTO employeeDTO){
         return modelMapperEmployee.map(employeeDTO, Employee.class);
     }
+    public EmployeeDTO mapToDTOWithFile(Employee employee) {
+        return modelMapperEmployeeWithFile.map(employee, EmployeeDTO.class);
+    }
+    public Employee mapToEntityWithFile(EmployeeDTO employeeDTO){
+        return modelMapperEmployeeWithFile.map(employeeDTO, Employee.class);
+    }
+
+
+
 }
