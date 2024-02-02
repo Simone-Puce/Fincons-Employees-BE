@@ -1,7 +1,13 @@
 package com.fincons.controller;
 
+import com.fincons.dto.EmployeeDTO;
+import com.fincons.entity.Employee;
 import com.fincons.entity.File;
 import com.fincons.dto.FileDTO;
+import com.fincons.mapper.EmployeeMapper;
+import com.fincons.mapper.FileMapper;
+import com.fincons.repository.FileRepository;
+import com.fincons.service.employeeService.impl.EmployeeServiceImpl;
 import com.fincons.service.fileService.FileServiceApi;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +25,18 @@ public class FileController {
 
     @Autowired
     private FileServiceApi fileServiceApi;
+
+    @Autowired
+    private EmployeeServiceImpl employeeServiceImpl;
+
+    @Autowired
+    private FileMapper fileMapper;
+
+    @Autowired
+    private EmployeeMapper employeeMapper;
+
+    @Autowired
+    private FileRepository fileRepository;
 
     @GetMapping("${file.list}")
     public List<FileDTO> getAllFiles() {

@@ -55,11 +55,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private PositionServiceImpl positionServiceImpl;
 
 
-    @Autowired
-    public void EmployeeService(EmployeeMapper modelMapperEmployee) {
-        this.modelMapperEmployee = modelMapperEmployee;
-
-    }
     @Override
     public Employee getEmployeeById(String employeeId) {
         return validateEmployeeById(employeeId);
@@ -88,10 +83,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<Employee> employees = employeeRepository.findAll();
         //Condition if there are employee with same firstName && lastName && birthDate
         checkForDuplicateEmployee(employeeDTO, employees);
-
-        //TODO Save uuid for DTO
-        String idDepartmentUuid = employeeDTO.getDepartmentId();
-        String idPositionUuid = employeeDTO.getPositionId();
 
         Department department;
         department = departmentServiceImpl.validateDepartmentById(employeeDTO.getDepartmentId());
@@ -249,7 +240,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //Delete the relationship
         Employee oldEmployee = employeeRepository.findEmployeeByEmployeeId(employeeId);
-        Project oldProject = projectRepository.findByProjectId(projectId);
+        Project oldProject = projectRepository.findProjectByProjectId(projectId);
         oldEmployee.getProjects().remove(oldProject);
         employeeRepository.save(oldEmployee);
 
@@ -281,7 +272,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //Delete relationship
         Employee oldEmployee = employeeRepository.findEmployeeByEmployeeId(employeeId);
-        Project oldProject = projectRepository.findByProjectId(projectId);
+        Project oldProject = projectRepository.findProjectByProjectId(projectId);
         oldEmployee.getProjects().remove(oldProject);
         employeeRepository.save(oldEmployee);
         return ResponseHandler.generateResponse(LocalDateTime.now(),
@@ -312,7 +303,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         throw new IllegalArgumentException("Relationship with ID Employee: "+ employeeId+ " and ID Project: " + projectId + " don't exists.");
     }
 
-    private Employee validateEmployeeById(String employeeId){
+    public Employee validateEmployeeById(String employeeId){
         Employee existingEmployee = employeeRepository.findEmployeeByEmployeeId(employeeId);
 
         if (existingEmployee == null){

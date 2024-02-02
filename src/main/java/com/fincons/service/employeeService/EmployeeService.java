@@ -1,11 +1,14 @@
 package com.fincons.service.employeeService;
 
+import com.fincons.dto.EmployeeDTO;
+import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Employee;
 import com.fincons.dto.EmployeeProjectDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@Service
+import java.util.List;
+
 public interface EmployeeService {
 
     Employee getEmployeeById(String idEmployee);

@@ -1,7 +1,7 @@
 package com.fincons.controller;
 
 
-import com.fincons.Handler.GenericResponse;
+import com.fincons.utility.GenericResponse;
 import com.fincons.dto.DepartmentDTO;
 import com.fincons.dto.EmployeeDepartmentDTO;
 import com.fincons.entity.Department;
@@ -10,7 +10,6 @@ import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.DepartmentMapper;
 import com.fincons.service.employeeService.DepartmentService;
-import com.fincons.service.employeeService.impl.DepartmentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +44,7 @@ public class DepartmentController {
             return ResponseEntity.ok(response);
         }
         catch (ResourceNotFoundException rnfe){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
                             HttpStatus.NOT_FOUND.value())
@@ -71,9 +70,9 @@ public class DepartmentController {
             return ResponseEntity.ok(response);
         }
         catch(IllegalArgumentException iax){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.empty(
-                            "There aren't Departments",
+                            iax.getMessage(),
                             HttpStatus.NOT_FOUND.value()));
         }
     }
@@ -92,17 +91,17 @@ public class DepartmentController {
 
         }
         catch(IllegalArgumentException iae){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
-                            "The fields of the Department can't be null or empty",
+                            iae.getMessage(),
                             HttpStatus.BAD_REQUEST.value()
                     )
             );
         }
         catch(DuplicateNameException dne){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
-                            "Department with the same name, already exists",
+                            dne.getMessage(),
                             HttpStatus.CONFLICT.value()
                     )
             );
@@ -122,18 +121,26 @@ public class DepartmentController {
             );
             return ResponseEntity.ok(response);
         }
-        catch(IllegalArgumentException iae){
+        catch (ResourceNotFoundException rfe){
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
-                            "The fields of the Department can't be null or empty",
+                            rfe.getMessage(),
+                            HttpStatus.NOT_FOUND.value()
+                    )
+            );
+        }
+        catch(IllegalArgumentException iae){
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            iae.getMessage(),
                             HttpStatus.BAD_REQUEST.value()
                     )
             );
         }
         catch(DuplicateNameException dne){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
-                            "The department existing yet",
+                            dne.getMessage(),
                             HttpStatus.CONFLICT.value()
                     )
             );
@@ -151,7 +158,7 @@ public class DepartmentController {
             return ResponseEntity.ok(response);
         } catch (ResourceNotFoundException rnfe){
 
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
                             HttpStatus.NOT_FOUND.value()));
@@ -169,16 +176,18 @@ public class DepartmentController {
 
             return ResponseEntity.ok(response);
 
-        } catch (ResourceNotFoundException rnfe) {
+        }
+        catch (ResourceNotFoundException rnfe) {
 
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok(
                     GenericResponse.error(
-                            "Department with ID: " + departmentId + " not found",
+                            rnfe.getMessage(),
                             HttpStatus.NOT_FOUND.value()
                     )
             );
-        } catch (IllegalArgumentException iae) {
-            return ResponseEntity.status(200).body(
+        }
+        catch (IllegalArgumentException iae) {
+            return ResponseEntity.ok(
                     GenericResponse.error(
                             "Department with ID: " + departmentId + " is Empty",
                             HttpStatus.NOT_FOUND.value()

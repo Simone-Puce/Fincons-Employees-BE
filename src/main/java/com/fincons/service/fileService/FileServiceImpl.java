@@ -1,11 +1,13 @@
 package com.fincons.service.fileService;
 
 import com.fincons.Handler.ResponseHandler;
+import com.fincons.entity.Employee;
 import com.fincons.entity.File;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.FileMapper;
 import com.fincons.dto.FileDTO;
 import com.fincons.repository.FileRepository;
+import com.fincons.service.employeeService.impl.EmployeeServiceImpl;
 import com.fincons.utility.DecodingFile;
 import com.fincons.utility.EncodingFile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
 
@@ -31,10 +34,16 @@ public class FileServiceImpl implements FileServiceApi {
     @Autowired
     private DecodingFile decodingFile;
 
+    @Autowired
+    private EmployeeServiceImpl employeeServiceImpl;
+
     @Override
-    public File uploadFile(FileDTO fileDto) {
-        File file = fileMapper.mapFileDtotoFile(fileDto);
-        return fileRepository.save(file);
+    public File uploadFile(FileDTO fileDTO) {
+        Employee employee = employeeServiceImpl.validateEmployeeById(fileDTO.getEmpDTO().getEmployeeId());
+        File file = fileMapper.mapFileDtotoFile(fileDTO);
+        file.setEmp(employee);
+        fileRepository.save(file);
+        return file;
     }
 
     @Override
@@ -54,7 +63,13 @@ public class FileServiceImpl implements FileServiceApi {
     @Override
     public List<FileDTO> getAllFiles() {
         List<File> fileList = fileRepository.findAll();
-        return fileMapper.mapFileListToFileDtoList(fileList);
+
+        List<FileDTO> fileDTOs = new ArrayList<>();
+        for(File file : fileList){
+            FileDTO fileDTO = fileMapper.mapFileToFileDto(file);
+            fileDTOs.add(fileDTO);
+        }
+        return fileDTOs;
     }
 
     @Override
