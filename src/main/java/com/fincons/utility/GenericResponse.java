@@ -23,7 +23,7 @@ public class GenericResponse<T>  {
     private T data;
 
 
-    public static <T> GenericResponse<T> empty(String message, Integer status) {
+    public static <T> GenericResponse<T> empty(String message, Integer status ) {
         return success(null, message, status);
     }
 

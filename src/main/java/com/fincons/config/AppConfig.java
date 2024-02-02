@@ -18,6 +18,7 @@ import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -85,7 +86,7 @@ public class AppConfig {
         return modelMapper;
     }
     @Bean
-    public ModelMapper modelMapperEmployee() {
+    public ModelMapper modelMapperSkipEmployeesInProjects() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<Project, ProjectDTO>() {
             @Override
@@ -97,7 +98,7 @@ public class AppConfig {
             @Override
             protected void configure(){
                 skip(destination.getFile64());
-                skip(destination.getEmpDTO());
+                skip(destination.getEmpId());
             }
         });
         //modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -105,27 +106,15 @@ public class AppConfig {
         return modelMapper;
     }
     @Bean
-    public ModelMapper modelMapperEmployeeWithFile() {
+    public ModelMapper modelMapperFile() {
         ModelMapper modelMapper = new ModelMapper();
-        modelMapper.addMappings(new PropertyMap<Project, ProjectDTO>() {
-            @Override
-            protected void configure() {
-                skip(destination.getEmployees());
-            }
-        });
         modelMapper.addMappings(new PropertyMap<File, FileDTO>() {
             @Override
             protected void configure(){
-                skip(destination.getEmpDTO());
+                skip(destination.getFile64());
             }
         });
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper;
     }
-
-
-
-
-
-
-
 }

@@ -12,6 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FileDTO {
 
+    private Long id;
+
     private String file64;
 
     private String name;
@@ -20,21 +22,23 @@ public class FileDTO {
 
     private String description;
 
-    private EmployeeDTO empDTO;
+    private String empId;
 
 
     @JsonCreator
     public FileDTO(
+            @JsonProperty("id") Long id,
             @JsonProperty("file64") String file64,
             @JsonProperty("name") String name,
             @JsonProperty("extension") String extension,
             @JsonProperty("description") String description,
-            @JsonProperty("empDTO") EmployeeDTO empDTO
+            @JsonProperty("empId") String empId
     ) {
+        this.id = id;
         this.file64 = file64;
         this.name = name;
         this.extension = extension;
         this.description = description;
-        this.empDTO = empDTO;
+        this.empId = empId;
     }
 }
