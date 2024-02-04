@@ -1,11 +1,12 @@
 package com.fincons.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 @NoArgsConstructor
@@ -23,10 +24,9 @@ public class Role {
     @Column(unique = true, nullable = false)
     private String name;
 
-
-    @JsonIgnore
     @ManyToMany(mappedBy="roles")
     private List<User> users;
+
 
     public long getId() {
         return id;

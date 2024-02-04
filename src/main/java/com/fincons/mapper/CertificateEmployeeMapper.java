@@ -1,14 +1,11 @@
 package com.fincons.mapper;
 
-import com.fincons.dto.CertificateDTO;
+
 import com.fincons.dto.CertificateEmployeeDTO;
-import com.fincons.entity.Certificate;
 import com.fincons.entity.CertificateEmployee;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 @Component
 public class CertificateEmployeeMapper {

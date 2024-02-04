@@ -5,19 +5,21 @@ import com.fincons.exception.IncorrectPasswordException;
 import com.fincons.exception.NoPermissionException;
 import com.fincons.exception.PasswordDoesNotRespectRegexException;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.mapper.UserAndRoleMapper;
 import com.fincons.service.authService.UserService;
 import com.fincons.dto.UserDTO;
 import com.fincons.exception.DuplicateEmailException;
 import com.fincons.jwt.JwtAuthResponse;
 import com.fincons.jwt.LoginDto;
-
 import com.fincons.utility.GenericResponse;
-
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 //@CrossOrigin("http://localhost:81")
@@ -93,7 +95,7 @@ public class UserController {
             return ResponseEntity.ok(GenericResponse.<UserDTO>builder()
                     .status(HttpStatus.OK)
                     .success(true)
-                    .message("Logged Succesfully!!!")
+                    .message("Registered Succesfully!!!")
                     .data(userToShow)
                     .build());
 
@@ -196,5 +198,35 @@ public class UserController {
                         .build()
         );
     }
+
+    @DeleteMapping("${delete.user-by-email}")
+    public ResponseEntity<GenericResponse<Boolean>> deleteUserByEmail(@RequestParam String email){
+        try{
+            userService.deleteUserByEmail(email);
+
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    GenericResponse.<Boolean>builder()
+                            .status(HttpStatus.OK)
+                            .success(true)
+                            .message("User deleted succesfully!!")
+                            .build());
+        }catch(EmailDoesNotExistException ednee){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    GenericResponse.<Boolean>builder()
+                            .status(HttpStatus.resolve(409))
+                            .success(false)
+                            .message(ednee.getMessage())
+                            .build());
+
+        }
+
+    }
+
+
+
+
+
+
+
 }
 

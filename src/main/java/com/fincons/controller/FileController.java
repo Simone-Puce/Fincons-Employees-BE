@@ -2,7 +2,6 @@ package com.fincons.controller;
 
 import com.fincons.entity.File;
 import com.fincons.dto.FileDTO;
-import com.fincons.repository.FileRepository;
 import com.fincons.service.fileService.FileServiceApi;
 
 import org.springframework.beans.factory.annotation.Autowired;

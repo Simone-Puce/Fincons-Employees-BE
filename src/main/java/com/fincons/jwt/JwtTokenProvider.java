@@ -1,6 +1,5 @@
 package com.fincons.jwt;
 
-
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

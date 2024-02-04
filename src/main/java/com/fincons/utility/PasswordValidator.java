@@ -3,7 +3,6 @@ package com.fincons.utility;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class PasswordValidator {
     private static final String PASSWORD_REGEX =
           //  "^(?=.*[0-9])"

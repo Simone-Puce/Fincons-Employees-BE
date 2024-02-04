@@ -1,10 +1,10 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.util.List;
 
 @Getter
@@ -23,6 +23,8 @@ public class UserDTO {
     private String password;
 
     private List<RoleDTO> roles;
+
+    private boolean generatedPassword;
 
 
     public void setId(long id) {
