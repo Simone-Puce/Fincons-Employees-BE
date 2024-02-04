@@ -1,7 +1,6 @@
 package com.fincons.service.authService;
 
-import com.fincons.auth.CustomAuthenticationProvider;
-import com.fincons.dto.RoleDTO;
+
 import com.fincons.dto.UserDTO;
 import com.fincons.entity.Role;
 import com.fincons.entity.User;
@@ -12,13 +11,13 @@ import com.fincons.exception.PasswordDoesNotRespectRegexException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.jwt.LoginDto;
+import com.fincons.mapper.UserAndRoleMapper;
 import com.fincons.utility.PasswordValidator;
-import org.apache.commons.lang3.StringUtils;
-import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,13 +26,12 @@ import com.fincons.repository.RoleRepository;
 import com.fincons.repository.UserRepository;
 import com.fincons.utility.EmailValidator;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl  implements UserService{
+
 
     public UserServiceImpl(RoleRepository roleRepo, UserRepository userRepo, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
         this.roleRepo = roleRepo;
@@ -42,17 +40,16 @@ public class UserServiceImpl  implements UserService{
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
     }
+    private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
+
     private AuthenticationManager authenticationManager;
     private RoleRepository roleRepo;
     private UserRepository userRepo;
     private PasswordEncoder passwordEncoder;
 
 
-    @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
-
+    @Autowired
+    private UserAndRoleMapper userAndRoleMapper;
     private JwtTokenProvider jwtTokenProvider;
 
 
@@ -65,10 +62,15 @@ public class UserServiceImpl  implements UserService{
 
         String emailDto = userDTO.getEmail().toLowerCase().replace(" ", "");
 
-        if (!emailDto.isEmpty() && EmailValidator.isValidEmail(emailDto) && !userRepo.existsByEmail(emailDto)) {
-            User userToSave = dtoToUser(userDTO);
+        if (emailDto.isEmpty() && !EmailValidator.isValidEmail(emailDto) && userRepo.existsByEmail(emailDto)) {
+            LOG.warn("Invalid or existingg email!!");
+            throw new DuplicateEmailException("Invalid or existing email!!");
+        }
+            User userToSave = userAndRoleMapper.dtoToUser(userDTO);
             Role role;
+
             if(!PasswordValidator.isValidPassword(userDTO.getPassword())){
+                LOG.warn("Password dos not respect Regex!!");
                 throw new PasswordDoesNotRespectRegexException();
             }
             if (passwordForAdmin != null && passwordForAdmin.equals(passwordAdmin)) {
@@ -77,12 +79,10 @@ public class UserServiceImpl  implements UserService{
                 role = roleToAssign("ROLE_USER");
             }
             userToSave.setRoles(List.of(role));
+            userToSave.setGeneratedPassword(false);
             User userSaved = userRepo.save(userToSave);
-            return userToUserDto(userSaved);
-        } else {
 
-            throw new DuplicateEmailException("Invalid or existing email!!");
-        }
+            return userAndRoleMapper.userToUserDto(userSaved);
     }
 
     @Override
@@ -112,11 +112,11 @@ public class UserServiceImpl  implements UserService{
 
                 userFound.setRoles(userModified.getRoles()
                         .stream()
-                        .map(this::dtoToRole)
+                        .map(role -> userAndRoleMapper.dtoToRole(role))
                         .collect(Collectors.toList()));
             }
             User userSaved = userRepo.save(userFound);
-            return userToUserDto(userSaved);
+            return userAndRoleMapper.userToUserDto(userSaved);
     }
 
     @Override
@@ -143,7 +143,16 @@ public class UserServiceImpl  implements UserService{
 
         User userSaved = userRepo.save(userToModify);
 
-        return userToUserDto(userSaved);
+        return userAndRoleMapper.userToUserDto(userSaved);
+    }
+
+    @Override
+    public void deleteUserByEmail(String email) throws EmailDoesNotExistException {
+        User userToRemove = userRepo.findByEmail(email);
+        if(userToRemove==null){
+            throw new EmailDoesNotExistException();
+        }
+        userRepo.delete(userToRemove);
     }
 
 
@@ -153,27 +162,15 @@ public class UserServiceImpl  implements UserService{
         if(users.isEmpty()){
             return List.of();
         }else{
-            return users.stream().map(this::userToUserDto).toList();
+            return users.stream().map(user -> userAndRoleMapper.userToUserDto(user)).toList();
         }
     }
     @Override
     public UserDTO getUserDtoByEmail(String email) {
         User userFounded = userRepo.findByEmail(email);
-        return userToUserDto(userFounded);
-    }
-    public User dtoToUser(UserDTO userDTO) {
-        ModelMapper modelMapper = new ModelMapper();
-        User userToSave = modelMapper.map(userDTO, User.class);
-        userToSave.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        return userToSave;
+        return userAndRoleMapper.userToUserDto(userFounded);
     }
 
-    public UserDTO userToUserDto(User user) {
-        ModelMapper modelMapper = new ModelMapper();
-        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
-        userDTO.setRoles(user.getRoles().stream().map(this::roleToRoleDto).toList());
-        return userDTO;
-    }
     public Role roleToAssign(String nomeRuolo) {
         Role role = roleRepo.findByName(nomeRuolo);
         if (role == null) {
@@ -183,12 +180,9 @@ public class UserServiceImpl  implements UserService{
         }
         return role;
     }
-    public RoleDTO roleToRoleDto(Role role) {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(role, RoleDTO.class);
-    }
-    public Role dtoToRole(RoleDTO roleDTO) {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(roleDTO, Role.class);
-    }
+
+
+
+
+
 }

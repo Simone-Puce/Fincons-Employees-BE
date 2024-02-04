@@ -3,7 +3,6 @@ package com.fincons.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-
 @Entity
 @Table(name = "files")
 public class File {

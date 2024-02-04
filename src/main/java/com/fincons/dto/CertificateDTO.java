@@ -1,7 +1,5 @@
 package com.fincons.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fincons.entity.CertificateEmployee;
 
 import java.util.List;

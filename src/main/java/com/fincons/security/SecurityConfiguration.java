@@ -8,9 +8,9 @@ import com.fincons.utility.Endpoint;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
-
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,9 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import java.util.Arrays;
-
 import java.util.List;
 
 @Configuration
@@ -44,7 +42,7 @@ public class SecurityConfiguration {
 
     private   JwtAuthenticationFilter jwtAuthFilter;
 
-    private ApplicationUri aU;
+    private ApplicationUri applicationUri;
 
 
     @Bean
@@ -54,34 +52,35 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
 
         List<Endpoint> endpoints = Arrays.asList(
-                new Endpoint( aU.getAPP_CONTEXT() + aU.getDEPARTMENT_URI() + "/**", "USER"),  // Di seguito  HttpMethod. e le opzioni  un esempio potrebbe essere  new Endpoint(baseUri + "/department/**", "USER","PUT")
-                new Endpoint( aU.getAPP_CONTEXT() + aU.getEMPLOYEE_URI() + "/**", "USER"),
-                new Endpoint( aU.getAPP_CONTEXT() + aU.getPOSITION_URI() + "/**", "USER"),
-                new Endpoint( aU.getAPP_CONTEXT() + aU.getPROJECT_URI() + "/**", "USER"),
-                new Endpoint( aU.getAPP_CONTEXT() + aU.getMODIFY_USER_URI() , "AUTHENTICATED"),
-                new Endpoint( aU.getAPP_CONTEXT() + aU.getFILE_URI() + "/**", "USER"),
-                new Endpoint( aU.getAPP_CONTEXT() + aU.getEMAIL_SENDER_URI() + "/**", "USER"),
-                new Endpoint( aU.getAPP_CONTEXT() + aU.getUPDATE_USER_PASSWORD_URI() + "/**", "USER"),
-                new Endpoint( aU.getAPP_CONTEXT() + aU.getEMPLOYEES_URI() + "/**", "USER"),
-                new Endpoint( aU.getAPP_CONTEXT() + aU.getERROR_URI(), "USER"),
-                new Endpoint( aU.getAPP_CONTEXT() + aU.getREGISTERED_USERS_URI() , "ADMIN,USER")
-                );
+                new Endpoint(applicationUri.getAppContext() + applicationUri.getUserUri() + "/**", "ADMIN"),
+                new Endpoint(applicationUri.getAppContext() + applicationUri.getRoleUri() + "/**", "ADMIN"),
+                new Endpoint(applicationUri.getAppContext() + applicationUri.getDepartmentUri() + "/**", "ADMIN"),
+                new Endpoint(applicationUri.getAppContext() + applicationUri.getEmployeeUri() + "/**", "ADMIN"),
+                new Endpoint(applicationUri.getAppContext() + applicationUri.getPositionUri() + "/**", "ADMIN"),
+                new Endpoint(applicationUri.getAppContext() + applicationUri.getProjectUri() + "/**", "ADMIN"),
+                new Endpoint(applicationUri.getAppContext() + applicationUri.getModifyUserUri(), "AUTHENTICATED"),
+                new Endpoint(applicationUri.getAppContext() + applicationUri.getFileUri() + "/**", "ADMIN"),
+                new Endpoint(applicationUri.getAppContext() + applicationUri.getEmailSenderUri() + "/**", "ADMIN"),
+                new Endpoint(applicationUri.getAppContext() + applicationUri.getUpdateUserPasswordUri() + "/**", "AUTHENTICATED"),
+                new Endpoint(applicationUri.getAppContext() + applicationUri.getEmployeesUri() + "/**", "ADMIN"),
+                new Endpoint(applicationUri.getAppContext() + applicationUri.getRegisteredUsersUri(), "ADMIN")
+        );
 
         http.authorizeHttpRequests(authz -> {
 
             for (Endpoint e: endpoints) {
-                if (e.getRole().contains("USER") && e.getRole().contains("ADMIN")) {
-                    authz.requestMatchers(e.getPath()).hasAnyRole(e.getRole().split(","));
-                } else if (e.getRole().equals("USER")  ||  e.getRole().equals("ADMIN") ) {
-                    authz.requestMatchers(e.getPath()).hasRole(e.getRole());
+                if (e.getRole().equals("ADMIN")) {
+                    authz.requestMatchers(HttpMethod.GET, e.getPath()).hasAnyRole("ADMIN","USER");
+                    authz.requestMatchers(e.getPath()).hasRole("ADMIN");
                 }else if(e.getRole().equals("AUTHENTICATED")){
                     authz.requestMatchers(e.getPath()).authenticated();
                 }
             }
-                    authz.requestMatchers(aU.getAPP_CONTEXT() + aU.getLOGIN_URI()).permitAll()
-                            .requestMatchers(aU.getAPP_CONTEXT() + aU.getLOGOUT_URI()).permitAll()
-                            .requestMatchers(aU.getAPP_CONTEXT() + aU.getREGISTER_URI()).permitAll()
-                            .anyRequest().authenticated();
+            authz.requestMatchers(applicationUri.getAppContext() + applicationUri.getLoginUri()).permitAll()
+                    .requestMatchers(applicationUri.getAppContext() + applicationUri.getLogoutUri()).permitAll()
+                    .requestMatchers(applicationUri.getAppContext() + applicationUri.getRegisterUri()).permitAll()
+                    .requestMatchers(applicationUri.getAppContext() + applicationUri.getErrorUri()).permitAll()
+                    .anyRequest().authenticated();
         }).httpBasic(Customizer.withDefaults());
 
         http

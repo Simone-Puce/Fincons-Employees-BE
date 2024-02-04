@@ -11,226 +11,247 @@ public class ApplicationUri {
     // TODO Script for transform every UPPER CASE to CamelCase in python/Java
     // APPLICATION CONTEXT
     @Value("${application.context}")
-    private String APP_CONTEXT;
+    private String appContext;
 
     // LOGIN/REGISTER END POINTS
     @Value("${base.uri.version}")
-    private  String BASE_URI_VERSION;
+    private String baseUriVersion;
 
     @Value("${register.uri}")
-    private  String REGISTER_URI;
+    private String registerUri;
 
     @Value("${login.uri}")
-    private  String LOGIN_URI;
+    private String loginUri;
 
     @Value("${admin.uri}")
-    private  String ADMIN_URI;
+    private String adminUri;
+
+    @Value("${delete.user-by-email}")
+    private String deleteUserById;
 
     @Value("${user.uri}")
-    private  String USER_URI;
+    private String userUri;
 
     @Value("${employees.uri}")
-    private  String EMPLOYEES_URI;
+    private String employeesUri;
 
     @Value("${error.uri}")
-    private  String ERROR_URI;
+    private String errorUri;
 
     @Value("${logout.uri}")
-    private  String LOGOUT_URI;
+    private String logoutUri;
 
     @Value("${registered.users.uri}")
-    private  String REGISTERED_USERS_URI;
+    private String registeredUsersUri;
+
     @Value("${detail.userdto.uri}")
-    private  String DETAIL_USERDTO_URI;
+    private String detailUserDtoUri;
 
     @Value("${modify.user}")
-    private  String MODIFY_USER_URI;
+    private String modifyUserUri;
 
     @Value("${update.user.password.uri}")
-    private String UPDATE_USER_PASSWORD_URI;
+    private String updateUserPasswordUri;
+
+
+
+    //ROLE
+    @Value("${role.uri}")
+    private String roleUri;
+
+    @Value("${role.find-by-id.uri}")
+    private String roleFindByIdUri;
+
+    @Value("${role.create.uri}")
+    private String roleCreateUri;
+
+    @Value("${role.put.uri}")
+    private String rolePutUri;
+
     // DEPARTMENT
     @Value("${department.uri}")
-    private  String DEPARTMENT_URI;
+    private String departmentUri;
 
     @Value("${department.find-by-id}")
-    private  String DEPARTMENT_FIND_BY_ID_URI;
+    private String departmentFindByIdUri;
 
     @Value("${department.list}")
-    private  String DEPARTMENT_LIST_URI;
+    private String departmentListUri;
 
     @Value("${department.create}")
-    private  String  DEPARTMENT_CREATE_URI;
+    private String departmentCreateUri;
 
     @Value("${department.update}")
-    private  String DEPARTMENT_UPDATE_URI;
+    private String departmentUpdateUri;
 
     @Value("${department.delete}")
-    private  String  DEPARTMENT_DELETE_URI;
+    private String departmentDeleteUri;
 
     @Value("${department.find-employee-by-iddepartment}")
-    private   String DEPARTMENT_FIND_EMPLOYEE_BY_IDDEPARTMENT_URI;
+    private String departmentFindEmployeeByIdDepartmentUri;
 
     // POSITION
     @Value("${position.uri}")
-    private  String   POSITION_URI;
+    private String positionUri;
 
     @Value("${position.find-position-by-id}")
-    private  String  POSITION_FIND_BY_ID_URI;
+    private String positionFindByIdUri;
 
     @Value("${position.list}")
-    private  String  POSITION_LIST_URI;
+    private String positionListUri;
 
     @Value("${position.create}")
-    private  String   POSITION_CREATE_URI;
+    private String positionCreateUri;
 
     @Value("${position.update}")
-    private  String   POSITION_UPDATE_URI;
+    private String positionUpdateUri;
 
     @Value("${position.delete}")
-    private  String  POSITION_DELETE_URI;
+    private String positionDeleteUri;
 
     // PROJECT
     @Value("${project.uri}")
-    private  String  PROJECT_URI;
+    private String projectUri;
 
     @Value("${project.find-project-by-id}")
-    private  String  PROJECT_FIND_BY_ID_URI;
+    private String projectFindByIdUri;
 
     @Value("${project.list}")
-    private  String  PROJECT_LIST_URI;
+    private String projectListUri;
 
     @Value("${project.create}")
-    private  String  PROJECT_CREATE_URI;
+    private String projectCreateUri;
 
     @Value("${project.update}")
-    private  String  PROJECT_UPDATE_URI;
+    private String projectUpdateUri;
 
     @Value("${project.delete}")
-    private  String  PROJECT_DELETE_URI;
+    private String projectDeleteUri;
 
     // EMPLOYEE
     @Value("${employee.uri}")
-    private  String  EMPLOYEE_URI;
+    private String employeeUri;
 
     @Value("${employee.find-project-by-id}")
-    private  String EMPLOYEE_FIND_PROJECT_BY_ID_URI;
+    private String employeeFindProjectByIdUri;
 
     @Value("${employee.find-project-by-email}")
-    private  String  EMPLOYEE_FIND_PROJECT_BY_EMAIL_URI;
+    private String employeeFindProjectByEmailUri;
 
     @Value("${employee.list}")
-    private  String  EMPLOYEE_LIST_URI;
+    private String employeeListUri;
 
     @Value("${employee.create}")
-    private  String  EMPLOYEE_CREATE_URI;
+    private String employeeCreateUri;
 
     @Value("${employee.update}")
-    private  String  EMPLOYEE_UPDATE_URI;
+    private String employeeUpdateUri;
 
     @Value("${employee.delete}")
-    private  String  EMPLOYEE_DELETE_URI;
+    private String employeeDeleteUri;
 
     @Value("${employee.find-employee-project}")
-    private  String EMPLOYEE_FIND_EMPLOYEE_PROJECT_URI;
+    private String employeeFindEmployeeProjectUri;
 
     @Value("${employee.list-employee-project}")
-    private  String EMPLOYEE_LIST_EMPLOYEE_PROJECT_URI;
+    private String employeeListEmployeeProjectUri;
 
     @Value("${employee.create-employee-project}")
-    private  String  EMPLOYEE_CREATE_EMPLOYEE_PROJECT_URI;
+    private String employeeCreateEmployeeProjectUri;
 
     @Value("${employee.update-employee-project}")
-    private  String EMPLOYEE_UPDATE_EMPLOYEE_PROJECT_URI;
+    private String employeeUpdateEmployeeProjectUri;
 
     @Value("${employee.delete-employee-project}")
-    private  String  EMPLOYEE_DELETE_EMPLOYEE_PROJECT_URI;
+    private String employeeDeleteEmployeeProjectUri;
 
     @Value("${employee.importfile}")
-    private  String  EMPLOYEE_IMPORTFILE_URI;
+    private String employeeImportFileUri;
 
     // FILE CONTROLLER END POINTS
     @Value("${file.uri}")
-    private  String FILE_URI;
+    private String fileUri;
 
     @Value("${file.list.uri}")
-    private  String  FILE_LIST_URI;
+    private String fileListUri;
 
     @Value("${file.upload.uri}")
-    private  String  FILE_UPLOAD_URI;
+    private String fileUploadUri;
 
     @Value("${file.view.uri}")
-    private  String   FILE_VIEW_URI;
+    private String fileViewUri;
 
     @Value("${file.download.uri}")
-    private  String   FILE_DOWNLOAD_URI;
+    private String fileDownloadUri;
 
     @Value("${file.delete.uri}")
-    private  String FILE_DELETE_URI;
+    private String fileDeleteUri;
 
     @Value("${file.import.uri}")
-    private  String  FILE_IMPORT_URI;
+    private String fileImportUri;
 
     // EMAIL CONTROLLER
     @Value("${email.sender.uri}")
-    private  String  EMAIL_SENDER_URI;
+    private String emailSenderUri;
 
     @Value("${email.sender.birth.uri}")
-    private  String EMAIL_SENDER_BIRTH_URI;
+    private String emailSenderBirthUri;
 
     @Value("${email.sender.hire.uri}")
-    private  String   EMAIL_SENDER_HIRE_URI;
+    private String emailSenderHireUri;
 
     @Value("${new.employee.random.uri}")
-    private  String  NEW_EMPLOYEE_RANDOM_URI;
+    private String newEmployeeRandomUri;
 
     // CERTIFICATE CONTROLLER END POINTS
     @Value("${certificate.uri}")
-    private  String CERTIFICATE_URI;
+    private String certificateUri;
 
     @Value("${certificate.list.uri}")
-    private  String  CERTIFICATE_LIST_URI;
+    private String certificateListUri;
 
     @Value("${certificate.add.uri}")
-    private  String   CERTIFICATE_ADD_URI;
+    private String certificateAddUri;
 
     @Value("${certificate.update.uri}")
-    private  String  CERTIFICATE_UPDATE_URI;
+    private String certificateUpdateUri;
 
     @Value("${certificate.find-by-id.uri}")
-    private  String   CERTIFICATE_FIND_BY_ID_URI;
+    private String certificateFindByIdUri;
 
     @Value("${certificate.delete.uri}")
-    private  String  CERTIFICATE_DELETE_URI;
+    private String certificateDeleteUri;
 
     // CERTIFICATE EMPLOYEE CONTROLLER END POINTS
     @Value("${certificate-employee.uri}")
-    private  String  CERTIFICATE_EMPLOYEE_URI;
+    private String certificateEmployeeUri;
 
     @Value("${certificate-employee.list.uri}")
-    private  String  CERTIFICATE_EMPLOYEE_LIST_URI;
+    private String certificateEmployeeListUri;
 
     @Value("${certificate-employee.add.uri}")
-    private  String  CERTIFICATE_EMPLOYEE_ADD_URI;
+    private String certificateEmployeeAddUri;
 
     @Value("${certificate-employee.find-by-id.uri}")
-    private  String   CERTIFICATE_EMPLOYEE_FIND_BY_ID_URI;
+    private String certificateEmployeeFindByIdUri;
 
     @Value("${certificate-employee.update.uri}")
-    private  String  CERTIFICATE_EMPLOYEE_UPDATE_URI;
+    private String certificateEmployeeUpdateUri;
 
     @Value("${certificate-employee.delete.uri}")
-    private  String CERTIFICATE_EMPLOYEE_DELETE_URI;
+    private String certificateEmployeeDeleteUri;
 
     @Value("${certificate-employee.list-month-previous.uri}")
-    private  String  CERTIFICATE_EMPLOYEE_LIST_MONTH_PREVIOUS_URI;
+    private String certificateEmployeeListMonthPreviousUri;
 
     @Value("${certificate-employee.export-to-pdf.uri}")
-    private  String CERTIFICATE_EMPLOYEE_EXPORT_TO_PDF_URI;
+    private String certificateEmployeeExportToPdfUri;
 
     @Value("${certificate-employee.download-pdf.uri}")
-    private  String   CERTIFICATE_EMPLOYEE_DOWNLOAD_PDF_URI;
+    private String certificateEmployeeDownloadPdfUri;
 
     @Value("${certificate-employee.random-certificate-employee.uri}")
-    private  String   CERTIFICATE_EMPLOYEE_RANDOM_CERTIFICATE_EMPLOYEE_URI;
+    private String certificateEmployeeRandomCertificateEmployeeUri;
+
 
 }
