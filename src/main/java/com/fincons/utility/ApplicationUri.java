@@ -68,6 +68,9 @@ public class ApplicationUri {
     @Value("${role.put.uri}")
     private String rolePutUri;
 
+    @Value("${delete.role.uri}")
+    private String deleteRoleUri;
+
     // DEPARTMENT
     @Value("${department.uri}")
     private String departmentUri;

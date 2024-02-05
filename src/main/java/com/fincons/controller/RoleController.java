@@ -2,16 +2,13 @@ package com.fincons.controller;
 
 
 import com.fincons.dto.RoleDTO;
-import com.fincons.entity.Role;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.RoleDoesNotRespectRegex;
 import com.fincons.exception.RoleExistsException;
-import com.fincons.jwt.JwtAuthResponse;
 import com.fincons.service.authService.RoleService;
 import com.fincons.utility.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -106,11 +103,8 @@ public class RoleController {
                     .build());
         }
     }
-//
-//    @DeleteMapping("/{roleId}")
-//    public void deleteRole(@PathVariable Long roleId) {
-//        roleService.deleteRole(roleId);
-//    }
+
+
 
 
 }
