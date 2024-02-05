@@ -20,27 +20,27 @@ public class FileController {
     @Autowired
     private FileServiceApi fileServiceApi;
 
-    @GetMapping("${file.list.uri}")
+    @GetMapping("${file.list}")
     public List<FileDTO> getAllFiles() {
         return fileServiceApi.getAllFiles();
     }
 
-    @PostMapping(value = "${file.upload.uri}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "${file.upload}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public File uploadFile(@RequestBody FileDTO fileDTO) {
         return fileServiceApi.uploadFile(fileDTO);
     }
 
-    @GetMapping("${file.view.uri}/{id}")
+    @GetMapping("${file.view}/{id}")
     public FileDTO viewFile(@PathVariable Long id){
         return fileServiceApi.viewFile(id);
     }
 
-    @GetMapping("${file.download.uri}/{id}")
+    @GetMapping("${file.download}/{id}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) throws IOException {
         return fileServiceApi.downloadFile(id);
     }
 
-    @DeleteMapping("${file.delete.uri}/{id}")
+    @DeleteMapping("${file.delete}/{id}")
     public ResponseEntity<Object> deleteEmployeeById(@PathVariable Long id) {
         return fileServiceApi.deleteFileById(id);
     }

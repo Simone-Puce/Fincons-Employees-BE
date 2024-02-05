@@ -17,23 +17,23 @@ public class CertificateController {
     @Autowired
     private CertificateMapper certificateMapper;
 
-    @GetMapping("${certificate.list.uri}")
+    @GetMapping("${certificate.list}")
     public ResponseEntity<Object> getAllCertificates() {
         return certificateService.getAllCertificates();
     }
-    @PostMapping(value = "${certificate.add.uri}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "${certificate.add}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> addCertificate(@RequestBody CertificateDTO certificateDTO){
         return certificateService.addCertificate(certificateDTO);
     }
-    @GetMapping("${certificate.find-by-id.uri}/{id}")
+    @GetMapping("${certificate.find-by-id}/{id}")
     public ResponseEntity<Object> getCertificateById(@PathVariable Long id){
         return certificateService.getCertificateById(id);
     }
-    @PutMapping("${certificate.update.uri}/{id}")
+    @PutMapping("${certificate.update}/{id}")
     public ResponseEntity<Object> updateCertificate(@PathVariable Long id, @RequestBody CertificateDTO certificateDTO) throws ServiceException{
         return certificateService.updateCertificate(id, certificateDTO);
     }
-    @DeleteMapping("${certificate.delete.uri}/{id}")
+    @DeleteMapping("${certificate.delete}/{id}")
     public ResponseEntity<Object> deleteCertificate(@PathVariable Long id) {
             return certificateService.deleteCertificate(id);
     }

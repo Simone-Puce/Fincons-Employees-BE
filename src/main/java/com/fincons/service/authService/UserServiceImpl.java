@@ -4,10 +4,8 @@ package com.fincons.service.authService;
 import com.fincons.dto.UserDTO;
 import com.fincons.entity.Role;
 import com.fincons.entity.User;
-import com.fincons.exception.DuplicateEmailException;
-import com.fincons.exception.EmailDoesNotExistException;
-import com.fincons.exception.IncorrectPasswordException;
-import com.fincons.exception.PasswordDoesNotRespectRegexException;
+import com.fincons.exception.EmailException;
+import com.fincons.exception.PasswordException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.jwt.LoginDto;
@@ -58,20 +56,20 @@ public class UserServiceImpl  implements UserService{
 
 
     @Override
-    public UserDTO registerNewUser(UserDTO userDTO, String passwordForAdmin) throws PasswordDoesNotRespectRegexException {
+    public UserDTO registerNewUser(UserDTO userDTO, String passwordForAdmin) throws EmailException, PasswordException {
 
         String emailDto = userDTO.getEmail().toLowerCase().replace(" ", "");
 
         if (emailDto.isEmpty() && !EmailValidator.isValidEmail(emailDto) && userRepo.existsByEmail(emailDto)) {
-            LOG.warn("Invalid or existingg email!!");
-            throw new DuplicateEmailException("Invalid or existing email!!");
+            LOG.warn("Invalid or existing email!!");
+            throw new EmailException(EmailException.emailInvalidOrExist());
         }
             User userToSave = userAndRoleMapper.dtoToUser(userDTO);
             Role role;
 
             if(!PasswordValidator.isValidPassword(userDTO.getPassword())){
                 LOG.warn("Password dos not respect Regex!!");
-                throw new PasswordDoesNotRespectRegexException();
+                throw new PasswordException( PasswordException.passwordDoesNotRespectRegexException());
             }
             if (passwordForAdmin != null && passwordForAdmin.equals(passwordAdmin)) {
                 role = roleToAssign("ROLE_ADMIN");
@@ -87,13 +85,14 @@ public class UserServiceImpl  implements UserService{
 
     @Override
     public String login(LoginDto loginDto) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getEmail(),
-                loginDto.getPassword()
-        ));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    loginDto.getEmail(),
+                    loginDto.getPassword()
+            ));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return jwtTokenProvider.generateToken(authentication);
+            return jwtTokenProvider.generateToken(authentication);
+
     }
 
     @Override
@@ -120,11 +119,11 @@ public class UserServiceImpl  implements UserService{
     }
 
     @Override
-    public UserDTO updateUserPassword(String email, String password, String newPassword) throws EmailDoesNotExistException, IncorrectPasswordException, PasswordDoesNotRespectRegexException {
+    public UserDTO updateUserPassword(String email, String password, String newPassword) throws EmailException, PasswordException {
 
         //if email exist
         if(userRepo.findByEmail(email) == null && !EmailValidator.isValidEmail(email)) {
-            throw new EmailDoesNotExistException();
+            throw new EmailException(EmailException.emailInvalidOrExist());
         }
 
         User userToModify = userRepo.findByEmail(email);
@@ -132,11 +131,11 @@ public class UserServiceImpl  implements UserService{
         boolean passwordMatch = passwordEncoder.matches(password , userToModify.getPassword());
 
         if(!passwordMatch){
-            throw new IncorrectPasswordException();
+            throw new PasswordException(PasswordException.invalidPasswordException());
         }
 
         if(!PasswordValidator.isValidPassword(newPassword)){
-            throw new PasswordDoesNotRespectRegexException();
+            throw new PasswordException(PasswordException.passwordDoesNotRespectRegexException());
         }
 
         userToModify.setPassword(passwordEncoder.encode(newPassword));
@@ -147,10 +146,10 @@ public class UserServiceImpl  implements UserService{
     }
 
     @Override
-    public void deleteUserByEmail(String email) throws EmailDoesNotExistException {
+    public void deleteUserByEmail(String email) throws EmailException {
         User userToRemove = userRepo.findByEmail(email);
         if(userToRemove==null){
-            throw new EmailDoesNotExistException();
+            throw new EmailException(EmailException.emailInvalidOrExist());
         }
         userRepo.delete(userToRemove);
     }
