@@ -1,11 +1,14 @@
 package com.fincons.security;
 
+import com.fincons.enums.RoleEndpoint;
 import com.fincons.utility.ApplicationUri;
 import com.fincons.jwt.JwtAuthenticationEntryPoint;
 import com.fincons.jwt.JwtAuthenticationFilter;
 
 import com.fincons.utility.Endpoint;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,7 +29,6 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
 public class SecurityConfiguration {
 
 
@@ -39,13 +41,46 @@ public class SecurityConfiguration {
         return configuration.getAuthenticationManager();
     }
 
+    @Autowired
     private  JwtAuthenticationEntryPoint authenticationEntryPoint;
 
-
+    @Autowired
     private   JwtAuthenticationFilter jwtAuthFilter;
 
-    private ApplicationUri applicationUri;
 
+    @Value("${application.context}")
+    private String appContext;
+
+    @Value("${role.base.uri}")
+    private String roleBaseUri;
+
+    @Value("${department.base.uri}")
+    private String departmentBaseUri;
+
+    @Value("${employee.base.uri}")
+    private String employeeBaseUri;
+    @Value("${position.base.uri}")
+    private String positionUri;
+    @Value("${project.base.uri}")
+    private String projectBaseUri;
+    @Value("${modify.user}")
+    private String modifyUser;
+    @Value("${file.base.uri}")
+    private String fileBaseUri;
+    @Value("${email.sender.base.uri}")
+    private String emailSenderUri;
+    @Value("${update.user.password}")
+    private String updateUserPassword;
+    @Value("${registered.users}")
+    private String registeredUsers;
+    @Value("${login.base.uri}")
+    private String loginBaseUri;
+    @Value("${logout.base.uri}")
+    private String logoutBaseUri;
+    @Value("${error.base.uri}")
+    private String errorBaseUri;
+    @Value("${register.base.uri}")
+    private String registerBaseUri;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -57,33 +92,35 @@ public class SecurityConfiguration {
 
         List<Endpoint> endpoints = Arrays.asList(
 
-                new Endpoint(applicationUri.getAppContext() + applicationUri.getRoleBaseUri() + "/**","ADMIN"),
-                new Endpoint(applicationUri.getAppContext() + applicationUri.getDepartmentBaseUri() + "/**", "ADMIN"),
-                new Endpoint(applicationUri.getAppContext() + applicationUri.getEmployeeBaseUri() + "/**", "ADMIN"),
-                new Endpoint(applicationUri.getAppContext() + applicationUri.getPositionUri() + "/**", "ADMIN"),
-                new Endpoint(applicationUri.getAppContext() + applicationUri.getProjectBaseUri() + "/**", "ADMIN"),
-                new Endpoint(applicationUri.getAppContext() + applicationUri.getModifyUser(), "AUTHENTICATED"),
-                new Endpoint(applicationUri.getAppContext() + applicationUri.getFileBaseUri() + "/**", "ADMIN"),
-                new Endpoint(applicationUri.getAppContext() + applicationUri.getEmailSenderUri() + "/**", "ADMIN"),
-                new Endpoint(applicationUri.getAppContext() + applicationUri.getUpdateUserPassword() + "/**", "AUTHENTICATED"),
-                new Endpoint(applicationUri.getAppContext() + applicationUri.getEmployeesBaseUri() + "/**", "ADMIN"),
-                new Endpoint(applicationUri.getAppContext() + applicationUri.getRegisteredUsers(), "ADMIN")
+                new Endpoint(appContext + roleBaseUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + departmentBaseUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + positionUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + projectBaseUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + fileBaseUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + emailSenderUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + updateUserPassword + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + employeeBaseUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + registeredUsers, Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER))
+
         );
 
         http.authorizeHttpRequests(authz -> {
 
             for (Endpoint e: endpoints) {
-                if (e.getRoles().equals("ADMIN")) {
+                if (e.getRoles().contains(RoleEndpoint.ADMIN) && e.getRoles().contains(RoleEndpoint.USER)) {
                     authz.requestMatchers(HttpMethod.GET, e.getPath()).hasAnyRole("ADMIN","USER");
                     authz.requestMatchers(e.getPath()).hasRole("ADMIN");
-                }else if(e.getRoles().equals("AUTHENTICATED")){
-                    authz.requestMatchers(e.getPath()).authenticated();
+                }else if(e.getRoles().contains(RoleEndpoint.ADMIN) && e.getRoles().size() == 1){
+                    authz.requestMatchers(e.getPath()).hasRole("ADMIN");
+                } else if (e.getRoles().contains(RoleEndpoint.USER) && e.getRoles().size() == 1) {
+                    authz.requestMatchers(e.getPath()).hasRole("USER");
                 }
             }
-            authz.requestMatchers(applicationUri.getAppContext() + applicationUri.getLoginBaseUri()).permitAll()
-                    .requestMatchers(applicationUri.getAppContext() + applicationUri.getLogoutBaseUri()).permitAll()
-                    .requestMatchers(applicationUri.getAppContext() + applicationUri.getRegisterBaseUri()).permitAll()
-                    .requestMatchers(applicationUri.getAppContext() + applicationUri.getErrorBaseUri()).permitAll()
+            authz.requestMatchers(appContext + loginBaseUri).permitAll()
+                    .requestMatchers(appContext + logoutBaseUri).permitAll()
+                    .requestMatchers(appContext +registerBaseUri).permitAll()
+                    .requestMatchers(appContext + errorBaseUri).permitAll()
+                    .requestMatchers(appContext + modifyUser).authenticated()
                     .anyRequest().authenticated();
         }).httpBasic(Customizer.withDefaults());
 
