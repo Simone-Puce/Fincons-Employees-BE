@@ -1,25 +1,19 @@
 package com.fincons.controller;
 
-import com.fincons.exception.EmailDoesNotExistException;
-import com.fincons.exception.IncorrectPasswordException;
-import com.fincons.exception.NoPermissionException;
-import com.fincons.exception.PasswordDoesNotRespectRegexException;
+import com.fincons.exception.EmailException;
+import com.fincons.exception.PasswordException;
 import com.fincons.exception.ResourceNotFoundException;
-import com.fincons.mapper.UserAndRoleMapper;
+import com.fincons.exception.RoleException;
 import com.fincons.service.authService.UserService;
 import com.fincons.dto.UserDTO;
-import com.fincons.exception.DuplicateEmailException;
 import com.fincons.jwt.JwtAuthResponse;
 import com.fincons.jwt.LoginDto;
 import com.fincons.utility.GenericResponse;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 //@CrossOrigin("http://localhost:81")
@@ -29,39 +23,39 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("${registered.users.uri}")
+    @GetMapping("${registered.users}")
     public String registeredUsers() {
         return "Registered users";
     }
 
-    @GetMapping("${admin.uri}")
+    @GetMapping("${admin.base.uri}")
     public String adminEndpoint() {
         return "Admin!";
     }
 
-    @GetMapping("${user.uri}")
+    @GetMapping("${user.base.uri}")
     public String userEndpoint() {
         return "User!";
     }
 
-    @GetMapping("${error.uri}")
+    @GetMapping("${error.base.uri}")
     public String errorEndpoint() {
         return "Error!";
     }
 
-    @GetMapping("${employees.uri}")
+    @GetMapping("${employees.base.uri}")
     public String employeesEndPoint() {
         return "employees!";
     }
 
 
-    @PostMapping("${logout.uri}")
+    @PostMapping("${logout.base.uri}")
     public String logoutEmployee() {
         return "logout!";
     }
 
     // Login
-    @PostMapping("${login.uri}")
+    @PostMapping("${login.base.uri}")
     public ResponseEntity<GenericResponse<JwtAuthResponse>> login(@RequestBody LoginDto loginDto) {
         try {
             // your code goes here
@@ -80,13 +74,13 @@ public class UserController {
             return ResponseEntity.status(200).body(GenericResponse.<JwtAuthResponse>builder()
                     .status(HttpStatus.resolve(409))
                     .success(false)
-                    .message("Invalid or existing email!!")
+                    .message(e.getMessage())
                     .build());
         }
     }
 
 
-    @PostMapping(value = "${register.uri}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "${register.base.uri}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GenericResponse<UserDTO>> register(
             @RequestBody UserDTO userDTO,
             @RequestParam(name = "admin", required = false) String passwordForAdmin) {
@@ -99,15 +93,15 @@ public class UserController {
                     .data(userToShow)
                     .build());
 
-        } catch (DuplicateEmailException e) {
+        } catch (EmailException ee) {
 
             return ResponseEntity.status(200).body(GenericResponse.<UserDTO>builder()
                     .status(HttpStatus.resolve(409))
                     .success(false)
-                    .message("Invalid or existing email!!")
+                    .message(EmailException.emailInvalidOrExist())
                     .build());
 
-        } catch (PasswordDoesNotRespectRegexException pdnre) {
+        } catch ( PasswordException pdnre) {
             return ResponseEntity.status(200).body(GenericResponse.<UserDTO>builder()
                     .status(HttpStatus.resolve(409))
                     .success(false)
@@ -135,12 +129,12 @@ public class UserController {
                             .data(isUserModified).build()
             );
 
-        } catch (NoPermissionException npe) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+        } catch (RoleException re) {
+            return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<UserDTO>builder()
                             .status(HttpStatus.FORBIDDEN)
                             .success(false)
-                            .message(npe.getMessage())
+                            .message(re.getMessage())
                             .build());
         } catch (ResourceNotFoundException r) {
             return ResponseEntity.status(409).body(
@@ -161,7 +155,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("${update.user.password.uri}")
+    @PutMapping("${update.user.password}")
     public ResponseEntity<GenericResponse<UserDTO>> updateUserPassword(
             @RequestParam String email,
             @RequestParam  String password,
@@ -176,17 +170,17 @@ public class UserController {
                             .data(userDTO)
                             .build()
             );
-        }catch(EmailDoesNotExistException | IncorrectPasswordException | PasswordDoesNotRespectRegexException ednee){
+        }catch(EmailException | PasswordException ep){
             return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<UserDTO>builder()
                             .status(HttpStatus.resolve(409))
                             .success(false)
-                            .message(ednee.getMessage()).build());
+                            .message(ep.getMessage()).build());
         }
     }
 
 
-    @GetMapping("${detail.userdto.uri}")
+    @GetMapping("${detail.userdto}")
     public ResponseEntity<GenericResponse<UserDTO>> userDetails(@RequestParam String email) {
         UserDTO userDTO = userService.getUserDtoByEmail(email);
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -210,7 +204,7 @@ public class UserController {
                             .success(true)
                             .message("User deleted succesfully!!")
                             .build());
-        }catch(EmailDoesNotExistException ednee){
+        }catch( EmailException ednee){
             return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<Boolean>builder()
                             .status(HttpStatus.resolve(409))

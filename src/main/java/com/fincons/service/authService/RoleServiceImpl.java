@@ -3,11 +3,9 @@ package com.fincons.service.authService;
 import com.fincons.dto.RoleDTO;
 import com.fincons.entity.Role;
 import com.fincons.exception.ResourceNotFoundException;
-import com.fincons.exception.RoleDoesNotRespectRegex;
-import com.fincons.exception.RoleExistsException;
+import com.fincons.exception.RoleException;
 import com.fincons.mapper.UserAndRoleMapper;
 import com.fincons.repository.RoleRepository;
-import com.fincons.utility.PasswordValidator;
 import com.fincons.utility.RoleValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,16 +38,16 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public RoleDTO createRole(RoleDTO roleDTO) throws RoleExistsException, RoleDoesNotRespectRegex {
+    public RoleDTO createRole(RoleDTO roleDTO) throws RoleException {
 
         // See if matches with regex
         if(!RoleValidator.isValidRole(roleDTO.getName().toUpperCase())){
-            throw new RoleDoesNotRespectRegex("Role does not respect regex of 'ROLE_*****'");
+            throw new RoleException(RoleException.roleDoesNotRespectRegex());
         }
         Role roleExist = roleRepository.findByName(roleDTO.getName().toUpperCase());
 
         if(roleExist != null){
-            throw new RoleExistsException("Role exist yet");
+            throw new RoleException(RoleException.roleExistException());
         }
         //I set name to Upper case
         roleDTO.setName(roleDTO.getName().toUpperCase());
@@ -60,12 +58,12 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public RoleDTO updateRole(long roleId, RoleDTO roleModifiedDTO) throws RoleExistsException, RoleDoesNotRespectRegex {
+    public RoleDTO updateRole(long roleId, RoleDTO roleModifiedDTO) throws  RoleException {
 
         String roleDTONameToConfront = roleModifiedDTO.getName().toUpperCase();
 
         if(!RoleValidator.isValidRole(roleDTONameToConfront)){
-            throw new RoleDoesNotRespectRegex("Role does not respect regex");
+            throw new RoleException(RoleException.roleDoesNotRespectRegex());
         }
         Optional<Role> roleFound = roleRepository.findById(roleId);
 

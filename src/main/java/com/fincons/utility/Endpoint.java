@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class Endpoint {
 
     public String path;
-    public String role;
+    public String roles;
 
 }

@@ -16,24 +16,24 @@ public class CertificateEmployeeController {
     @Autowired
     private CertificateEmployeeMapper certificateEmployeeMapper;
 
-    @GetMapping("${certificate-employee.list.uri}")
+    @GetMapping("${certificate-employee.list}")
     public ResponseEntity<Object> getAllCertificateEmployee(){
         return certificateEmployeeService.getAllCertificatesEmployees();
     }
-    @PostMapping("${certificate-employee.add.uri}")
+    @PostMapping("${certificate-employee.add}")
     public ResponseEntity<Object> addCertificate(@RequestBody CertificateEmployeeDTO certificateEmployeeDTO){
         return certificateEmployeeService.addCertificateEmployee(certificateEmployeeDTO);
     }
-    @GetMapping("${certificate-employee.find-by-id.uri}/{id}")
+    @GetMapping("${certificate-employee.find-by-id}/{id}")
     public ResponseEntity<Object> getCertificateEmployeeById(@PathVariable Long id) throws ServiceException {
         return certificateEmployeeService.getCertificateEmployeeById(id);
     }
-    @PutMapping("${certificate-employee.update.uri}/{id}")
+    @PutMapping("${certificate-employee.update}/{id}")
     public ResponseEntity<Object> updateCertificateEmployee(@PathVariable Long id, @RequestBody CertificateEmployeeDTO certificateEmployeeDTO){
         return certificateEmployeeService.updateCertificateEmployee(id, certificateEmployeeDTO);
     }
 
-    @DeleteMapping("${certificate-employee.delete.uri}/{id}")
+    @DeleteMapping("${certificate-employee.delete}/{id}")
     public ResponseEntity<Object> deleteCertificateEmployee(@PathVariable Long id) throws ServiceException {
         return certificateEmployeeService.deleteCertificateEmployee(id);
     }
