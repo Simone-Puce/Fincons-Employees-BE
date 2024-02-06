@@ -19,14 +19,14 @@ import java.util.stream.Collectors;
 public class ProjectMapper {
 
     @Autowired
-    private ModelMapper modelMapper;
+    private ModelMapper modelMapperStandard;
 
     public ProjectDTO mapToDTO(Project project) {
-        return modelMapper.map(project, ProjectDTO.class);
+        return modelMapperStandard.map(project, ProjectDTO.class);
     }
 
     public Project mapToEntity(ProjectDTO projectDTO){
-        return modelMapper.map(projectDTO, Project.class);
+        return modelMapperStandard.map(projectDTO, Project.class);
     }
 
 

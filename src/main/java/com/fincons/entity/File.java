@@ -1,12 +1,13 @@
 package com.fincons.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -32,7 +33,6 @@ public class File {
     private String description;
 
     @ManyToOne
-    @JsonBackReference(value = "file-employee")
     @JoinColumn(name = "employee_id")
     private Employee emp;
 

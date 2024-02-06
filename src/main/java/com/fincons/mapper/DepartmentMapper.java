@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 public class DepartmentMapper {
 
     @Autowired
-    private ModelMapper modelMapper;
+    private ModelMapper modelMapperStandard;
 
     public DepartmentDTO mapToDTO(Department department) {
-        return modelMapper.map(department, DepartmentDTO.class);
+        return modelMapperStandard.map(department, DepartmentDTO.class);
     }
     public Department mapToEntity(DepartmentDTO departmentDTO){
-        return modelMapper.map(departmentDTO, Department.class);
+        return modelMapperStandard.map(departmentDTO, Department.class);
     }
 }

@@ -10,11 +10,13 @@ import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ProjectMapper;
 import com.fincons.repository.ProjectRepository;
 import com.fincons.service.employeeService.ProjectService;
+import com.fincons.utility.ValidateSingleField;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.Validate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,16 +34,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project getProjectById(String projectId) {
+        ValidateSingleField.validateSingleField(projectId);
         return validateProjectById(projectId);
     }
 
     @Override
     public List<Project> getAllProjects() {
-        List<Project> projects = projectRepository.findAll();
-        if(projects.isEmpty()){
-            throw new IllegalArgumentException("There aren't Project");
-        }
-        return projects;
+        return projectRepository.findAll();
     }
 
     @Override
@@ -65,6 +64,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Project updateProjectById(String projectId, ProjectDTO projectDTO) {
         
         //Condition for not have null attributes
+        ValidateSingleField.validateSingleField(projectId);
         validateProjectFields(projectDTO);
 
         List<Project> projects = projectRepository.findAll();
@@ -105,6 +105,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void deleteProjectById(String projectId) {
 
+        ValidateSingleField.validateSingleField(projectId);
         Project project = validateProjectById(projectId);
         projectRepository.deleteById(project.getId());
     }

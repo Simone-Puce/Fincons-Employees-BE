@@ -3,6 +3,7 @@ package com.fincons.entity;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fincons.dto.EmployeeDTO;
 import jakarta.persistence.*;
@@ -15,7 +16,7 @@ import org.hibernate.annotations.UuidGenerator;
 import java.util.List;
 import java.util.Objects;
 
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -42,8 +43,8 @@ public class Department {
 
     @OneToMany(
             mappedBy = "department",
-            fetch = FetchType.LAZY)
-    @JsonManagedReference(value = "department-employee")
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST})
     private List<Employee> employees;
 
 

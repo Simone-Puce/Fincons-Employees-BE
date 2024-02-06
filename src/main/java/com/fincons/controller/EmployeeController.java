@@ -12,7 +12,6 @@ import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.EmployeeMapper;
 import com.fincons.service.employeeService.EmployeeService;
-import com.fincons.service.employeeService.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,17 +28,14 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @Autowired
-    private ProjectService projectService;
-
-    @Autowired
     private EmployeeMapper modelMapperEmployee;
 
     @Autowired
     private ProjectMapper projectMapper;
 
     @GetMapping(value = "/find-by-id")
-    public ResponseEntity<GenericResponse<EmployeeDTO>> getEmployeeById(@RequestParam String employeeId){
-        try{
+    public ResponseEntity<GenericResponse<EmployeeDTO>> getEmployeeById(@RequestParam String employeeId) {
+        try {
             Employee employee = employeeService.getEmployeeById(employeeId);
             EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTO(employee);
 
@@ -50,7 +46,15 @@ public class EmployeeController {
             );
             return ResponseEntity.ok(response);
         }
-        catch (ResourceNotFoundException rnfe){
+        catch (IllegalArgumentException iae) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            iae.getMessage(),
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+        catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
@@ -59,8 +63,9 @@ public class EmployeeController {
         }
 
     }
+
     @GetMapping(value = "/find-by-email")
-    public ResponseEntity<GenericResponse<EmployeeDTO>> getDepartmentByEmail(@RequestParam String email){
+    public ResponseEntity<GenericResponse<EmployeeDTO>> getDepartmentByEmail(@RequestParam String email) {
         try {
             Employee employee = employeeService.getEmployeeByEmail(email);
             EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTO(employee);
@@ -72,7 +77,15 @@ public class EmployeeController {
             );
             return ResponseEntity.ok(response);
         }
-        catch (ResourceNotFoundException rnfe){
+        catch (IllegalArgumentException iae) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            iae.getMessage(),
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+        catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
@@ -80,32 +93,28 @@ public class EmployeeController {
             );
         }
     }
-    @GetMapping(value="/list")
-    public ResponseEntity<Object> getAllEmployees(){
-        try{
-            List<Employee> employees = employeeService.getAllEmployees();
 
-            List<EmployeeDTO> employeeDTOs = new ArrayList<>();
-            for (Employee employee: employees){
-                EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTO(employee);
-                employeeDTOs.add(employeeDTO);
-            }
-            GenericResponse<List<EmployeeDTO>> response = GenericResponse.success(
-                    employeeDTOs,
-                    "Success: Found " + employeeDTOs.size() +
-                            (employeeDTOs.size() == 1 ? " employee" : " employees" + "."),
-                    HttpStatus.OK.value());
-            return ResponseEntity.ok(response);
+    @GetMapping(value = "/list")
+    public ResponseEntity<Object> getAllEmployees() {
+
+        List<Employee> employees = employeeService.getAllEmployees();
+
+        List<EmployeeDTO> employeeDTOs = new ArrayList<>();
+        for (Employee employee : employees) {
+            EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTO(employee);
+            employeeDTOs.add(employeeDTO);
         }
-        catch(IllegalArgumentException iax){
-            return ResponseEntity.ok(
-                    GenericResponse.empty(
-                            iax.getMessage(),
-                            HttpStatus.NOT_FOUND.value()));
-        }
+        GenericResponse<List<EmployeeDTO>> response = GenericResponse.success(
+                employeeDTOs,
+                "Success:" + (employeeDTOs.isEmpty() || employeeDTOs.size() == 1 ? " Found " : " Founds ") + employeeDTOs.size() +
+                        (employeeDTOs.isEmpty() || employeeDTOs.size() == 1 ? " employee" : " employees") + ".",
+                HttpStatus.OK.value());
+        return ResponseEntity.ok(response);
+
     }
+
     @PostMapping(value = "/create")
-    public ResponseEntity<GenericResponse<EmployeeDTO>> createEmployee(@RequestBody EmployeeDTO employeeDTO){
+    public ResponseEntity<GenericResponse<EmployeeDTO>> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
         try {
             Employee employee = employeeService.createEmployee(employeeDTO);
 
@@ -118,15 +127,20 @@ public class EmployeeController {
             );
             return ResponseEntity.ok(response);
         }
-        catch (IllegalArgumentException iae){
+        catch (ResourceNotFoundException rnfe) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            rnfe.getMessage(),
+                            HttpStatus.NOT_FOUND.value()));
+        }
+        catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
                             HttpStatus.BAD_REQUEST.value()
                     )
             );
-        }
-        catch (DuplicateNameException dne){
+        } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -135,36 +149,34 @@ public class EmployeeController {
             );
         }
     }
+
     @PutMapping(value = "/update")
     public ResponseEntity<Object> updateEmployeeById(@RequestParam String employeeId, @RequestBody EmployeeDTO employeeDTO) {
-        try{
+        try {
             Employee employee = employeeService.updateEmployeeById(employeeId, employeeDTO);
             EmployeeDTO employeeDTO2 = modelMapperEmployee.mapToDTO(employee);
 
             GenericResponse<EmployeeDTO> response = GenericResponse.success(
                     employeeDTO2,
-                    "Success: Employee with ID "+ employeeId +" has been successfully updated!",
+                    "Success: Employee with ID " + employeeId + " has been successfully updated!",
                     HttpStatus.OK.value()
             );
             return ResponseEntity.ok(response);
-        }
-        catch (ResourceNotFoundException rfe){
+        } catch (ResourceNotFoundException rfe) {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             rfe.getMessage(),
                             HttpStatus.NOT_FOUND.value()
                     )
             );
-        }
-        catch (IllegalArgumentException iae){
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             iae.getMessage(),
                             HttpStatus.BAD_REQUEST.value()
                     )
             );
-        }
-        catch(DuplicateNameException dne){
+        } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -173,17 +185,26 @@ public class EmployeeController {
             );
         }
     }
+
     @DeleteMapping(value = "/delete")
-    public ResponseEntity<GenericResponse<EmployeeDTO>> deleteEmployeeById(@RequestParam String employeeId){
-        try{
+    public ResponseEntity<GenericResponse<EmployeeDTO>> deleteEmployeeById(@RequestParam String employeeId) {
+        try {
             employeeService.deleteEmployeeById(employeeId);
             GenericResponse<EmployeeDTO> response = GenericResponse.empty(
-                    "Success: Department with ID " + employeeId+ " has been successfully deleted! ",
+                    "Success: Department with ID " + employeeId + " has been successfully deleted! ",
                     HttpStatus.OK.value()
             );
             return ResponseEntity.ok(response);
-        } catch (ResourceNotFoundException rnfe){
-
+        }
+        catch (IllegalArgumentException iae) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            iae.getMessage(),
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+        catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
@@ -192,7 +213,7 @@ public class EmployeeController {
     }
 
     @GetMapping(value = "/find/employee-project")
-    public ResponseEntity<GenericResponse<List<ProjectDTO>>> getAllEmployeesProjects(@RequestParam String employeeId){
+    public ResponseEntity<GenericResponse<List<ProjectDTO>>> getAllEmployeesProjects(@RequestParam String employeeId) {
         try {
             List<Project> projects = employeeService.findAllEmployeeProjects(employeeId);
 
@@ -210,14 +231,12 @@ public class EmployeeController {
             );
 
             return ResponseEntity.ok(response);
-        }
-        catch (ResourceNotFoundException rnfe){
+        } catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
                             HttpStatus.NOT_FOUND.value()));
-        }
-        catch (IllegalArgumentException iae){
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.empty(
                             iae.getMessage(),
@@ -226,19 +245,34 @@ public class EmployeeController {
             );
         }
     }
-    @GetMapping(value = "/list/employee-project")
-    public ResponseEntity<GenericResponse<List<EmployeeProjectDTO>>> getAllEmployeeProject(){
-        try {
-            List<EmployeeProjectDTO> employeeProjectDTO = employeeService.getAllEmployeeProject();
 
-            GenericResponse<List<EmployeeProjectDTO>> response = GenericResponse.success(
+    @GetMapping(value = "/list/employee-project")
+    public ResponseEntity<GenericResponse<List<EmployeeProjectDTO>>> getAllEmployeeProject() {
+
+        List<EmployeeProjectDTO> employeeProjectDTO = employeeService.getAllEmployeeProject();
+
+        GenericResponse<List<EmployeeProjectDTO>> response = GenericResponse.success(
+                employeeProjectDTO,
+                "Success: " + (employeeProjectDTO.isEmpty() || employeeProjectDTO.size() == 1 ? "Found " : "Founds ") + employeeProjectDTO.size() +
+                        (employeeProjectDTO.isEmpty() || employeeProjectDTO.size() == 1 ? " relationship " : " relationships ")+ "in the search.",
+                HttpStatus.OK.value()
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value = "/create/employee-project")
+    public ResponseEntity<GenericResponse<EmployeeProjectDTO>> createEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId) {
+        try {
+            EmployeeProjectDTO employeeProjectDTO = employeeService.addEmployeeProject(employeeId, projectId);
+
+            GenericResponse<EmployeeProjectDTO> response = GenericResponse.success(
                     employeeProjectDTO,
-                    "Success: Found "+ employeeProjectDTO.size() + " relationship in the search.",
+                    "Success: Addition of relationship between employee with ID: " + employeeId + " and project with ID: " + projectId,
                     HttpStatus.OK.value()
             );
             return ResponseEntity.ok(response);
         }
-        catch (IllegalArgumentException iae){
+        catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.empty(
                             iae.getMessage(),
@@ -246,22 +280,75 @@ public class EmployeeController {
                     )
             );
         }
+        catch (ResourceNotFoundException rnfe) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            rnfe.getMessage(),
+                            HttpStatus.NOT_FOUND.value()));
+        } catch (DuplicateNameException dne) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            dne.getMessage(),
+                            HttpStatus.CONFLICT.value()
+                    )
+            );
+        }
     }
 
-    @PostMapping(value= "/create/employee-project")
-    public ResponseEntity<Object> createEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId) {
-        return employeeService.addEmployeeProject(employeeId, projectId);
-    }
-    @PutMapping(value ="/update/employee-project")
-    public ResponseEntity<Object> updateEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId, @RequestBody EmployeeProjectDTO employeeProjectDTO){
-        return employeeService.updateEmployeeProject(employeeId, projectId, employeeProjectDTO);
-    }
-    @DeleteMapping(value= "/delete/employee-project")
-    public ResponseEntity<Object> deleteEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId) {
-        return employeeService.deleteEmployeeProject(employeeId, projectId);
+    @PutMapping(value = "/update/employee-project")
+    public ResponseEntity<GenericResponse<EmployeeProjectDTO>> updateEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId, @RequestBody EmployeeProjectDTO employeeProjectDTO) {
+        try {
+            EmployeeProjectDTO employeeProjectDTO1 = employeeService.updateEmployeeProject(employeeId, projectId, employeeProjectDTO);
+            GenericResponse<EmployeeProjectDTO> response = GenericResponse.success(
+                    employeeProjectDTO,
+                    "Success: Relationship updated between employee with ID " + employeeId + " and project with ID " + projectId + ". " +
+                            "Updated details for employee with ID " + employeeProjectDTO1.getEmployeeId() + " and project with ID " + employeeProjectDTO1.getProjectId() + ".",
+                    HttpStatus.OK.value()
+            );
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException | ResourceNotFoundException iae) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            iae.getMessage(),
+                            HttpStatus.NOT_FOUND.value())
+            );
+        } catch (DuplicateNameException dne) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            dne.getMessage(),
+                            HttpStatus.CONFLICT.value()
+                    )
+            );
+        }
     }
 
+    @DeleteMapping(value = "/delete/employee-project")
+    public ResponseEntity<GenericResponse<EmployeeProjectDTO>> deleteEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId) {
+        try {
+            employeeService.deleteEmployeeProject(employeeId, projectId);
+            GenericResponse<EmployeeProjectDTO> response = GenericResponse.empty(
+                    "Success: Relationship deleted between employee with ID " + employeeId + " and project with ID " + projectId + ".",
+                    HttpStatus.OK.value()
+            );
+            return ResponseEntity.ok(response);
 
+        }
+        catch (IllegalArgumentException iae) {
+            return ResponseEntity.ok(
+                    GenericResponse.empty(
+                            iae.getMessage(),
+                            HttpStatus.NO_CONTENT.value()
+                    )
+            );
+        }catch (ResourceNotFoundException rnfe) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            rnfe.getMessage(),
+                            HttpStatus.NO_CONTENT.value()
+                    )
+            );
+        }
+    }
 
 }
 

@@ -28,7 +28,7 @@ public class PositionController {
     private PositionMapper modelMapperPosition;
 
     @GetMapping(value = "/find-by-id")
-    public ResponseEntity<GenericResponse<PositionDTO>> getPositionById(@RequestParam String positionId){
+    public ResponseEntity<GenericResponse<PositionDTO>> getPositionById(@RequestParam String positionId) {
 
         try {
             Position position = positionService.getPositionById(positionId);
@@ -40,6 +40,14 @@ public class PositionController {
 
             return ResponseEntity.ok(response);
         }
+        catch (IllegalArgumentException iae) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            iae.getMessage(),
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
         catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
@@ -48,53 +56,47 @@ public class PositionController {
             );
         }
     }
-    @GetMapping(value="/list")
-    public ResponseEntity<GenericResponse<List<PositionDTO>>> getAllPositions(){
-        try{
-            List<Position> positions = positionService.getAllPositions();
 
-            List<PositionDTO> positionDTOs = new ArrayList<>();
-            for (Position position : positions){
-                PositionDTO positionDTO = modelMapperPosition.mapToDTO(position);
-                positionDTOs.add(positionDTO);
-            }
-            GenericResponse<List<PositionDTO>> response = GenericResponse.success(
-                    positionDTOs,
-                    "Success: Found " + positionDTOs.size() +
-                            (positionDTOs.size()==1 ? " position" : " positions" + "."),
-                    HttpStatus.OK.value());
-            return ResponseEntity.ok(response);
+    @GetMapping(value = "/list")
+    public ResponseEntity<GenericResponse<List<PositionDTO>>> getAllPositions() {
+
+        List<Position> positions = positionService.getAllPositions();
+
+        List<PositionDTO> positionDTOs = new ArrayList<>();
+        for (Position position : positions) {
+            PositionDTO positionDTO = modelMapperPosition.mapToDTO(position);
+            positionDTOs.add(positionDTO);
         }
-        catch(IllegalArgumentException iax){
-            return ResponseEntity.ok(
-                    GenericResponse.empty(
-                            iax.getMessage(),
-                            HttpStatus.NOT_FOUND.value()));
-        }
+        GenericResponse<List<PositionDTO>> response = GenericResponse.success(
+                positionDTOs,
+                "Success: " + (positionDTOs.isEmpty() || positionDTOs.size() == 1 ? "Found " : "Founds ") + positionDTOs.size() +
+                        (positionDTOs.isEmpty() || positionDTOs.size() == 1 ? " position" : " positions") + ".",
+                HttpStatus.OK.value());
+        return ResponseEntity.ok(response);
     }
-    @PostMapping(value = "/create")
-    public ResponseEntity<Object> createPosition(@RequestBody PositionDTO positionDTO){
 
-        try{
+    @PostMapping(value = "/create")
+    public ResponseEntity<Object> createPosition(@RequestBody PositionDTO positionDTO) {
+
+        try {
             Position position = positionService.createPosition(positionDTO);
             PositionDTO positionDTO2 = modelMapperPosition.mapToDTO(position);
 
             GenericResponse<PositionDTO> response = GenericResponse.success(
                     positionDTO2,
-                    "Success: Position with ID "+ position.getId() +" has been successfully updated!",
+                    "Success: Position with ID " + position.getId() + " has been successfully updated!",
                     HttpStatus.OK.value());
             return ResponseEntity.ok(response);
 
         }
-        catch (IllegalArgumentException iae){
+        catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
                             HttpStatus.BAD_REQUEST.value()
                     )
             );
-        }
-        catch (DuplicateNameException dne){
+        } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -103,36 +105,34 @@ public class PositionController {
             );
         }
     }
+
     @PutMapping(value = "/update")
     public ResponseEntity<Object> updatePositionById(@RequestParam String positionId, @RequestBody PositionDTO positionDTO) {
-        try{
+        try {
             Position position = positionService.updatePositionById(positionId, positionDTO);
 
             PositionDTO positionDTO2 = modelMapperPosition.mapToDTO(position);
-            GenericResponse<PositionDTO> response =GenericResponse.success(
+            GenericResponse<PositionDTO> response = GenericResponse.success(
                     positionDTO2,
-                    "Success: Position with ID "+ positionId +" has been successfully updated!",
+                    "Success: Position with ID " + positionId + " has been successfully updated!",
                     HttpStatus.OK.value()
             );
             return ResponseEntity.ok(response);
-        }
-        catch (ResourceNotFoundException rfe){
+        } catch (ResourceNotFoundException rfe) {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             rfe.getMessage(),
                             HttpStatus.NOT_FOUND.value()
                     )
             );
-        }
-        catch (IllegalArgumentException iae){
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
                             HttpStatus.BAD_REQUEST.value()
                     )
             );
-        }
-        catch(DuplicateNameException dne){
+        } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -141,22 +141,31 @@ public class PositionController {
             );
         }
     }
+
     @DeleteMapping(value = "/delete")
-    public ResponseEntity<GenericResponse<PositionDTO>> deletePositionById(@RequestParam String positionId){
-        try{
+    public ResponseEntity<GenericResponse<PositionDTO>> deletePositionById(@RequestParam String positionId) {
+        try {
             positionService.deletePositionById(positionId);
             GenericResponse<PositionDTO> response = GenericResponse.empty(
-                    "Success: Position with ID " + positionId+ " has been successfully deleted! ",
+                    "Success: Position with ID " + positionId + " has been successfully deleted! ",
                     HttpStatus.OK.value());
 
             return ResponseEntity.ok(response);
-        } catch (ResourceNotFoundException rnfe){
-
+        }
+        catch (IllegalArgumentException iae) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            iae.getMessage(),
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+        catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
                             HttpStatus.NOT_FOUND.value()));
         }
     }
-    
+
 }

@@ -9,6 +9,7 @@ import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.DepartmentMapper;
 import com.fincons.repository.DepartmentRepository;
 import com.fincons.service.employeeService.DepartmentService;
+import com.fincons.utility.ValidateSingleField;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,16 +36,14 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Department getDepartmentById(String departmentId) {
+        ValidateSingleField.validateSingleField(departmentId);
         return validateDepartmentById(departmentId);
+
     }
 
     @Override
     public List<Department> getAllDepartment(){
-        List<Department> departments = departmentRepository.findAll();
-        if(departments.isEmpty()){
-            throw new IllegalArgumentException("There aren't Departments");
-        }
-        return departments;
+        return departmentRepository.findAll();
     }
 
     @Override
@@ -66,7 +65,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Department updateDepartmentById(String departmentId, DepartmentDTO departmentDTO) {
-        
+
+        ValidateSingleField.validateSingleField(departmentId);
         //Condition for not have null attributes
         validateDepartmentFields(departmentDTO);
 
@@ -108,21 +108,17 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public void deleteDepartmentById(String departmentId) {
-
+        ValidateSingleField.validateSingleField(departmentId);
         Department department = validateDepartmentById(departmentId);
         departmentRepository.deleteById(department.getId());
     }
 
     @Override
     public List<EmployeeDepartmentDTO> getDepartmentEmployeesFindByIdDepartment(String departmentId) {
+        ValidateSingleField.validateSingleField(departmentId);
         Department department = validateDepartmentById(departmentId);
 
-        List<EmployeeDepartmentDTO> employeeDepartmentDTOList = departmentRepository.getDepartmentEmployeesFindByIdDepartment(department.getId());
-
-        if(employeeDepartmentDTOList.isEmpty()){
-            throw new IllegalArgumentException("Department with ID: " + departmentId + " is Empty");
-        }
-        return employeeDepartmentDTOList;
+        return departmentRepository.getDepartmentEmployeesFindByIdDepartment(department.getId());
     }
 
     public Department validateDepartmentById(String departmentId){
@@ -150,3 +146,5 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
     }
 }
+
+

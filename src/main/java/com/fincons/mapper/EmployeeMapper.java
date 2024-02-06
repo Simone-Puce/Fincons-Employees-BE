@@ -17,15 +17,15 @@ import java.util.stream.Collectors;
 public class EmployeeMapper {
 
     @Autowired
-    private ModelMapper modelMapperSkipEmployeesInProjects;
+    private ModelMapper modelMapperSkipEmployeesAndFileInProjects;
 
     
     public EmployeeDTO mapToDTO(Employee employee) {
-        return modelMapperSkipEmployeesInProjects.map(employee, EmployeeDTO.class);
+        return modelMapperSkipEmployeesAndFileInProjects.map(employee, EmployeeDTO.class);
     }
 
     public Employee mapToEntity(EmployeeDTO employeeDTO){
-        return modelMapperSkipEmployeesInProjects.map(employeeDTO, Employee.class);
+        return modelMapperSkipEmployeesAndFileInProjects.map(employeeDTO, Employee.class);
     }
 
 }
