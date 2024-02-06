@@ -185,7 +185,6 @@ public class UserServiceImpl  implements UserService{
 
     //METODO PER AGGIUNGERE UN NUOVO USER IN SEGUITO ALLA LETTURA DI UN FILE.
     public User addNewUser(User user) {
-
         String emailUser = user.getEmail().toLowerCase().replace(" ", "");
         // Controllo se l'indirizzo email è valido
         if (!emailUser.isEmpty() && EmailValidator.isValidEmail(emailUser) && !userRepo.existsByEmail(emailUser)) {
