@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin("*")
@@ -95,6 +97,41 @@ public class RoleController {
                     .build());
         }
     }
+
+    // delete.role.uri = ${role.uri}/delete
+    //  Role Service works when a role has no relationship (Example, I deleted role_manager, it wasn't assigned to no-one user)
+    // i test now to delete a role guest, it has relationship with an user / ok doesn't work
+    @DeleteMapping("${delete.role}/{roleId}")
+    public ResponseEntity<GenericResponse<String>> deleteRole(
+            @PathVariable long roleId,
+            @RequestParam (name = "deleteUsers" , required = false) Boolean deleteUsersAnyway) {
+
+        try{
+
+            String roleDeleted = roleService.deleteRole(roleId,deleteUsersAnyway);
+
+            return ResponseEntity.status(200).body(
+                    GenericResponse.<String>builder()
+                            .status(HttpStatus.OK)
+                            .success(true)
+                            .message("Role deleted successfully")
+                            .data(roleDeleted)
+                            .build()
+            );
+
+        } catch(RoleException | ResourceNotFoundException ree){
+            return ResponseEntity.status(200).body(
+                    GenericResponse.<String>builder()
+                            .status(HttpStatus.OK)
+                            .success(true)
+                            .message(ree.getMessage())
+                            .build()
+            );
+        }
+    }
+
+
+
 
 
 

@@ -1,10 +1,16 @@
 package com.fincons.exception;
 
+import com.fincons.dto.UserDTO;
+import org.apache.poi.ss.formula.functions.T;
+import org.hibernate.internal.util.GenericsHelper;
+
+import java.util.List;
+
 public class RoleException extends Exception{
 
 
-    public RoleException(String meessage){
-        super(meessage);
+    public RoleException(String message){
+        super(message);
     }
 
     public static String userHasNotPermission(){
@@ -18,5 +24,9 @@ public class RoleException extends Exception{
         return "Role exist yet! .";
     }
 
+    // REVIEW
+    public static String usersWithRoleToChange(List<UserDTO> list){  // vorrei inserire un generis invece di UserDTO
+        return "List" + list.toString();
+    }
 
 }

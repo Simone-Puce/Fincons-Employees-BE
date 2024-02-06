@@ -27,6 +27,12 @@ public class Role {
     @ManyToMany(mappedBy="roles")
     private List<User> users;
 
+    @PreRemove
+    public void removeUsersAssociations() {
+        for (User user: this.users) {
+            user.getRoles().remove(this);
+        }
+    }
 
     public long getId() {
         return id;

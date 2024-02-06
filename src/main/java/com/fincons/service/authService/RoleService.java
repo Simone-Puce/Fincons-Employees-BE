@@ -11,4 +11,5 @@ public interface RoleService {
     RoleDTO updateRole(long roleId, RoleDTO roleModifiedDTO) throws RoleException;
 
 
+    String deleteRole(long roleId, Boolean deleteUsers) throws RoleException;
 }
