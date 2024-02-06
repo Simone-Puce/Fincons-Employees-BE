@@ -53,8 +53,6 @@ public class ApplicationUri {
     @Value("${update.user.password}")
     private String updateUserPassword;
 
-
-
     //ROLE
     @Value("${role.base.uri}")
     private String roleBaseUri;
@@ -255,6 +253,4 @@ public class ApplicationUri {
 
     @Value("${certificate-employee.random-certificate-employee}")
     private String certificateEmployeeRandomCertificateEmployee;
-
-
 }
