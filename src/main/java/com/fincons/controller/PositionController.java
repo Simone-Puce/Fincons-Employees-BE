@@ -8,29 +8,29 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("${position.uri}")
+@RequestMapping("/company-employee-management")
 public class PositionController {
 
     @Autowired
     PositionService positionService;
 
-    @GetMapping(value = "/find-by-id")
+    @GetMapping(value = "${position.find-position-by-id}")
     public ResponseEntity<Object> getPositionById(@RequestParam long id){
         return positionService.getPositionById(id);
     }
-    @GetMapping(value="/list")
+    @GetMapping(value="${position.list}")
     public ResponseEntity<Object> getAllPositions(){
         return positionService.getAllPositions();
     }
-    @PostMapping(value = "/create")
+    @PostMapping(value = "${position.create}")
     public ResponseEntity<Object> createPosition(@RequestBody Position position){
         return positionService.createPosition(position);
     }
-    @PutMapping(value = "/update")
+    @PutMapping(value = "${position.update}")
     public ResponseEntity<Object> updatePositionById(@RequestParam long id, @RequestBody Position position) throws Exception {
         return positionService.updatePositionById(id, position);
     }
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "${position.delete}")
     public ResponseEntity<Object> deletePositionById(@RequestParam long id){
         return positionService.deletePositionById(id);
     }

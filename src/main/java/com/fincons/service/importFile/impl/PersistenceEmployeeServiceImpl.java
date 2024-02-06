@@ -8,9 +8,9 @@ import com.fincons.service.importFile.PersistenceEmployeeService;
 import com.fincons.utility.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
+
  @Service
 public class PersistenceEmployeeServiceImpl implements PersistenceEmployeeService {
 

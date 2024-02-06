@@ -9,31 +9,31 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("${certificateEmployee.uri}")
+@RequestMapping("/company-employee-management")
 public class CertificateEmployeeController {
     @Autowired
     private CertificateEmployeeService certificateEmployeeService;
     @Autowired
     private CertificateEmployeeMapper certificateEmployeeMapper;
 
-    @GetMapping("/list")
+    @GetMapping("${certificate-employee.list}")
     public ResponseEntity<Object> getAllCertificateEmployee(){
         return certificateEmployeeService.getAllCertificatesEmployees();
     }
-    @PostMapping("/add")
+    @PostMapping("${certificate-employee.add}")
     public ResponseEntity<Object> addCertificate(@RequestBody CertificateEmployeeDTO certificateEmployeeDTO){
         return certificateEmployeeService.addCertificateEmployee(certificateEmployeeDTO);
     }
-    @GetMapping("/find-by-id/{id}")
+    @GetMapping("${certificate-employee.find-by-id}/{id}")
     public ResponseEntity<Object> getCertificateEmployeeById(@PathVariable Long id) throws ServiceException {
         return certificateEmployeeService.getCertificateEmployeeById(id);
     }
-    @PutMapping("/update/{id}")
+    @PutMapping("${certificate-employee.update}/{id}")
     public ResponseEntity<Object> updateCertificateEmployee(@PathVariable Long id, @RequestBody CertificateEmployeeDTO certificateEmployeeDTO){
         return certificateEmployeeService.updateCertificateEmployee(id, certificateEmployeeDTO);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("${certificate-employee.delete}/{id}")
     public ResponseEntity<Object> deleteCertificateEmployee(@PathVariable Long id) throws ServiceException {
         return certificateEmployeeService.deleteCertificateEmployee(id);
     }
