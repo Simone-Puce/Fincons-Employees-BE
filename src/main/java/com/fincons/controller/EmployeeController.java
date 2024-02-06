@@ -39,7 +39,7 @@ public class EmployeeController {
     public ResponseEntity<Object> getAllEmployees(){
         return employeeService.getAllEmployees();
     }
-    @PostMapping(value = "/${employee.create}")
+    @PostMapping(value = "${employee.create}")
     public ResponseEntity<Object> createEmployee(@RequestBody Employee employee){
         return employeeService.createEmployee(employee);
     }
