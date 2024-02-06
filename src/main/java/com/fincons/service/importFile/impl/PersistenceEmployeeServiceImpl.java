@@ -12,6 +12,7 @@ import com.fincons.service.importFile.PersistenceEmployeeService;
 import com.fincons.utility.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class PersistenceEmployeeServiceImpl implements PersistenceEmployeeServic
     @Autowired
     UserServiceImpl userService;
     @Override
+    @Transactional
     public List<ErrorDetailDTO> addIfNotPresent(List<EmployeeDTO> employeeList) {
         List<ErrorDetailDTO> duplicatedResultList= new ArrayList<>();
         for (EmployeeDTO employee: employeeList) {
