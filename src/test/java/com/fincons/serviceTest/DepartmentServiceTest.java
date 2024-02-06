@@ -37,10 +37,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-@ContextConfiguration(classes = DepartmentServiceTest.TestConfig.class)
+//@ContextConfiguration(classes = DepartmentServiceTest.TestConfig.class)
 public class DepartmentServiceTest {
 
-
+    /*
     static class TestConfig {
     }
 
@@ -205,4 +205,6 @@ public class DepartmentServiceTest {
         }
     }
      */
+
 }
+
