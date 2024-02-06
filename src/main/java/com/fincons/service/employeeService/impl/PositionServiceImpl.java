@@ -9,6 +9,7 @@ import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.PositionMapper;
 import com.fincons.repository.PositionRepository;
 import com.fincons.service.employeeService.PositionService;
+import com.fincons.utility.ValidateSingleField;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,16 +31,13 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public Position getPositionById(String positionId) {
+        ValidateSingleField.validateSingleField(positionId);
         return validatePositionById(positionId);
     }
 
     @Override
     public List<Position> getAllPositions() {
-        List<Position> positions = positionRepository.findAll();
-        if(positions.isEmpty()){
-            throw new IllegalArgumentException("There aren't Positions");
-        }
-        return positions;
+        return positionRepository.findAll();
     }
 
     @Override
@@ -63,6 +61,7 @@ public class PositionServiceImpl implements PositionService {
     public Position updatePositionById(String positionId, PositionDTO positionDTO) {
 
         //Condition for not have null attributes
+        ValidateSingleField.validateSingleField(positionId);
         validatePositionFields(positionDTO);
 
         List<Position> positions = positionRepository.findAll();
@@ -106,6 +105,7 @@ public class PositionServiceImpl implements PositionService {
     @Override
     public void deletePositionById(String positionId) {
 
+        ValidateSingleField.validateSingleField(positionId);
         Position position = validatePositionById(positionId);
         positionRepository.deleteById(position.getId());
     }

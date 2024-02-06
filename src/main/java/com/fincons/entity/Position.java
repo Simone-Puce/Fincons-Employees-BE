@@ -3,6 +3,7 @@ package com.fincons.entity;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.List;
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
 @AllArgsConstructor
@@ -36,8 +37,8 @@ public class Position {
 
     @OneToMany(
             mappedBy = "position",
-            fetch = FetchType.LAZY)
-    @JsonManagedReference(value = "position-employee")
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST})
     private List<Employee> employees;
 
     public List<Employee> getEmployees() {

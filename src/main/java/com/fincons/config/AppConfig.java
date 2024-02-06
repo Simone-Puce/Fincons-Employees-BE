@@ -72,7 +72,7 @@ public class AppConfig {
     }
 
     @Bean
-    public ModelMapper modelMapper() {
+    public ModelMapper modelMapperStandard() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<Employee, EmployeeDTO>() {
             @Override
@@ -81,12 +81,10 @@ public class AppConfig {
                 skip(destination.getFileList());
             }
         });
-        //modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
         return modelMapper;
     }
     @Bean
-    public ModelMapper modelMapperSkipEmployeesInProjects() {
+    public ModelMapper modelMapperSkipEmployeesAndFileInProjects() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<Project, ProjectDTO>() {
             @Override
@@ -101,12 +99,10 @@ public class AppConfig {
                 skip(destination.getEmpId());
             }
         });
-        //modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
         return modelMapper;
     }
     @Bean
-    public ModelMapper modelMapperFile() {
+    public ModelMapper modelMapperSkipFile64() {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<File, FileDTO>() {
             @Override
@@ -114,7 +110,6 @@ public class AppConfig {
                 skip(destination.getFile64());
             }
         });
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper;
     }
 }

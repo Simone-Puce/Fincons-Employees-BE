@@ -32,7 +32,7 @@ public class DepartmentController {
     @GetMapping(value = "${department.find-by-id}")
     public ResponseEntity<GenericResponse<DepartmentDTO>> getDepartmentById(@RequestParam String departmentId){
 
-        try{
+        try {
             Department department = departmentService.getDepartmentById(departmentId);
             DepartmentDTO departmentDTO = modelMapperDepartment.mapToDTO(department);
 
@@ -43,7 +43,15 @@ public class DepartmentController {
             );
             return ResponseEntity.ok(response);
         }
-        catch (ResourceNotFoundException rnfe){
+        catch (IllegalArgumentException iae) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            iae.getMessage(),
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+        catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.empty(
                             rnfe.getMessage(),
@@ -51,54 +59,46 @@ public class DepartmentController {
             );
         }
     }
-    @GetMapping(value="${department.list}")
-    public ResponseEntity<GenericResponse<List<DepartmentDTO>>> getAllDepartment(){
-        try{
-            List<Department> departments = departmentService.getAllDepartment();
 
-            List<DepartmentDTO> departmentDTOs = new ArrayList<>();
-            for (Department department : departments) {
-                DepartmentDTO departmentDTO = modelMapperDepartment.mapToDTO(department);
-                departmentDTOs.add(departmentDTO);
+    @GetMapping(value = "${department.list}")
+    public ResponseEntity<GenericResponse<List<DepartmentDTO>>> getAllDepartment() {
 
-            }
-            GenericResponse<List<DepartmentDTO>> response = GenericResponse.success(
-                    departmentDTOs,
-                    "Success: Found " + departmentDTOs.size() +
-                            (departmentDTOs.size() == 1 ? " department" : " departments" + "."),
-                    HttpStatus.OK.value());
-            return ResponseEntity.ok(response);
+        List<Department> departments = departmentService.getAllDepartment();
+        List<DepartmentDTO> departmentDTOs = new ArrayList<>();
+        for (Department department : departments) {
+            DepartmentDTO departmentDTO = modelMapperDepartment.mapToDTO(department);
+            departmentDTOs.add(departmentDTO);
         }
-        catch(IllegalArgumentException iax){
-            return ResponseEntity.ok(
-                    GenericResponse.empty(
-                            iax.getMessage(),
-                            HttpStatus.NOT_FOUND.value()));
-        }
+        GenericResponse<List<DepartmentDTO>> response = GenericResponse.success(
+                departmentDTOs,
+                "Success:" + (departmentDTOs.isEmpty() || departmentDTOs.size() == 1 ? " Found " : " Founds ") + departmentDTOs.size() +
+                        (departmentDTOs.isEmpty() || departmentDTOs.size() == 1 ? " department" : " departments") + ".",
+                HttpStatus.OK.value());
+
+        return ResponseEntity.ok(response);
     }
+
     @PostMapping(value = "${department.create}")
-    public ResponseEntity<GenericResponse<DepartmentDTO>> createDepartment(@RequestBody DepartmentDTO departmentDTO){
-        try{
+    public ResponseEntity<GenericResponse<DepartmentDTO>> createDepartment(@RequestBody DepartmentDTO departmentDTO) {
+        try {
             Department department = departmentService.createDepartment(departmentDTO);
 
             DepartmentDTO departmentDTO2 = modelMapperDepartment.mapToDTO(department);
 
             GenericResponse<DepartmentDTO> response = GenericResponse.success(
                     departmentDTO2,
-                    "Success: Department with ID "+ department.getDepartmentId() +" has been successfully updated!",
+                    "Success: Department with ID " + department.getDepartmentId() + " has been successfully updated!",
                     HttpStatus.OK.value());
             return ResponseEntity.ok(response);
 
-        }
-        catch(IllegalArgumentException iae){
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
                             HttpStatus.BAD_REQUEST.value()
                     )
             );
-        }
-        catch(DuplicateNameException dne){
+        } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -107,37 +107,35 @@ public class DepartmentController {
             );
         }
     }
+
     @PutMapping(value = "${department.update}")
     public ResponseEntity<GenericResponse<DepartmentDTO>> updateDepartmentById(@RequestParam String departmentId, @RequestBody DepartmentDTO departmentDTO) {
-        try{
+        try {
             Department department = departmentService.updateDepartmentById(departmentId, departmentDTO);
 
             DepartmentDTO departmentDTO2 = modelMapperDepartment.mapToDTO(department);
 
             GenericResponse<DepartmentDTO> response = GenericResponse.success(
                     departmentDTO2,
-                    "Success: Department with ID "+ departmentId +" has been successfully updated!",
+                    "Success: Department with ID " + departmentId + " has been successfully updated!",
                     HttpStatus.OK.value()
             );
             return ResponseEntity.ok(response);
-        }
-        catch (ResourceNotFoundException rfe){
+        } catch (ResourceNotFoundException rfe) {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             rfe.getMessage(),
                             HttpStatus.NOT_FOUND.value()
                     )
             );
-        }
-        catch(IllegalArgumentException iae){
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
                             HttpStatus.BAD_REQUEST.value()
                     )
             );
-        }
-        catch(DuplicateNameException dne){
+        } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -146,24 +144,34 @@ public class DepartmentController {
             );
         }
     }
+
     @DeleteMapping(value = "${department.delete}")
-    public ResponseEntity<GenericResponse<DepartmentDTO>> deleteDepartmentById(@RequestParam String departmentId){
-        try{
+    public ResponseEntity<GenericResponse<DepartmentDTO>> deleteDepartmentById(@RequestParam String departmentId) {
+        try {
             departmentService.deleteDepartmentById(departmentId);
             GenericResponse<DepartmentDTO> response = GenericResponse.empty(
-                    "Success: Department with ID " + departmentId+ " has been successfully deleted! ",
+                    "Success: Department with ID " + departmentId + " has been successfully deleted! ",
                     HttpStatus.OK.value()
             );
 
             return ResponseEntity.ok(response);
-        } catch (ResourceNotFoundException rnfe){
-
+        }
+        catch (IllegalArgumentException iae) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            iae.getMessage(),
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+        catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
                             HttpStatus.NOT_FOUND.value()));
         }
     }
+
     @GetMapping(value = "${department.find-employee-by-iddepartment}")
     public ResponseEntity<GenericResponse<List<EmployeeDepartmentDTO>>> getDepartmentFindEmployee(@RequestParam String departmentId) {
 
@@ -171,25 +179,25 @@ public class DepartmentController {
             List<EmployeeDepartmentDTO> employeeDepartmentDTOList = departmentService.getDepartmentEmployeesFindByIdDepartment(departmentId);
             GenericResponse<List<EmployeeDepartmentDTO>> response = GenericResponse.success(
                     employeeDepartmentDTOList,
-                    "Success: This Department has " + employeeDepartmentDTOList.size() + (employeeDepartmentDTOList.size() == 1 ? " employee." : " employees."),
+                    "Success: This Department has " + employeeDepartmentDTOList.size() +
+                            (employeeDepartmentDTOList.size() == 1 ? " employee." : " employees."),
                     HttpStatus.OK.value());
 
             return ResponseEntity.ok(response);
 
         }
-        catch (ResourceNotFoundException rnfe) {
-
-            return ResponseEntity.ok(
-                    GenericResponse.error(
-                            rnfe.getMessage(),
-                            HttpStatus.NOT_FOUND.value()
-                    )
-            );
-        }
         catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
-                            "Department with ID: " + departmentId + " is Empty",
+                            iae.getMessage(),
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+        catch (ResourceNotFoundException rnfe) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            rnfe.getMessage(),
                             HttpStatus.NOT_FOUND.value()
                     )
             );

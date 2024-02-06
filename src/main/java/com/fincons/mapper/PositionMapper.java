@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
 public class PositionMapper {
 
     @Autowired
-    private ModelMapper modelMapper;
+    private ModelMapper modelMapperStandard;
 
     public PositionDTO mapToDTO(Position position) {
-        return modelMapper.map(position, PositionDTO.class);
+        return modelMapperStandard.map(position, PositionDTO.class);
     }
     public Position mapToEntity(PositionDTO positionDTO){
-        return modelMapper.map(positionDTO, Position.class);
+        return modelMapperStandard.map(positionDTO, Position.class);
     }
 }

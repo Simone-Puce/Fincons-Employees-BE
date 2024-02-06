@@ -3,6 +3,7 @@ package com.fincons.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -63,12 +64,10 @@ public class Employee {
     private LocalDate endDate;
 
     @ManyToOne
-    @JsonBackReference(value = "department-employee")
     @JoinColumn(name = "id_department")
     private Department department;
 
     @ManyToOne
-    @JsonBackReference(value = "position-employee")
     @JoinColumn(name = "id_position")
     private Position position;
 
@@ -87,8 +86,7 @@ public class Employee {
     @OneToMany(
             mappedBy = "emp",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.REMOVE)
-    @JsonManagedReference(value = "file-employee")
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<File> fileList;
 
 

@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EmployeeProjectDTO {
 
-    private String lastName;
+    private String lastNameEmployee;
     private String employeeId;
     private String nameProject;
     private String projectId;

@@ -39,6 +39,14 @@ public class ProjectController {
             );
             return ResponseEntity.ok(response);
         }
+        catch (IllegalArgumentException iae) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            iae.getMessage(),
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
         catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
@@ -50,27 +58,23 @@ public class ProjectController {
 
     @GetMapping(value = "${project.list}")
     public ResponseEntity<Object> getAllProjects() {
-        try {
 
-            List<Project> projects = projectService.getAllProjects();
 
-            List<ProjectDTO> projectDTOs = new ArrayList<>();
-            for (Project project : projects) {
-                ProjectDTO projectDTO = modelMapperProject.mapToDTO(project);
-                projectDTOs.add(projectDTO);
-            }
-            GenericResponse<List<ProjectDTO>> response = GenericResponse.success(
-                    projectDTOs,
-                    "Success: Found " + projectDTOs.size() +
-                            (projectDTOs.size() == 1 ? " project" : " projects" + "."),
-                    HttpStatus.OK.value());
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException iax){
-            return ResponseEntity.ok(
-                    GenericResponse.empty(
-                            iax.getMessage(),
-                            HttpStatus.NOT_FOUND.value()));
+        List<Project> projects = projectService.getAllProjects();
+
+        List<ProjectDTO> projectDTOs = new ArrayList<>();
+        for (Project project : projects) {
+            ProjectDTO projectDTO = modelMapperProject.mapToDTO(project);
+            projectDTOs.add(projectDTO);
         }
+        GenericResponse<List<ProjectDTO>> response = GenericResponse.success(
+                projectDTOs,
+                "Success: " + (projectDTOs.isEmpty() || projectDTOs.size() == 1 ? "Found " : "Founds ") + projectDTOs.size() +
+                        (projectDTOs.isEmpty() || projectDTOs.size() == 1 ? " project" : " projects") + ".",
+                HttpStatus.OK.value());
+        return ResponseEntity.ok(response);
+
+
     }
 
     @PostMapping(value = "${project.create}")
@@ -87,7 +91,39 @@ public class ProjectController {
             return ResponseEntity.ok(response);
 
         }
-        catch (ResourceNotFoundException rfe){
+        catch (IllegalArgumentException iae) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            iae.getMessage(),
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        } catch (DuplicateNameException dne) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            dne.getMessage(),
+                            HttpStatus.CONFLICT.value()
+                    )
+            );
+        }
+    }
+
+
+    @PutMapping(value = "${project.update}")
+    public ResponseEntity<Object> updateProjectById(@RequestParam String projectId, @RequestBody ProjectDTO projectDTO) {
+        try {
+            Project project = projectService.updateProjectById(projectId, projectDTO);
+
+            ProjectDTO projectDTO2 = modelMapperProject.mapToDTO(project);
+
+            GenericResponse<ProjectDTO> response = GenericResponse.success(
+                    projectDTO2,
+                    "Success: Project with ID " + projectId + " has been successfully updated!",
+                    HttpStatus.OK.value()
+            );
+            return ResponseEntity.ok(response);
+        }
+        catch (ResourceNotFoundException rfe) {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             rfe.getMessage(),
@@ -102,39 +138,7 @@ public class ProjectController {
                             HttpStatus.BAD_REQUEST.value()
                     )
             );
-        }
-        catch(DuplicateNameException dne){
-            return ResponseEntity.ok(
-                    GenericResponse.error(
-                            dne.getMessage(),
-                            HttpStatus.CONFLICT.value()
-                    )
-            );
-        }
-    }
-    @PutMapping(value = "${project.update}")
-    public ResponseEntity<Object> updateProjectById(@RequestParam String projectId, @RequestBody ProjectDTO projectDTO) {
-        try{
-            Project project = projectService.updateProjectById(projectId, projectDTO);
-
-            ProjectDTO projectDTO2 = modelMapperProject.mapToDTO(project);
-
-            GenericResponse<ProjectDTO> response = GenericResponse.success(
-                    projectDTO2,
-                    "Success: Project with ID "+ projectId +" has been successfully updated!",
-                    HttpStatus.OK.value()
-            );
-            return ResponseEntity.ok(response);
-        }
-        catch(IllegalArgumentException iae){
-            return ResponseEntity.ok(
-                    GenericResponse.error(
-                            iae.getMessage(),
-                            HttpStatus.BAD_REQUEST.value()
-                    )
-            );
-        }
-        catch(DuplicateNameException dne){
+        } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -146,15 +150,23 @@ public class ProjectController {
 
     @DeleteMapping(value = "${project.delete}")
     public ResponseEntity<Object> deleteProjectById(@RequestParam String projectId) {
-        try{
+        try {
             projectService.deleteProjectById(projectId);
             GenericResponse<ProjectDTO> response = GenericResponse.empty(
-                    "Success: project with ID " + projectId+ " has been successfully deleted! ",
+                    "Success: project with ID " + projectId + " has been successfully deleted! ",
                     HttpStatus.OK.value());
 
             return ResponseEntity.ok(response);
-        } catch (ResourceNotFoundException rnfe){
-
+        }
+        catch (IllegalArgumentException iae) {
+            return ResponseEntity.ok(
+                    GenericResponse.error(
+                            iae.getMessage(),
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+        catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),

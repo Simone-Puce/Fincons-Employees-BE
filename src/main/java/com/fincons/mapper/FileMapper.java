@@ -11,22 +11,22 @@ import org.springframework.stereotype.Component;
 public class FileMapper {
 
     @Autowired
-    private ModelMapper modelMapper;
+    private ModelMapper modelMapperStandard;
 
     @Autowired
-    private ModelMapper modelMapperFile;
+    private ModelMapper modelMapperSkipFile64;
 
     public FileDTO mapFileToFileDto(File file) {
-        return modelMapper.map(file, FileDTO.class);
+        return modelMapperStandard.map(file, FileDTO.class);
     }
     public File mapFileDtotoFile(FileDTO fileDto) {
-        return modelMapper.map(fileDto, File.class);
+        return modelMapperStandard.map(fileDto, File.class);
     }
     public FileDTO mapFileToFileDtoWithoutFile64(File file) {
-        return modelMapperFile.map(file, FileDTO.class);
+        return modelMapperSkipFile64.map(file, FileDTO.class);
     }
     public File mapFileDtoToFileWithoutFile64(FileDTO fileDto) {
-        return modelMapperFile.map(fileDto, File.class);
+        return modelMapperSkipFile64.map(fileDto, File.class);
     }
 
 }
