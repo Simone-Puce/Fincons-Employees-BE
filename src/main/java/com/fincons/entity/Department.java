@@ -67,4 +67,5 @@ public class Department {
         this.address = address;
         this.city = city;
     }
+
 }

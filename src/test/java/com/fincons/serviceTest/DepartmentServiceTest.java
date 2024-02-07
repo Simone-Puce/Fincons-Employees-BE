@@ -5,11 +5,13 @@ import com.fincons.dto.DepartmentDTO;
 import com.fincons.entity.Department;
 import com.fincons.entity.Employee;
 import com.fincons.entity.Position;
+import com.fincons.exception.DuplicateNameException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.DepartmentMapper;
 import com.fincons.repository.DepartmentRepository;
 import com.fincons.service.employeeService.impl.DepartmentServiceImpl;
+import com.fincons.utility.ValidateSingleField;
 import org.apache.logging.log4j.util.Strings;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,20 +51,19 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-//@ContextConfiguration(classes = DepartmentServiceTest.TestConfig.class)
+@ContextConfiguration(classes = DepartmentServiceTest.TestConfig.class)
 public class DepartmentServiceTest {
 
-    /*
+
     static class TestConfig {
     }
 
     private DepartmentController departmentController;
-    private DepartmentServiceImpl departmentService;
+    private DepartmentServiceImpl departmentServiceImpl;
     @Mock
     private DepartmentRepository departmentRepository;
     @Spy
     private DepartmentMapper modelMapperDepartment;
-
 
 
     @BeforeEach
@@ -70,10 +71,81 @@ public class DepartmentServiceTest {
         departmentRepository = mock(DepartmentRepository.class);
 
         // Initialize the service with mocks
-        departmentService = new DepartmentServiceImpl(departmentRepository, modelMapperDepartment);
+        departmentServiceImpl = new DepartmentServiceImpl(departmentRepository, modelMapperDepartment);
 
     }
+    @Test
+    void testValidateDepartmentById(){
+        String departmentId = "UUID-TEST";
+        when(departmentRepository.findDepartmentByDepartmentId(departmentId)).thenReturn(null);
+        //Assert exception
+        assertThrows(ResourceNotFoundException.class, () -> {
+            // Finally run the method from service and save response
+            departmentServiceImpl.getDepartmentById(departmentId);
+        });
+    }
+    @Test
+    void testValidateDepartmentFields() {
+        //This test checks for all other methods, so you don't need to test it again in the other fields
+        DepartmentDTO departmentInput1 = new DepartmentDTO("", "", "");
+        assertThrows(IllegalArgumentException.class, () -> {
+            departmentServiceImpl.validateDepartmentFields(departmentInput1);
+        });
+        DepartmentDTO departmentInput2 = new DepartmentDTO(null, null, null, null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            departmentServiceImpl.validateDepartmentFields(departmentInput2);
+        });
+    }
+    @Test
+    void testCheckForDuplicateDepartment() {
+        List<Department> departmentsRep = new ArrayList<>(2);
+        Department department1 = new Department(1L, "uuid", "name1", "address1", "city1");
+        Department department2 = new Department(2L, "uuid", "name2", "address2", "city2");
+        DepartmentDTO departmentInput = new DepartmentDTO("uuid", "name2", "address3", "city3");
+        departmentsRep.add(department1);
+        departmentsRep.add(department2);
+        assertThrows(DuplicateNameException.class, () -> {
+            departmentServiceImpl.checkForDuplicateDepartment(departmentInput, departmentsRep);
+        });
+    }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Test
+    void testServiceGetDepartmentById() {
+        DepartmentDTO departmentDTO = new DepartmentDTO("uuid-1234", "name", "address", "city");
+        ValidateSingleField.validateSingleField(departmentDTO.getDepartmentId());
+        assertThrows(ResourceNotFoundException.class, () -> {
+            departmentServiceImpl.validateDepartmentFields(departmentDTO);
+        });
+    }
+
+    @Test
+    void testServiceGetDepartmentByIdWrongUUID() {
+        DepartmentDTO departmentDTO = new DepartmentDTO("uuid-1234", "name", "address", "city");
+        ValidateSingleField.validateSingleField(departmentDTO.getDepartmentId());
+        assertThrows(ResourceNotFoundException.class, () -> {
+            departmentServiceImpl.validateDepartmentFields(departmentDTO);
+        });
+    }
+}
+    /*
     @Test
     void testGetDepartmentByIdExist() {
 
@@ -160,42 +232,8 @@ public class DepartmentServiceTest {
         ResponseEntity<Object> response = departmentService.createDepartment(department3);
 
     }
-    @Test
-    void testValidateDepartById(){
-        long departmentId = 2L;
-        when(departmentRepository.findById(departmentId)).thenReturn(null);
-
-        //Gestisco il fatto che genera un eccezione
-        assertThrows(ResourceNotFoundException.class, () -> {
-            // Finally run the method from service and save response
-            departmentService.getDepartmentById(departmentId);
-        });
-    }
-    @Test
-    void testCheckForDuplicateDepartment() {
-        List<Department> departmentsRep = new ArrayList<>(2);
-        Department department1 = new Department(1L, "name1", "address1", "city1");
-        Department department2 = new Department(2L, "name2", "address2", "city2");
-        Department departmentInput = new Department(3L, "name2", "address3", "city3");
-        departmentsRep.add(department1);
-        departmentsRep.add(department2);
-        assertThrows(IllegalArgumentException.class, () -> {
-            departmentService.checkForDuplicateDepartment(departmentInput, departmentsRep);
-        });
-    }
-    @Test
-    void testValidateDepartmentFields() {
-        //This test checks for all other methods, so you don't need to test it again in the other fields
-        Department departmentInput1 = new Department("", "", "");
-        assertThrows(IllegalArgumentException.class, () -> {
-            departmentService.validateDepartmentFields(departmentInput1);
-        });
-        Department departmentInput2 = new Department(null, null, null, null);
-        assertThrows(IllegalArgumentException.class, () -> {
-            departmentService.validateDepartmentFields(departmentInput2);
-        });
-    }
-    /*
+}
+/*
     private void generateAndTestCombinations() {
         String[] nameOptions = {null, "", "validName"};
         String[] addressOptions = {null, "", "validAddress"};
@@ -215,8 +253,8 @@ public class DepartmentServiceTest {
                 }
             }
         }
+
+
     }
      */
-
-}
 

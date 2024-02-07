@@ -36,7 +36,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Department getDepartmentById(String departmentId) {
-        ValidateSingleField.validateSingleField(departmentId);
+        ValidateSingleField.validateSingleField(departmentId); //TODO
         return validateDepartmentById(departmentId);
 
     }
