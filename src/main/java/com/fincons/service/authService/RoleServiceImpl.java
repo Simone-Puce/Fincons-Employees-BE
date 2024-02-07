@@ -8,8 +8,14 @@ import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.RoleException;
 import com.fincons.mapper.UserAndRoleMapper;
 import com.fincons.repository.RoleRepository;
+import com.fincons.repository.UserRepository;
+import com.fincons.utility.GenericResponse;
+import com.fincons.utility.ReturnObject;
 import com.fincons.utility.RoleValidator;
+import org.antlr.v4.runtime.TokenStreamRewriter;
+import org.modelmapper.internal.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +27,9 @@ public class RoleServiceImpl implements RoleService{
 
     @Autowired
      private RoleRepository roleRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private UserAndRoleMapper userAndRoleMapper;
@@ -53,7 +62,7 @@ public class RoleServiceImpl implements RoleService{
         if(roleExist != null){
             throw new RoleException(RoleException.roleExistException());
         }
-        //I set name to Upper case
+        //I set name to Uppercase
         roleDTO.setName(roleDTO.getName().toUpperCase());
 
         Role newRoleSaved = roleRepository.save(userAndRoleMapper.dtoToRole(roleDTO));
@@ -84,42 +93,37 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public String deleteRole(long roleId, Boolean deleteUsersAssociated) throws RoleException {  //  if Boolean deleteUsersAssociated == null -- > nullPointerExepciont
-
-        Optional<Role> roleToDelete = roleRepository.findById(roleId);
-
-        String messageToShow = "";
+    public GenericResponse<ReturnObject> deleteRole(long roleId, boolean deleteUsersAssociated) throws RoleException {  //  if Boolean deleteUsersAssociated == null -- > nullPointerExepciont
 
         // se non presente genera eccezione
-        if(roleToDelete.isEmpty()){
-            throw new ResourceNotFoundException("Role not exist!!!");
+        Optional<Role> roleToDelete = Optional.ofNullable(roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Role does not Exist")));
+
+        if (roleToDelete.isPresent()) {
+            if (roleToDelete.get().getUsers().isEmpty()) {
+                roleRepository.deleteById(roleId);
+                return new GenericResponse<>(HttpStatus.OK,true,"Role deleted successfully!");
+
+            } else {
+                if (deleteUsersAssociated) {
+                    roleToDelete.get().removeUsersAssociations();
+                    roleToDelete.get().getUsers()
+                            .forEach(user -> userRepository.delete(user));
+                    roleRepository.deleteById(roleToDelete.get().getId());
+                    return new GenericResponse<>(HttpStatus.OK,true,"Role and users associated, deleted!");
+                } else {
+                    List<Long> idOfUsersToModifyRole = roleToDelete.get()
+                            .getUsers()
+                            .stream()
+                            .map(User::getId)
+                            .toList();
+                    ReturnObject rO = new ReturnObject();
+                    rO.setMessage("You have to change role's name of these users before!");
+                    rO.setList(idOfUsersToModifyRole);
+                    return new GenericResponse<>(HttpStatus.resolve(409),false,rO);
+                }
+            }
         }
 
-        if(roleToDelete.get().getUsers().isEmpty() && deleteUsersAssociated==null){
-            roleRepository.deleteById(roleId);
-            return  messageToShow.concat("Role deleted successfully");
-        }
-
-        //button from FE when pressed delteUsersAniway became false
-        if(
-                !roleToDelete.get().getUsers().isEmpty() && deleteUsersAssociated.equals(false)
-                ||
-                        !roleToDelete.get().getUsers().isEmpty() && deleteUsersAssociated==null
-        ){
-            // mi recupero la lista di utenti associati e la trasformo in una lista di userdto da mostrare all'utente
-            List<UserDTO> usersDTOToChange = roleToDelete.get().getUsers().stream().map(user -> userAndRoleMapper.userToUserDto(user)).toList();
-
-            throw new RoleException(RoleException.usersWithRoleToChange(usersDTOToChange));
-        }
-
-        //button from FE when pressed delteUsersAniway became true
-        if(!roleToDelete.get().getUsers().isEmpty() && deleteUsersAssociated.equals(true)){
-            roleToDelete.get().removeUsersAssociations();
-            return messageToShow.concat("Role deleted successfully and also relative users!");
-        }
-
-        return messageToShow;
+        return null;
     }
-
-
 }

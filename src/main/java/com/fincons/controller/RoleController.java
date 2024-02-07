@@ -6,6 +6,7 @@ import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.RoleException;
 import com.fincons.service.authService.RoleService;
 import com.fincons.utility.GenericResponse;
+import com.fincons.utility.ReturnObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +57,8 @@ public class RoleController {
     public ResponseEntity<GenericResponse<RoleDTO>> createRole(@RequestBody RoleDTO roleDTO) {
         try{
             RoleDTO newRole = roleService.createRole(roleDTO);
-            return ResponseEntity.status(200).body(GenericResponse.<RoleDTO>builder()
+            return ResponseEntity.status(200).body(
+                    GenericResponse.<RoleDTO>builder()
                     .status(HttpStatus.OK)
                     .success(true)
                     .message("Role created Succesfully!!!")
@@ -102,29 +104,21 @@ public class RoleController {
     //  Role Service works when a role has no relationship (Example, I deleted role_manager, it wasn't assigned to no-one user)
     // i test now to delete a role guest, it has relationship with an user / ok doesn't work
     @DeleteMapping("${delete.role}/{roleId}")
-    public ResponseEntity<GenericResponse<String>> deleteRole(
+    public ResponseEntity<GenericResponse<ReturnObject>> deleteRole(
             @PathVariable long roleId,
-            @RequestParam (name = "deleteUsers" , required = false) Boolean deleteUsersAnyway) {
+            @RequestParam (name = "deleteUsers" , required = false) boolean deleteUsersAnyway) {
 
         try{
 
-            String roleDeleted = roleService.deleteRole(roleId,deleteUsersAnyway);
+            GenericResponse<ReturnObject> roleDeleted = roleService.deleteRole(roleId,deleteUsersAnyway);
+            return ResponseEntity.status(200).body(roleDeleted);
 
+        }catch(ResourceNotFoundException | RoleException re){
             return ResponseEntity.status(200).body(
-                    GenericResponse.<String>builder()
-                            .status(HttpStatus.OK)
-                            .success(true)
-                            .message("Role deleted successfully")
-                            .data(roleDeleted)
-                            .build()
-            );
-
-        } catch(RoleException | ResourceNotFoundException ree){
-            return ResponseEntity.status(200).body(
-                    GenericResponse.<String>builder()
-                            .status(HttpStatus.OK)
-                            .success(true)
-                            .message(ree.getMessage())
+                    GenericResponse.<ReturnObject>builder()
+                            .status(HttpStatus.resolve(409))
+                            .success(false)
+                            .message(re.getMessage())
                             .build()
             );
         }

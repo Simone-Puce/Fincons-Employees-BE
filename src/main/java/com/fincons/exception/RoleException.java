@@ -1,16 +1,24 @@
 package com.fincons.exception;
-
 import com.fincons.dto.UserDTO;
-import org.apache.poi.ss.formula.functions.T;
-import org.hibernate.internal.util.GenericsHelper;
+import com.fincons.utility.ReturnObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RoleException extends Exception{
 
 
-    public RoleException(String message){
+    String message;
+    List<Long> list;
+
+    public RoleException(String message) {
         super(message);
+    }
+
+    public RoleException(String message, List<Long> list){
+        super(message);
+        this.message = message;
+        this.list = list;
     }
 
     public static String userHasNotPermission(){
@@ -21,12 +29,11 @@ public class RoleException extends Exception{
         return "Role does not respect regex of ROLE_***** .";
     }
     public static String roleExistException(){
-        return "Role exist yet! .";
+        return "Role exist yet!";
     }
 
-    // REVIEW
-    public static String usersWithRoleToChange(List<UserDTO> list){  // vorrei inserire un generis invece di UserDTO
-        return "List" + list.toString();
-    }
+
+
+
 
 }

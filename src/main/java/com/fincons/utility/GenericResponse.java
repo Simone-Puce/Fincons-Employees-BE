@@ -19,4 +19,15 @@ public class GenericResponse<T>  {
     private String message;
     private T data;
 
+    public GenericResponse(HttpStatus status, boolean success, String message) {
+        this.status = status;
+        this.success = success;
+        this.message = message;
+    }
+    public GenericResponse(HttpStatus status, boolean success, T data) {
+        this.status = status;
+        this.success = success;
+        this.data = data;
+    }
+
 }
