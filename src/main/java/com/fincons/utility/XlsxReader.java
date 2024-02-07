@@ -106,7 +106,7 @@ public class XlsxReader implements ImportFileReader {
 
 
                     // Crea un oggetto EmployeeDto con i valori ottenuti
-                    EmployeeDTO employeeDto = new EmployeeDTO(nome, cognome, genere,dataDiNascita,email,dataDiInizio,dataDiFine,dipartimento,posizione);
+                    EmployeeDTO employeeDto = new EmployeeDTO(nome, cognome, genere,email, dataDiNascita, dataDiInizio,dataDiFine,dipartimento.getDepartmentId(),posizione.getPositionId());
                     employeeDto.setRowNum(row.getRowNum() + 1);
                     // Aggiungi l'oggetto EmployeeDto alla lista
                     employeeToAdd.add(employeeDto);

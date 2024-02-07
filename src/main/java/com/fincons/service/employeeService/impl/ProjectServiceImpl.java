@@ -1,6 +1,5 @@
 package com.fincons.service.employeeService.impl;
 
-import com.fincons.Handler.ResponseHandler;
 import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Project;
 import com.fincons.exception.DuplicateNameException;
@@ -12,12 +11,10 @@ import com.fincons.service.employeeService.ProjectService;
 import com.fincons.utility.ValidateSingleField;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.util.Validate;
 
-import java.time.LocalDateTime;
+
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

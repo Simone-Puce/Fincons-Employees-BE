@@ -23,11 +23,11 @@ public class GenericResponse<T>  {
     private T data;
 
 
-    public static <T> GenericResponse<T> empty(String message, Integer status ) {
+    public static <T> GenericResponse<T> empty(String message, HttpStatus status) {
         return success(null, message, status);
     }
 
-    public static <T> GenericResponse<T> success(T data, String message, Integer status) {
+    public static <T> GenericResponse<T> success(T data, String message, HttpStatus status) {
         return GenericResponse.<T>builder()
                 .message(message)
                 .data(data)
@@ -35,7 +35,7 @@ public class GenericResponse<T>  {
                 .success(true)
                 .build();
     }
-    public static <T> GenericResponse<T> error(String message, Integer status) {
+    public static <T> GenericResponse<T> error(String message, HttpStatus status) {
         return GenericResponse.<T>builder()
                 .message(message)
                 .status(status)

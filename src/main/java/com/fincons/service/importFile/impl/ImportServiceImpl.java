@@ -19,6 +19,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -154,9 +155,7 @@ public class ImportServiceImpl implements ImportService {
                     importResult.setStatus(ProcessingStatus.NOT_LOADED);
                 }
                 importResult.setEndProcessingDate(ImportServiceDateUtility.generateDate());
-        }
-
-
+            }
         }
     }
 

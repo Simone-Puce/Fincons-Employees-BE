@@ -35,7 +35,7 @@ public class ProjectController {
             GenericResponse<ProjectDTO> response = GenericResponse.success(
                     projectDTO,
                     "Success: Found project with ID " + projectId + ".",
-                    HttpStatus.OK.value()
+                    HttpStatus.OK
             );
             return ResponseEntity.ok(response);
         }
@@ -43,7 +43,7 @@ public class ProjectController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
-                            HttpStatus.BAD_REQUEST.value()
+                            HttpStatus.BAD_REQUEST
                     )
             );
         }
@@ -51,7 +51,7 @@ public class ProjectController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NOT_FOUND.value())
+                            HttpStatus.NOT_FOUND)
             );
         }
     }
@@ -71,7 +71,7 @@ public class ProjectController {
                 projectDTOs,
                 "Success: " + (projectDTOs.isEmpty() || projectDTOs.size() == 1 ? "Found " : "Founds ") + projectDTOs.size() +
                         (projectDTOs.isEmpty() || projectDTOs.size() == 1 ? " project" : " projects") + ".",
-                HttpStatus.OK.value());
+                HttpStatus.OK);
         return ResponseEntity.ok(response);
 
 
@@ -87,7 +87,7 @@ public class ProjectController {
             GenericResponse<ProjectDTO> response = GenericResponse.success(
                     projectDTO2,
                     "Success: Project with ID " + project.getProjectId() + " has been successfully updated!",
-                    HttpStatus.OK.value());
+                    HttpStatus.OK);
             return ResponseEntity.ok(response);
 
         }
@@ -95,14 +95,14 @@ public class ProjectController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
-                            HttpStatus.BAD_REQUEST.value()
+                            HttpStatus.BAD_REQUEST
                     )
             );
         } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
-                            HttpStatus.CONFLICT.value()
+                            HttpStatus.CONFLICT
                     )
             );
         }
@@ -119,7 +119,7 @@ public class ProjectController {
             GenericResponse<ProjectDTO> response = GenericResponse.success(
                     projectDTO2,
                     "Success: Project with ID " + projectId + " has been successfully updated!",
-                    HttpStatus.OK.value()
+                    HttpStatus.OK
             );
             return ResponseEntity.ok(response);
         }
@@ -127,7 +127,7 @@ public class ProjectController {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             rfe.getMessage(),
-                            HttpStatus.NOT_FOUND.value()
+                            HttpStatus.NOT_FOUND
                     )
             );
         }
@@ -135,14 +135,14 @@ public class ProjectController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
-                            HttpStatus.BAD_REQUEST.value()
+                            HttpStatus.BAD_REQUEST
                     )
             );
         } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
-                            HttpStatus.CONFLICT.value()
+                            HttpStatus.CONFLICT
                     )
             );
         }
@@ -154,7 +154,7 @@ public class ProjectController {
             projectService.deleteProjectById(projectId);
             GenericResponse<ProjectDTO> response = GenericResponse.empty(
                     "Success: project with ID " + projectId + " has been successfully deleted! ",
-                    HttpStatus.OK.value());
+                    HttpStatus.OK);
 
             return ResponseEntity.ok(response);
         }
@@ -162,7 +162,7 @@ public class ProjectController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
-                            HttpStatus.BAD_REQUEST.value()
+                            HttpStatus.BAD_REQUEST
                     )
             );
         }
@@ -170,7 +170,7 @@ public class ProjectController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NOT_FOUND.value()));
+                            HttpStatus.NOT_FOUND));
         }
     }
 }

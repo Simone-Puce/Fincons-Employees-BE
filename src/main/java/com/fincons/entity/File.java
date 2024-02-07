@@ -34,18 +34,15 @@ public class File {
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
-    private Employee empId;
+    private Employee emp;
 
 
-    public File() {}
-
-
-    public File( String file64, String name, String extension, String description, Employee empId) {
+    public File( String file64, String name, String extension, String description, Employee emp) {
         this.file64 = file64;
         this.name = name;
         this.extension = extension;
         this.description = description;
-        this.empId = empId;
+        this.emp = emp;
     }
 
 

@@ -1,6 +1,5 @@
 package com.fincons.service.employeeService.impl;
 
-import com.fincons.Handler.ResponseHandler;
 import com.fincons.dto.PositionDTO;
 import com.fincons.entity.Position;
 import com.fincons.exception.DuplicateNameException;

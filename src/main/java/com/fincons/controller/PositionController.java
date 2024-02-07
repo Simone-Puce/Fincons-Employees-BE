@@ -36,7 +36,7 @@ public class PositionController {
             GenericResponse<PositionDTO> response = GenericResponse.success(
                     positionDTO,
                     "Success: Found position with ID " + positionId + ".",
-                    HttpStatus.OK.value());
+                    HttpStatus.OK);
 
             return ResponseEntity.ok(response);
         }
@@ -44,7 +44,7 @@ public class PositionController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
-                            HttpStatus.BAD_REQUEST.value()
+                            HttpStatus.BAD_REQUEST
                     )
             );
         }
@@ -52,7 +52,7 @@ public class PositionController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NOT_FOUND.value())
+                            HttpStatus.NOT_FOUND)
             );
         }
     }
@@ -71,7 +71,7 @@ public class PositionController {
                 positionDTOs,
                 "Success: " + (positionDTOs.isEmpty() || positionDTOs.size() == 1 ? "Found " : "Founds ") + positionDTOs.size() +
                         (positionDTOs.isEmpty() || positionDTOs.size() == 1 ? " position" : " positions") + ".",
-                HttpStatus.OK.value());
+                HttpStatus.OK);
         return ResponseEntity.ok(response);
     }
 
@@ -85,7 +85,7 @@ public class PositionController {
             GenericResponse<PositionDTO> response = GenericResponse.success(
                     positionDTO2,
                     "Success: Position with ID " + position.getId() + " has been successfully updated!",
-                    HttpStatus.OK.value());
+                    HttpStatus.OK);
             return ResponseEntity.ok(response);
 
         }
@@ -93,14 +93,14 @@ public class PositionController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
-                            HttpStatus.BAD_REQUEST.value()
+                            HttpStatus.BAD_REQUEST
                     )
             );
         } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
-                            HttpStatus.CONFLICT.value()
+                            HttpStatus.CONFLICT
                     )
             );
         }
@@ -116,28 +116,28 @@ public class PositionController {
             GenericResponse<PositionDTO> response = GenericResponse.success(
                     positionDTO2,
                     "Success: Position with ID " + positionId + " has been successfully updated!",
-                    HttpStatus.OK.value()
+                    HttpStatus.OK
             );
             return ResponseEntity.ok(response);
         } catch (ResourceNotFoundException rfe) {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             rfe.getMessage(),
-                            HttpStatus.NOT_FOUND.value()
+                            HttpStatus.NOT_FOUND
                     )
             );
         } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
-                            HttpStatus.BAD_REQUEST.value()
+                            HttpStatus.BAD_REQUEST
                     )
             );
         } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
-                            HttpStatus.CONFLICT.value()
+                            HttpStatus.CONFLICT
                     )
             );
         }
@@ -149,7 +149,7 @@ public class PositionController {
             positionService.deletePositionById(positionId);
             GenericResponse<PositionDTO> response = GenericResponse.empty(
                     "Success: Position with ID " + positionId + " has been successfully deleted! ",
-                    HttpStatus.OK.value());
+                    HttpStatus.OK);
 
             return ResponseEntity.ok(response);
         }
@@ -157,7 +157,7 @@ public class PositionController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
-                            HttpStatus.BAD_REQUEST.value()
+                            HttpStatus.BAD_REQUEST
                     )
             );
         }
@@ -165,7 +165,7 @@ public class PositionController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NOT_FOUND.value()));
+                            HttpStatus.NOT_FOUND));
         }
     }
 

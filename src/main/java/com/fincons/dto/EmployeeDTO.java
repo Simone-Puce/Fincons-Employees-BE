@@ -1,6 +1,9 @@
 package com.fincons.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fincons.entity.Department;
+import com.fincons.entity.Position;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +11,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
+@JsonIgnoreProperties("rowNum")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @Setter
@@ -28,7 +32,6 @@ public class EmployeeDTO {
     private String positionId;
     private List<ProjectDTO> projects;
     private List<FileDTO> fileList;
-
     private long rowNum;
 
 
@@ -54,12 +57,16 @@ public class EmployeeDTO {
         this.endDate = endDate;
     }
 
-    public long getRowNum() {
-        return rowNum;
-    }
-
-    public void setRowNum(long rowNum) {
-        this.rowNum = rowNum;
+    public EmployeeDTO(String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, String departmentId, String positionId) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.email = email;
+        this.birthDate = birthDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.departmentId = departmentId;
+        this.positionId = positionId;
     }
 
 }

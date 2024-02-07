@@ -3,8 +3,6 @@ package com.fincons.controller;
 import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Project;
 import com.fincons.mapper.ProjectMapper;
-import com.fincons.Handler.GenericResponse;
-import com.fincons.dto.DepartmentDTO;
 import com.fincons.dto.ImportResultDTO;
 import com.fincons.utility.GenericResponse;
 import com.fincons.dto.EmployeeDTO;
@@ -16,7 +14,6 @@ import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.EmployeeMapper;
 import com.fincons.enums.ProcessingStatus;
 import com.fincons.service.employeeService.EmployeeService;
-import com.fincons.service.employeeService.ProjectService;
 import com.fincons.service.importFile.ImportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,7 +49,7 @@ public class EmployeeController {
             GenericResponse<EmployeeDTO> response = GenericResponse.success(
                     employeeDTO,
                     "Success: Found Employee with ID " + employeeId + ".",
-                    HttpStatus.OK.value()
+                    HttpStatus.OK
             );
             return ResponseEntity.ok(response);
         }
@@ -60,7 +57,7 @@ public class EmployeeController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
-                            HttpStatus.BAD_REQUEST.value()
+                            HttpStatus.BAD_REQUEST
                     )
             );
         }
@@ -68,7 +65,7 @@ public class EmployeeController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NOT_FOUND.value())
+                            HttpStatus.NOT_FOUND)
             );
         }
 
@@ -83,7 +80,7 @@ public class EmployeeController {
             GenericResponse<EmployeeDTO> response = GenericResponse.success(
                     employeeDTO,
                     "Success: Found Employee with email " + email + ".",
-                    HttpStatus.OK.value()
+                    HttpStatus.OK
             );
             return ResponseEntity.ok(response);
         }
@@ -91,7 +88,7 @@ public class EmployeeController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
-                            HttpStatus.BAD_REQUEST.value()
+                            HttpStatus.BAD_REQUEST
                     )
             );
         }
@@ -99,7 +96,7 @@ public class EmployeeController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NOT_FOUND.value())
+                            HttpStatus.NOT_FOUND)
             );
         }
     }
@@ -118,7 +115,7 @@ public class EmployeeController {
                 employeeDTOs,
                 "Success:" + (employeeDTOs.isEmpty() || employeeDTOs.size() == 1 ? " Found " : " Founds ") + employeeDTOs.size() +
                         (employeeDTOs.isEmpty() || employeeDTOs.size() == 1 ? " employee" : " employees") + ".",
-                HttpStatus.OK.value());
+                HttpStatus.OK);
         return ResponseEntity.ok(response);
 
     }
@@ -133,7 +130,7 @@ public class EmployeeController {
             GenericResponse<EmployeeDTO> response = GenericResponse.success(
                     employeeDTO2,
                     "Success: Employee with ID " + employee.getEmployeeId() + " has been successfully updated!",
-                    HttpStatus.OK.value()
+                    HttpStatus.OK
             );
             return ResponseEntity.ok(response);
         }
@@ -141,20 +138,20 @@ public class EmployeeController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NOT_FOUND.value()));
+                            HttpStatus.NOT_FOUND));
         }
         catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
-                            HttpStatus.BAD_REQUEST.value()
+                            HttpStatus.BAD_REQUEST
                     )
             );
         } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
-                            HttpStatus.CONFLICT.value()
+                            HttpStatus.CONFLICT
                     )
             );
         }
@@ -169,28 +166,28 @@ public class EmployeeController {
             GenericResponse<EmployeeDTO> response = GenericResponse.success(
                     employeeDTO2,
                     "Success: Employee with ID " + employeeId + " has been successfully updated!",
-                    HttpStatus.OK.value()
+                    HttpStatus.OK
             );
             return ResponseEntity.ok(response);
         } catch (ResourceNotFoundException rfe) {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             rfe.getMessage(),
-                            HttpStatus.NOT_FOUND.value()
+                            HttpStatus.NOT_FOUND
                     )
             );
         } catch (IllegalArgumentException iae) {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             iae.getMessage(),
-                            HttpStatus.BAD_REQUEST.value()
+                            HttpStatus.BAD_REQUEST
                     )
             );
         } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
-                            HttpStatus.CONFLICT.value()
+                            HttpStatus.CONFLICT
                     )
             );
         }
@@ -202,7 +199,7 @@ public class EmployeeController {
             employeeService.deleteEmployeeById(employeeId);
             GenericResponse<EmployeeDTO> response = GenericResponse.empty(
                     "Success: Department with ID " + employeeId + " has been successfully deleted! ",
-                    HttpStatus.OK.value()
+                    HttpStatus.OK
             );
             return ResponseEntity.ok(response);
         }
@@ -210,7 +207,7 @@ public class EmployeeController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
-                            HttpStatus.BAD_REQUEST.value()
+                            HttpStatus.BAD_REQUEST
                     )
             );
         }
@@ -218,7 +215,7 @@ public class EmployeeController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NOT_FOUND.value()));
+                            HttpStatus.NOT_FOUND));
         }
     }
 
@@ -237,7 +234,7 @@ public class EmployeeController {
                     projectsDTO,
                     "Success: This Employee works in " + projectsDTO.size() +
                             (projectsDTO.size() == 1 ? " project." : " projects."),
-                    HttpStatus.OK.value()
+                    HttpStatus.OK
             );
 
             return ResponseEntity.ok(response);
@@ -245,12 +242,12 @@ public class EmployeeController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NOT_FOUND.value()));
+                            HttpStatus.NOT_FOUND));
         } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.empty(
                             iae.getMessage(),
-                            HttpStatus.NO_CONTENT.value()
+                            HttpStatus.NO_CONTENT
                     )
             );
         }
@@ -265,12 +262,12 @@ public class EmployeeController {
                 employeeProjectDTO,
                 "Success: " + (employeeProjectDTO.isEmpty() || employeeProjectDTO.size() == 1 ? "Found " : "Founds ") + employeeProjectDTO.size() +
                         (employeeProjectDTO.isEmpty() || employeeProjectDTO.size() == 1 ? " relationship " : " relationships ")+ "in the search.",
-                HttpStatus.OK.value()
+                HttpStatus.OK
         );
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(value = "/create/employee-project")
+    @PostMapping(value = "${employee.create-employee-project}")
     public ResponseEntity<GenericResponse<EmployeeProjectDTO>> createEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId) {
         try {
             EmployeeProjectDTO employeeProjectDTO = employeeService.addEmployeeProject(employeeId, projectId);
@@ -278,7 +275,7 @@ public class EmployeeController {
             GenericResponse<EmployeeProjectDTO> response = GenericResponse.success(
                     employeeProjectDTO,
                     "Success: Addition of relationship between employee with ID: " + employeeId + " and project with ID: " + projectId,
-                    HttpStatus.OK.value()
+                    HttpStatus.OK
             );
             return ResponseEntity.ok(response);
         }
@@ -286,7 +283,7 @@ public class EmployeeController {
             return ResponseEntity.ok(
                     GenericResponse.empty(
                             iae.getMessage(),
-                            HttpStatus.NO_CONTENT.value()
+                            HttpStatus.NO_CONTENT
                     )
             );
         }
@@ -294,18 +291,18 @@ public class EmployeeController {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NOT_FOUND.value()));
+                            HttpStatus.NOT_FOUND));
         } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
-                            HttpStatus.CONFLICT.value()
+                            HttpStatus.CONFLICT
                     )
             );
         }
     }
 
-    @PutMapping(value = "${employee.update-employee-project")
+    @PutMapping(value = "${employee.update-employee-project}")
     public ResponseEntity<GenericResponse<EmployeeProjectDTO>> updateEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId, @RequestBody EmployeeProjectDTO employeeProjectDTO) {
         try {
             EmployeeProjectDTO employeeProjectDTO1 = employeeService.updateEmployeeProject(employeeId, projectId, employeeProjectDTO);
@@ -313,20 +310,20 @@ public class EmployeeController {
                     employeeProjectDTO,
                     "Success: Relationship updated between employee with ID " + employeeId + " and project with ID " + projectId + ". " +
                             "Updated details for employee with ID " + employeeProjectDTO1.getEmployeeId() + " and project with ID " + employeeProjectDTO1.getProjectId() + ".",
-                    HttpStatus.OK.value()
+                    HttpStatus.OK
             );
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException | ResourceNotFoundException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
-                            HttpStatus.NOT_FOUND.value())
+                            HttpStatus.NOT_FOUND)
             );
         } catch (DuplicateNameException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
-                            HttpStatus.CONFLICT.value()
+                            HttpStatus.CONFLICT
                     )
             );
         }
@@ -338,7 +335,7 @@ public class EmployeeController {
             employeeService.deleteEmployeeProject(employeeId, projectId);
             GenericResponse<EmployeeProjectDTO> response = GenericResponse.empty(
                     "Success: Relationship deleted between employee with ID " + employeeId + " and project with ID " + projectId + ".",
-                    HttpStatus.OK.value()
+                    HttpStatus.OK
             );
             return ResponseEntity.ok(response);
 
@@ -347,14 +344,14 @@ public class EmployeeController {
             return ResponseEntity.ok(
                     GenericResponse.empty(
                             iae.getMessage(),
-                            HttpStatus.NO_CONTENT.value()
+                            HttpStatus.NO_CONTENT
                     )
             );
         }catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
-                            HttpStatus.NO_CONTENT.value()
+                            HttpStatus.NO_CONTENT
                     )
             );
         }
