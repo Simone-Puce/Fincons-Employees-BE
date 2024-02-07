@@ -18,7 +18,7 @@ public class EmailStartDate implements IEmailStartDate {
 
     Logger logger = LoggerFactory.getLogger(EmailStartDate.class);
     private final Predicate<Employee> emailNotEmpty = employee -> !employee.getEmail().isEmpty();
-    private final Predicate<Employee> emailCorrectFormat = employee -> employee.getEmail().matches("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
+    public static final Predicate<Employee> emailCorrectFormat = employee -> employee.getEmail().matches("^[\\w!#$%&amp;'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&amp;'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
     private static final String EMAIL_SUBJECT_HIREDATE = "Happy Anniversary!";
     private static final String EMAIL_CONTENT_HIREDATE = "Congratulations on joining our team!";
     private static final String EMAIL_SUBCONTENT_HIREDATE = "You are a shining example of how hard work can lead to meaningful results. We would like to wish you a happy anniversary in our company!";

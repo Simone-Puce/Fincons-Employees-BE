@@ -1,6 +1,7 @@
 package com.fincons.jobscheduler;
 
 import com.fincons.service.email.IEmailBirthDate;
+import com.fincons.service.email.IEmailPdfAttachment;
 import com.fincons.service.email.IEmailStartDate;
 import com.fincons.service.employeeService.ICreateNewEmployeeRandom;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
@@ -14,6 +15,8 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 
 @Component
@@ -28,6 +31,8 @@ public class JobScheduler {
     private IEmailBirthDate iEmailBirtheDate;
     @Autowired
     private ICreateNewEmployeeRandom iCreateNewEmployeeRandom;
+    @Autowired
+    private IEmailPdfAttachment iEmailPdfAttachment;
 
 
     @Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderBirth}")
@@ -46,6 +51,15 @@ public class JobScheduler {
     public void emailSenderHire() throws IllegalArgumentException {
         logger.info("Looking for Anniversaries...");
         iEmailStartDate.sendAnniversaryGreetings();
+        logger.info("All emails were sent to {} ", LocalDate.now());
+    }
+
+    @Scheduled(cron = "${jobScheduler.JobScheduler.emailSenderPdf}")
+    @SchedulerLock(name = "hireEmailScheduler", lockAtLeastFor = "PT1M", lockAtMostFor = "PT5M")
+    //@Retryable(retryFor = IllegalArgumentException.class, maxAttemptsExpression = "4", backoff = @Backoff(delayExpression = "${retry.maxDelay}"))
+    public void emailSenderPdf() throws IllegalArgumentException, IOException {
+        logger.info("Looking for employee...");
+        iEmailPdfAttachment.sendPdfAttachment();
         logger.info("All emails were sent to {} ", LocalDate.now());
     }
 

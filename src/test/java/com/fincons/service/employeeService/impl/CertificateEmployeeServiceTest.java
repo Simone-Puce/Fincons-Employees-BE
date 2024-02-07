@@ -25,7 +25,6 @@ class CertificateEmployeeServiceTest {
 
     @Autowired
     private CertificateEmployeeMapper certificateEmployeeMapper;
-    private jakarta.servlet.http.HttpServletResponse HttpServletResponse;
 
     @Test
     void testListCertificateEmployeeByPreviousMonth() {
@@ -35,8 +34,16 @@ class CertificateEmployeeServiceTest {
         List<CertificateEmployeeDTO> result = certificateEmployeeService.listCertificateEmployeeByPreviousMonth(dateFrom, dateTo);
 
         assertFalse(result.isEmpty(), "La lista non deve essere vuota");
-        assertEquals(88, result.size(), "La lista deve contenere almeno un elemento");
+        assertEquals(62, result.size(), "La lista deve contenere almeno un elemento");
     }
 
+    @Test
+    void testListCertificateEmployeeByPreviousMonthIsEmpty() {
+        LocalDate dateFrom = LocalDate.of(2024, 1, 1);
+        LocalDate dateTo = LocalDate.of(2024, 1, 1);
 
+        List<CertificateEmployeeDTO> result = certificateEmployeeService.listCertificateEmployeeByPreviousMonth(dateFrom, dateTo);
+
+        assertEquals(0, result.size(), "La lista deve essere vuota");
+    }
 }

@@ -12,5 +12,5 @@ import java.util.List;
 @Service
 public interface IPdfCertificateEmployee {
 
-    void generate(List<CertificateEmployeeDTO> certificateEmployeeDTOSList, HttpServletResponse response) throws DocumentException, IOException;
+    void generate(List<CertificateEmployeeDTO> certificateEmployeeDTOSList) throws DocumentException, IOException;
 }

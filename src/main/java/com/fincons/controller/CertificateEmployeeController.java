@@ -7,16 +7,14 @@ import com.fincons.service.employeeService.CertificateEmployeeService;
 import com.fincons.service.employeeService.ICreateRandomCertificateEmployee;
 import com.fincons.service.pdfCertificate.PdfCertificateEmployee;
 import com.lowagie.text.DocumentException;
-import jakarta.servlet.http.HttpServletResponse;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/company-employee-management")
@@ -60,14 +58,15 @@ public class CertificateEmployeeController {
     }
 
     @GetMapping("${certificate-employee.export-to-pdf.uri}")
-    public void generatePdfFile(HttpServletResponse response, @RequestParam LocalDate dateFrom,@RequestParam LocalDate dateTo) throws DocumentException, IOException {
+    public void generatePdfFile(@RequestParam LocalDate dateFrom,@RequestParam LocalDate dateTo) throws DocumentException, IOException {
         List<CertificateEmployeeDTO> listOfCertificateEmployee = certificateEmployeeService.listCertificateEmployeeByPreviousMonth(dateFrom, dateTo);
-        pdfCertificateEmployee.generate(listOfCertificateEmployee, response);
+        pdfCertificateEmployee.generate(listOfCertificateEmployee);
     }
 
     @GetMapping("${certificate-employee.download-pdf.uri}")
-    public void generateFilePdf(HttpServletResponse response, LocalDate dateFrom, LocalDate dateTo) throws DocumentException, IOException, URISyntaxException {
-        certificateEmployeeService.downloadListCertificateEmployeeByPreviousMonth(response, dateFrom, dateTo );
+    public File generateFilePdf(LocalDate dateFrom, LocalDate dateTo) throws IOException {
+        certificateEmployeeService.downloadListCertificateEmployeeByPreviousMonth(dateFrom, dateTo);
+        return null;
     }
 
     @PostMapping("${certificate-employee.random-certificate-employee.uri}")

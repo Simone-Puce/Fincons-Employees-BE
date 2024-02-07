@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="">
+
+<head>
+    <title>Email Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            margin-top: 2%;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: rgb(255, 255, 255);
+            border-radius: 1.25rem;
+            padding: inherit;
+            width: 100%
+        }
+
+        .subContainer {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        img {
+            width: 40%;
+            display: flex;
+            justify-content: center;
+            margin: 1em auto;
+        }
+
+        .logo {
+            max-width: 19%;
+            margin: 0;
+        }
+
+        .text {
+            margin: 0%;
+            font-size: 1.5em;
+            font-family: 'Times New Roman', Times, serif;
+            margin-right: 0.3em;
+            text-align: center;
+        }
+
+        .personContainer {
+            display: flex;
+            justify-content: center;
+        }
+
+        .wish {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: rgb(252, 110, 44);
+            text-align: center;
+            margin-top: 1em;
+        }
+
+        .footer {
+            font-size: 0.8em;
+            color: rgb(100, 100, 100);
+            text-align: center;
+            margin-top: 1em;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="card">
+        <div>
+            <h2 class="text" th:text="${personalizedTextSub}"></h2>
+            <div>
+                <a href="http://localhost:8080/company-employee-management/v1/certificate-employee/download?dateFrom=1970-01-01&dateTo=2000-12-31">pdf</a>
+            </div>
+        </div>
+        <img th:src="'cid:logo'" class="logo" alt="Logo Fincons Group">
+        <div class="footer">Questa email è stata generata automaticamente, non è necessario rispondere.</div>
+    </div>
+</div>
+</body>
+
+</html>

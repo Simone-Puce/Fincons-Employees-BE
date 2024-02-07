@@ -14,7 +14,7 @@ public class EmailRegistrationOccurred implements IEmailRegistrationOccurred {
     Logger logger = LoggerFactory.getLogger(EmailRegistrationOccurred.class);
     public static final String EMAIL_SUBJECT_REGISTRATION_OCCURRED = "Registrazione avvenuta con successo!";
     public static final String EMAIL_CONTENT_REGISTRATION_OCCURRED = "Benvenuto, ti ringraziamo di esserti registrato sul nostro sito";
-    private static final String IMG_BIRTHDATE = "images/benvenuto.jpg";
+    private static final String IMG_REGISTRATION_OCCURED = "images/benvenuto.jpg";
     @Autowired
     private EmailSender emailSender;
     @Autowired
@@ -27,7 +27,7 @@ public class EmailRegistrationOccurred implements IEmailRegistrationOccurred {
         emailContent.put("lastName", lastName);
         emailContent.put("personalizedTextSub", EMAIL_CONTENT_REGISTRATION_OCCURRED);
         String htmlContent = emailContentBuilder.buildEmailContent(emailContent, "registrationOccurred-template");
-        emailSender.sendEmail(email, EMAIL_SUBJECT_REGISTRATION_OCCURRED, htmlContent, IMG_BIRTHDATE);
+        emailSender.sendEmail(email, EMAIL_SUBJECT_REGISTRATION_OCCURRED, htmlContent, IMG_REGISTRATION_OCCURED);
         logger.info("Email sent to {}", firstName);
 
     }

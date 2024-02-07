@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 @RestController
 @RequestMapping("${email.uri}")
 public class EmailController {
@@ -30,6 +33,11 @@ public class EmailController {
     public ResponseEntity<String> emailSenderHire() {
         jobScheduler.emailSenderHire();
         return ResponseEntity.ok("Anniversary emails have been sent successfully");
+    }
+    @PostMapping("/emailPdf")
+    public ResponseEntity<String> emailSenderPdf() throws IOException {
+        jobScheduler.emailSenderPdf();
+        return ResponseEntity.ok("Pdf emails have been sent successfully");
     }
 
     @PostMapping("/newEmployeeRandom")

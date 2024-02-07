@@ -4,6 +4,7 @@ import com.fincons.dto.CertificateEmployeeDTO;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,8 +14,11 @@ import java.util.List;
 @Service
 public class PdfCertificateEmployee implements IPdfCertificateEmployee{
 
+    @Autowired
+    private HttpServletResponse response;
+
     @Override
-    public void generate(List<CertificateEmployeeDTO> certificateEmployeeDTOSList, HttpServletResponse response) throws DocumentException, IOException {
+    public void generate(List<CertificateEmployeeDTO> certificateEmployeeDTOSList) throws DocumentException, IOException {
         Path path = Paths.get("C:\\Users\\carlo.vitto\\Desktop\\Fincons-Employees-BE\\src\\main\\resources\\images\\logo.png");
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, response.getOutputStream());
