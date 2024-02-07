@@ -44,7 +44,7 @@ public class FileController {
     }
 
     @PostMapping(value = "${file.upload}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public File uploadFile(@RequestBody FileDTO fileDTO) {
+    public FileDTO uploadFile(@RequestBody FileDTO fileDTO) {
         return fileServiceApi.uploadFile(fileDTO);
     }
 

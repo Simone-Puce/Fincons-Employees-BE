@@ -1,9 +1,11 @@
 package com.fincons.service.fileService;
 
 import com.fincons.Handler.ResponseHandler;
+import com.fincons.dto.EmployeeDTO;
 import com.fincons.entity.Employee;
 import com.fincons.entity.File;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.mapper.EmployeeMapper;
 import com.fincons.mapper.FileMapper;
 import com.fincons.dto.FileDTO;
 import com.fincons.repository.FileRepository;
@@ -37,15 +39,16 @@ public class FileServiceImpl implements FileServiceApi {
     @Autowired
     private EmployeeServiceImpl employeeServiceImpl;
 
+
     @Override
-    public File uploadFile(FileDTO fileDTO) {
+    public FileDTO uploadFile(FileDTO fileDTO) {
         Employee employee = employeeServiceImpl.validateEmployeeById(fileDTO.getEmpId());
         fileDTO.setEmpId(employee.getId().toString());
-        File file = fileMapper.mapFileDtotoFile(fileDTO);
 
-        //file.setEmp(employee);
+        File file = fileMapper.mapFileDtotoFile(fileDTO);
+        file.setEmp(employee);
         fileRepository.save(file);
-        return file;
+        return fileMapper.mapFileToFileDto(file);
     }
 
     @Override
