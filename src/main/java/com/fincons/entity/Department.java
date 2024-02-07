@@ -65,6 +65,7 @@ public class Department {
         this.address = address;
         this.city = city;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

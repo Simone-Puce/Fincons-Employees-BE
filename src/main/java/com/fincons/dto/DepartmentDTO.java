@@ -28,4 +28,10 @@ public class DepartmentDTO {
         this.city = city;
     }
 
+    public DepartmentDTO(String departmentId, String name, String address, String city) {
+        this.departmentId = departmentId;
+        this.name = name;
+        this.address = address;
+        this.city = city;
+    }
 }
