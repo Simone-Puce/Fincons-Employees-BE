@@ -4,6 +4,7 @@ package com.fincons.controller;
 import com.fincons.dto.RoleDTO;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.RoleException;
+import com.fincons.mapper.UserAndRoleMapper;
 import com.fincons.service.authService.RoleService;
 import com.fincons.utility.GenericResponse;
 import com.fincons.utility.ReturnObject;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/company-employee-management")
@@ -30,12 +33,31 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private UserAndRoleMapper userAndRoleMapper;
 
-    // /company-employee-management/v1/role/find-by-id
+    // /company-employee-management/v1/role/list
+    @GetMapping("${role.list}")
+        public ResponseEntity<GenericResponse<List<RoleDTO>>> getList () {
+
+                List<RoleDTO> listRoleDTOs =  roleService.findList()
+                        .stream()
+                        .map(r -> userAndRoleMapper.roleToRoleDto(r))
+                        .toList();
+
+                return ResponseEntity.ok(GenericResponse.<List<RoleDTO>>builder()
+                        .status(HttpStatus.OK)
+                        .success(true)
+                        .message("List found!")
+                        .data(listRoleDTOs)
+                        .build());
+    }
+
+
     @GetMapping("${role.find-by-id}/{roleId}")  //  /v1/role/find-by-id   application.properties role.find-by-id.uri=("${role.uri}/find-by-id")    role.uri = {base.version.uri}/role    ApplicationUri -> roleFindByIdUri
     public ResponseEntity<GenericResponse<RoleDTO>> getRoleById(@PathVariable long roleId) {
         try{
-            RoleDTO roleDTO = roleService.getRoleById(roleId);
+            RoleDTO roleDTO = userAndRoleMapper.roleToRoleDto(roleService.getRoleById(roleId));
 
             return ResponseEntity.ok(GenericResponse.<RoleDTO>builder()
                     .status(HttpStatus.OK)
@@ -56,7 +78,7 @@ public class RoleController {
     @PostMapping("${role.create}")
     public ResponseEntity<GenericResponse<RoleDTO>> createRole(@RequestBody RoleDTO roleDTO) {
         try{
-            RoleDTO newRole = roleService.createRole(roleDTO);
+            RoleDTO newRole = userAndRoleMapper.roleToRoleDto(roleService.createRole(roleDTO));
             return ResponseEntity.status(200).body(
                     GenericResponse.<RoleDTO>builder()
                     .status(HttpStatus.OK)
@@ -84,7 +106,7 @@ public class RoleController {
     // TODO modify permission an admin can modify a roleName but can't modify a ROLE_ADMIN
     public ResponseEntity<GenericResponse<RoleDTO>> updateRole(@PathVariable long roleId, @RequestBody RoleDTO roleModifiedDTO) {
         try{
-            RoleDTO newRoleModifiedTO = roleService.updateRole(roleId,roleModifiedDTO);
+            RoleDTO newRoleModifiedTO = userAndRoleMapper.roleToRoleDto(roleService.updateRole(roleId,roleModifiedDTO));
             return ResponseEntity.status(200).body(GenericResponse.<RoleDTO>builder()
                     .status(HttpStatus.OK)
                     .success(true)

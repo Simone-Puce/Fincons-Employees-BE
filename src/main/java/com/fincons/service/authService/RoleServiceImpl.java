@@ -34,9 +34,14 @@ public class RoleServiceImpl implements RoleService{
     @Autowired
     private UserAndRoleMapper userAndRoleMapper;
 
+    @Override
+    public List<Role> findList() {
+        return roleRepository.findAll();
+    }
+
 
     @Override
-    public RoleDTO getRoleById(long roleId) {
+    public Role getRoleById(long roleId) {
 
         Optional<Role> optionalRole = roleRepository.findById(roleId);
         if(optionalRole.isEmpty()){
@@ -47,11 +52,11 @@ public class RoleServiceImpl implements RoleService{
         optionalRoleToRole.setId(optionalRole.get().getId());
         optionalRoleToRole.setUsers(optionalRole.get().getUsers());
 
-        return userAndRoleMapper.roleToRoleDto(optionalRoleToRole);
+        return optionalRoleToRole;
     }
 
     @Override
-    public RoleDTO createRole(RoleDTO roleDTO) throws RoleException {
+    public Role createRole(RoleDTO roleDTO) throws RoleException {
 
         // See if matches with regex
         if(!RoleValidator.isValidRole(roleDTO.getName().toUpperCase())){
@@ -65,13 +70,11 @@ public class RoleServiceImpl implements RoleService{
         //I set name to Uppercase
         roleDTO.setName(roleDTO.getName().toUpperCase());
 
-        Role newRoleSaved = roleRepository.save(userAndRoleMapper.dtoToRole(roleDTO));
-
-        return userAndRoleMapper.roleToRoleDto(newRoleSaved);
+        return roleRepository.save(userAndRoleMapper.dtoToRole(roleDTO));
     }
 
     @Override
-    public RoleDTO updateRole(long roleId, RoleDTO roleModifiedDTO) throws  RoleException {
+    public Role updateRole(long roleId, RoleDTO roleModifiedDTO) throws  RoleException {
 
         String roleDTONameToConfront = roleModifiedDTO.getName().toUpperCase();
 
@@ -84,12 +87,15 @@ public class RoleServiceImpl implements RoleService{
             throw new ResourceNotFoundException("Role does not Exist");
         }
 
+        if(roleFound.get().getName().equals("ROLE_ADMIN")){
+            throw new RoleException("Can't modify a ROLE_ADMIN");
+        }
+
         Role roleToModify = roleFound.get();
 
         roleToModify.setName(roleModifiedDTO.getName().toUpperCase());
-        Role roleModifiedSaved =  roleRepository.save(roleToModify);
 
-        return userAndRoleMapper.roleToRoleDto(roleModifiedSaved);
+        return roleRepository.save(roleToModify);
     }
 
     @Override
@@ -98,7 +104,7 @@ public class RoleServiceImpl implements RoleService{
         // se non presente genera eccezione
         Optional<Role> roleToDelete = Optional.ofNullable(roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Role does not Exist")));
 
-        if (roleToDelete.isPresent()) {
+        if (roleToDelete.isPresent() && !roleToDelete.get().getName().equals("ROLE_ADMIN"))  {
             if (roleToDelete.get().getUsers().isEmpty()) {
                 roleRepository.deleteById(roleId);
                 return new GenericResponse<>(HttpStatus.OK,true,"Role deleted successfully!");
@@ -122,8 +128,11 @@ public class RoleServiceImpl implements RoleService{
                     return new GenericResponse<>(HttpStatus.resolve(409),false,rO);
                 }
             }
+        }else{
+            throw new RoleException("Can't delete a ROLE_ADMIN");
         }
 
-        return null;
     }
+
+
 }
