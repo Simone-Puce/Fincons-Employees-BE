@@ -76,7 +76,6 @@ public class AppConfig {
                 skip(destination.getFileList());
             }
         });
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper;
     }
     @Bean
@@ -95,7 +94,7 @@ public class AppConfig {
                 skip(destination.getEmpId());
             }
         });
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
         return modelMapper;
     }
     @Bean
@@ -107,7 +106,6 @@ public class AppConfig {
                 skip(destination.getFile64());
             }
         });
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper;
     }
 }

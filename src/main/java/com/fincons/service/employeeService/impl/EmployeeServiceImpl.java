@@ -1,6 +1,8 @@
 package com.fincons.service.employeeService.impl;
 
+import com.fincons.dto.DepartmentDTO;
 import com.fincons.dto.EmployeeDTO;
+import com.fincons.dto.PositionDTO;
 import com.fincons.entity.Department;
 import com.fincons.entity.Employee;
 import com.fincons.entity.Position;
@@ -73,22 +75,28 @@ public class EmployeeServiceImpl implements EmployeeService {
         //Condition for not have null attributes
         validateEmployeeFields(employeeDTO);
 
+        //UUID save from front-end
+        Department uuidDepartment = new Department();
+        uuidDepartment.setDepartmentId(employeeDTO.getDepartmentId());
+        Position uuidPosition = new Position();
+        uuidPosition.setPositionId(employeeDTO.getPositionId());
+
+
         List<Employee> employees = employeeRepository.findAll();
         //Condition if there are employee with same firstName && lastName && birthDate
         checkForDuplicateEmployee(employeeDTO, employees);
 
-        Department department;
-        department = departmentServiceImpl.validateDepartmentById(employeeDTO.getDepartmentId());
+        Department department = departmentServiceImpl.validateDepartmentById(employeeDTO.getDepartmentId());
         employeeDTO.setDepartmentId(department.getId().toString());
 
-        Position position;
-        position = positionServiceImpl.validatePositionById(employeeDTO.getPositionId());
+        Position position = positionServiceImpl.validatePositionById(employeeDTO.getPositionId());
         employeeDTO.setPositionId(position.getId().toString());
-
 
         Employee employee = modelMapperEmployee.mapToEntity(employeeDTO);
 
         employeeRepository.save(employee);
+        employee.setDepartment(uuidDepartment);
+        employee.setPosition(uuidPosition);
 
         return employee;
     }
