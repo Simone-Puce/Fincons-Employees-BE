@@ -182,22 +182,31 @@ public class UserServiceImpl  implements UserService{
 
 
 
+    public boolean existingUser(String email){
+        boolean exists= userRepo.existsByEmail(email);
+        if(exists){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
     //METODO PER AGGIUNGERE UN NUOVO USER IN SEGUITO ALLA LETTURA DI UN FILE.
-    public User addNewUser(User user) {
+    public boolean addNewUser(User user){
+
         String emailUser = user.getEmail().toLowerCase().replace(" ", "");
-        // Controllo se l'indirizzo email è valido
-        if (!emailUser.isEmpty() && EmailValidator.isValidEmail(emailUser) && !userRepo.existsByEmail(emailUser)) {
+        // Controllo se l'indirizzo email è valido e non esiste un utente registrato con la mail specificata
+    //    if (!emailUser.isEmpty() && EmailValidator.isValidEmail(emailUser) && !userRepo.existsByEmail(emailUser)) {
             Role role;
             role = roleToAssign("ROLE_USER");
             user.setRoles(List.of(role));
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            User userToSave = userRepo.save(user);
-            return userToSave;
-        } else {
-            // L'indirizzo email non è valido o esiste già nella repository
-            throw new DuplicateEmailException("Invalid or existing email!!");
-        }
+            userRepo.save(user);
+            return true;
+    //    } else{
+    //        return false;
+    //    }
     }
 
 

@@ -49,6 +49,7 @@ public class User {
         setFirstName(firstName);
         setLastName(lastName);
         setPassword(password);
+        setGeneratedPassword(true);
     }
 
     public long getId() {

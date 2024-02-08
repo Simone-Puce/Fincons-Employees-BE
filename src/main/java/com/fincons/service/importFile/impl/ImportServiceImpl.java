@@ -6,6 +6,7 @@ import com.fincons.dto.ImportFileDTO;
 import com.fincons.dto.ImportResultDTO;
 import com.fincons.enums.Gravity;
 import com.fincons.enums.ProcessingStatus;
+import com.fincons.exception.EmailException;
 import com.fincons.service.employeeService.EmployeeService;
 import com.fincons.service.importFile.ImportFileReader;
 import com.fincons.service.importFile.ImportService;
@@ -40,7 +41,7 @@ public class ImportServiceImpl implements ImportService {
 
 
     @Override
-    public ImportResultDTO processImport(MultipartFile file) {
+    public ImportResultDTO processImport(MultipartFile file)  {
 
         ImportResultDTO importResult = new ImportResultDTO(ImportServiceDateUtility.generateId(), file.getOriginalFilename(), file.getSize(), ImportServiceDateUtility.generateDate());
 
@@ -95,9 +96,7 @@ public class ImportServiceImpl implements ImportService {
         }
         return importResult;
     }
-
-
-    private void processReadResult(ImportFileDTO readResult, ImportResultDTO importResult) {
+    private void processReadResult(ImportFileDTO readResult, ImportResultDTO importResult)  {
         //LISTA DEI DIPENDENTI
         List<EmployeeDTO> employeeList = readResult.getEmployeeList();
 
@@ -130,36 +129,38 @@ public class ImportServiceImpl implements ImportService {
 
                 //Si passa alla persistenza degli impiegati, ritornando eventualmente una lista di errori se qualche dipendente è già presente.
                 //SETTANDO IN UNA APPOSITA LISTA, I DUPLICATI TROVATI DURANTE L'INSERIMENTO NEL DB.
+
                 List<ErrorDetailDTO> duplicatedEmployee = persistenceEmployeeService.addIfNotPresent(employeeList);
                 //setto la lista generale per ritornarla comunque nel corpo della risposta di tutti gli errori
                 errorList.addAll(duplicatedEmployee);
-
-
+                importResult.setErrors(errorList);
                 //TODO - ALTRO METODO PRIVATO PER SETTARE L'IMPORT RESULT
                 // Aggiorna l'oggetto ImportResult con gli errori riscontrati nel processo di importazione
-                importResult.setErrors(errorList);
+                setImportResult(importResult, employeeList, duplicatedEmployee);
 
-                if (importResult.getErrors().size() > 0 && employeeList.size() > 0) {
-                    //se vengono trovati N dipendenti duplicati tanto quanti N dipendenti da aggiungere
-                    //l'import result sarà not loaded dato che nessun dipendente verrà aggiunto al db.
-                    if (duplicatedEmployee.size() == employeeList.size()) {
-                        importResult.setStatus(ProcessingStatus.NOT_LOADED);
-                    } else {
-                        importResult.setStatus(ProcessingStatus.LOADED_WITH_ERRORS);
-                    }
 
-                } else if (importResult.getErrors().size() == 0 && employeeList.size() > 0) {
-                    importResult.setStatus(ProcessingStatus.LOADED);
-                } else if (importResult.getErrors().size() == 0 && employeeList.size() == 0) {
-                    importResult.setStatus(ProcessingStatus.NOT_LOADED);
-                } else if (importResult.getErrors().size() > 0 && employeeList.size() == 0) {
-                    importResult.setStatus(ProcessingStatus.NOT_LOADED);
-                }
-                importResult.setEndProcessingDate(ImportServiceDateUtility.generateDate());
         }
 
 
         }
+    }
+    private void setImportResult(ImportResultDTO importResult, List<EmployeeDTO> employeeList,List<ErrorDetailDTO> duplicatedEmployee){
+        if (importResult.getErrors().size() > 0 && employeeList.size() > 0) {
+            //se vengono trovati N dipendenti duplicati tanto quanti N dipendenti da aggiungere
+            //l'import result sarà not loaded dato che nessun dipendente verrà aggiunto al db.
+            if (duplicatedEmployee.size() == employeeList.size()) {
+                importResult.setStatus(ProcessingStatus.NOT_LOADED);
+            } else {
+                importResult.setStatus(ProcessingStatus.LOADED_WITH_ERRORS);
+            }
+        } else if (importResult.getErrors().size() == 0 && employeeList.size() > 0) {
+            importResult.setStatus(ProcessingStatus.LOADED);
+        } else if (importResult.getErrors().size() == 0 && employeeList.size() == 0) {
+            importResult.setStatus(ProcessingStatus.NOT_LOADED);
+        } else if (importResult.getErrors().size() > 0 && employeeList.size() == 0) {
+            importResult.setStatus(ProcessingStatus.NOT_LOADED);
+        }
+        importResult.setEndProcessingDate(ImportServiceDateUtility.generateDate());
     }
 
 }
