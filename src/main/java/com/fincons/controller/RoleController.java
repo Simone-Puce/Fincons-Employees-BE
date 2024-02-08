@@ -135,7 +135,7 @@ public class RoleController {
 
         }catch(ResourceNotFoundException | RoleException re){
             return ResponseEntity.status(200).body(
-                    GenericResponse.<ReturnObject>builder()
+                    GenericResponse.<String>builder()
                             .status(HttpStatus.resolve(409))
                             .success(false)
                             .message(re.getMessage())
