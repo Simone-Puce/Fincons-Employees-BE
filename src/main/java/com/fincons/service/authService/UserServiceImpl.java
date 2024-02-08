@@ -23,7 +23,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.fincons.repository.RoleRepository;
 import com.fincons.repository.UserRepository;
 import com.fincons.utility.EmailValidator;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -181,15 +183,6 @@ public class UserServiceImpl  implements UserService{
     }
 
 
-
-    public boolean existingUser(String email){
-        boolean exists= userRepo.existsByEmail(email);
-        if(exists){
-            return true;
-        }else{
-            return false;
-        }
-    }
 
 
     //METODO PER AGGIUNGERE UN NUOVO USER IN SEGUITO ALLA LETTURA DI UN FILE.

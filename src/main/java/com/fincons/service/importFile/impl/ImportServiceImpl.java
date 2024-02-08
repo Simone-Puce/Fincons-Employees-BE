@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-@PropertySource("importfile.properties")
+@PropertySource("classpath:importfile.properties")
 @Service
 public class ImportServiceImpl implements ImportService {
     private static final Logger logger = LoggerFactory.getLogger(ImportServiceImpl.class);
