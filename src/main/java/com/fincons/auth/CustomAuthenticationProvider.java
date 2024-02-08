@@ -15,6 +15,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider{
     @Override
     public Authentication authenticate (Authentication authentication) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(authentication.getName());
+
         if (userDetails != null) {
             return new UsernamePasswordAuthenticationToken(
                     userDetails.getUsername(),

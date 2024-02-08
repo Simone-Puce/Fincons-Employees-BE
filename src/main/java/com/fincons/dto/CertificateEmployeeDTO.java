@@ -3,7 +3,6 @@ package com.fincons.dto;
 
 import com.fincons.entity.Certificate;
 import com.fincons.entity.Employee;
-
 import java.time.LocalDate;
 
 public class CertificateEmployeeDTO {

@@ -1,9 +1,7 @@
 package com.fincons.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.util.Objects;
 

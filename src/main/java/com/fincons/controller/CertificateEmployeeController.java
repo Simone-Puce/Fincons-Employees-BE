@@ -1,14 +1,11 @@
 package com.fincons.controller;
 
 import com.fincons.dto.CertificateEmployeeDTO;
-import com.fincons.entity.CertificateEmployee;
 import com.fincons.mapper.CertificateEmployeeMapper;
 import com.fincons.service.employeeService.CertificateEmployeeService;
-import com.fincons.service.employeeService.ICreateRandomCertificateEmployee;
-import com.fincons.service.pdfCertificate.PdfCertificateEmployee;
-import com.lowagie.text.DocumentException;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -17,7 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/company-employee-management")
+@RequestMapping("${certificateEmployee.uri}")
 public class CertificateEmployeeController {
     @Autowired
     private CertificateEmployeeService certificateEmployeeService;
@@ -28,19 +25,19 @@ public class CertificateEmployeeController {
     @Autowired
     private ICreateRandomCertificateEmployee iCreateRandomCertificateEmployee;
 
-    @GetMapping("${certificate-employee.list.uri}")
+    @GetMapping("${certificate-employee.list}")
     public List<CertificateEmployeeDTO> getAllCertificateEmployee(){
         return certificateEmployeeService.getAllCertificatesEmployees();
     }
-    @PostMapping("${certificate-employee.add.uri}")
+    @PostMapping("${certificate-employee.add}")
     public CertificateEmployee addCertificate(@RequestBody CertificateEmployeeDTO certificateEmployeeDTO){
         return certificateEmployeeService.addCertificateEmployee(certificateEmployeeDTO);
     }
-    @GetMapping("${certificate-employee.find-by-id.uri}/{id}")
+    @GetMapping("${certificate-employee.find-by-id}/{id}")
     public CertificateEmployeeDTO getCertificateEmployeeById(@PathVariable Long id) throws ServiceException {
         return certificateEmployeeService.getCertificateEmployeeById(id);
     }
-    @PutMapping("${certificate-employee.update.uri}/{id}")
+    @PutMapping("${certificate-employee.update}/{id}")
     public CertificateEmployee updateCertificateEmployee(@PathVariable Long id, @RequestBody CertificateEmployeeDTO certificateEmployeeDTO){
         return certificateEmployeeService.updateCertificateEmployee(id, certificateEmployeeDTO);
     }

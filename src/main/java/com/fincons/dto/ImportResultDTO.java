@@ -1,7 +1,6 @@
 package com.fincons.dto;
 
 import com.fincons.enums.ProcessingStatus;
-
 import java.sql.Timestamp;
 import java.util.List;
 

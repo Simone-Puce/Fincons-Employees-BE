@@ -2,7 +2,6 @@ package com.fincons.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
 import java.util.Set;
 
 @Entity

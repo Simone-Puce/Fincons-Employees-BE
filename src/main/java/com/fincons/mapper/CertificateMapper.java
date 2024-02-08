@@ -3,7 +3,6 @@ package com.fincons.mapper;
 import com.fincons.dto.CertificateDTO;
 import com.fincons.entity.Certificate;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
 @Component

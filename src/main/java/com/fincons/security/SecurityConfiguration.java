@@ -1,99 +1,136 @@
 package com.fincons.security;
 
+import com.fincons.enums.RoleEndpoint;
+import com.fincons.utility.ApplicationUri;
+import com.fincons.jwt.JwtAuthenticationEntryPoint;
+import com.fincons.jwt.JwtAuthenticationFilter;
 
-import com.fincons.auth.CustomAuthenticationProvider;
+import com.fincons.utility.Endpoint;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 public class SecurityConfiguration {
+
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
 
     @Autowired
-    UserDetailsService userDetailsService;
+    private  JwtAuthenticationEntryPoint authenticationEntryPoint;
+
     @Autowired
-    CustomAuthenticationProvider customAuthenticationProvider;
+    private   JwtAuthenticationFilter jwtAuthFilter;
+
+
+    @Value("${application.context}")
+    private String appContext;
+
+    @Value("${role.base.uri}")
+    private String roleBaseUri;
+
+    @Value("${department.base.uri}")
+    private String departmentBaseUri;
+
+    @Value("${employee.base.uri}")
+    private String employeeBaseUri;
+    @Value("${position.base.uri}")
+    private String positionUri;
+    @Value("${project.base.uri}")
+    private String projectBaseUri;
+    @Value("${modify.user}")
+    private String modifyUser;
+    @Value("${file.base.uri}")
+    private String fileBaseUri;
+    @Value("${email.sender.base.uri}")
+    private String emailSenderUri;
+    @Value("${update.user.password}")
+    private String updateUserPassword;
+    @Value("${registered.users}")
+    private String registeredUsers;
+    @Value("${login.base.uri}")
+    private String loginBaseUri;
+    @Value("${logout.base.uri}")
+    private String logoutBaseUri;
+    @Value("${error.base.uri}")
+    private String errorBaseUri;
+    @Value("${register.base.uri}")
+    private String registerBaseUri;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        //http.cors(AbstractHttpConfigurer::disable);
+
+        http.cors(AbstractHttpConfigurer::disable);
         http.csrf(AbstractHttpConfigurer::disable);
+
+
+
+        List<Endpoint> endpoints = Arrays.asList(
+
+                new Endpoint(appContext + roleBaseUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + departmentBaseUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + positionUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + projectBaseUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + fileBaseUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + emailSenderUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + updateUserPassword + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + employeeBaseUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
+                new Endpoint(appContext + registeredUsers, Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER))
+
+        );
+
+        http.authorizeHttpRequests(authz -> {
+
+            for (Endpoint e: endpoints) {
+                if (e.getRoles().contains(RoleEndpoint.ADMIN) && e.getRoles().contains(RoleEndpoint.USER)) {
+                    authz.requestMatchers(HttpMethod.GET, e.getPath()).hasAnyRole("ADMIN","USER");
+                    authz.requestMatchers(e.getPath()).hasRole("ADMIN");
+                }else if(e.getRoles().contains(RoleEndpoint.ADMIN) && e.getRoles().size() == 1){
+                    authz.requestMatchers(e.getPath()).hasRole("ADMIN");
+                } else if (e.getRoles().contains(RoleEndpoint.USER) && e.getRoles().size() == 1) {
+                    authz.requestMatchers(e.getPath()).hasRole("USER");
+                }
+            }
+            authz.requestMatchers(appContext + loginBaseUri).permitAll()
+                    .requestMatchers(appContext + logoutBaseUri).permitAll()
+                    .requestMatchers(appContext +registerBaseUri).permitAll()
+                    .requestMatchers(appContext + errorBaseUri).permitAll()
+                    .requestMatchers(appContext + modifyUser).authenticated()
+                    .anyRequest().authenticated();
+        }).httpBasic(Customizer.withDefaults());
+
         http
-                .authorizeHttpRequests((authz) -> authz
-                        //Auth for App
-                        .requestMatchers(HttpMethod.DELETE,"/company-employee-management/v1/department/**").hasRole("USER") // Will replace with admin when FE will be ready
-                        .requestMatchers(HttpMethod.DELETE,"/company-employee-management/v1/employee/**").hasRole("USER") // Will replace with admin when FE will be ready
-                        .requestMatchers(HttpMethod.DELETE,"/company-employee-management/v1/position/**").hasRole("USER") // Will replace with admin when FE will be ready
-                        .requestMatchers(HttpMethod.DELETE,"/company-employee-management/v1/project/**").hasRole("USER")  // Will replace with admin when FE will be ready
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(authenticationEntryPoint));
 
-                        .requestMatchers("/company-employee-management/v1/department/**").hasRole("USER")
-                        .requestMatchers("/company-employee-management/v1/employee/**").hasRole("USER")
-                        .requestMatchers("/company-employee-management/v1/position/**").hasRole("USER")
-                        .requestMatchers("/company-employee-management/v1/project/**").hasRole("USER")
-                        .requestMatchers("/company-employee-management/v1/certificate/**").hasRole("USER")
-                        .requestMatchers("/company-employee-management/v1/certificate-employee/**").hasRole("USER")
-                        .requestMatchers("/company-employee-management/v1/file/**").hasRole("USER")
-                        .requestMatchers("/company-employee-management/v1/importfile").hasRole("USER")
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-                        //Auth for Login/Reg
-                        .requestMatchers("/company-employee-management/v1/email").permitAll()
-                        .requestMatchers("/company-employee-management/v1/session-value").permitAll()
-                        .requestMatchers("/company-employee-management/v1/home").permitAll()
-                        .requestMatchers("/company-employee-management/v1/register").permitAll()
-                        .requestMatchers("/company-employee-management/v1/employees").authenticated()
-                        .requestMatchers("/company-employee-management/v1/error").permitAll()
-                        .requestMatchers("/company-employee-management/v1/registered-users").hasAnyRole("ADMIN","USER")
-
-                        .requestMatchers("/company-employee-management/v1/login").permitAll()
-                        .requestMatchers("/company-employee-management/v1/logout").permitAll().anyRequest().authenticated()
-
-
-                );
-        http
-                .formLogin(form -> form
-                        .loginPage("/company-employee-management/v1/login")
-                        .loginProcessingUrl("/company-employee-management/v1/login")
-                        .failureUrl("/company-employee-management/v1/error")
-                        .defaultSuccessUrl("/company-employee-management/v1/home").permitAll());
-        http
-                .logout(logout -> logout
-                        .logoutUrl("/company-employee-management/v1/logout")
-                        .logoutSuccessUrl("/company-employee-management/v1/home")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID").permitAll());
         return http.build();
     }
-/*
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
-    }
-    //per inserire il provider di autenticazione
-    @Autowired
-    public void configure (AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider((AuthenticationProvider) customAuthenticationProvider);
-    }
- */
 
 }

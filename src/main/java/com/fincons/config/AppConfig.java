@@ -1,8 +1,14 @@
 package com.fincons.config;
 
+import com.fincons.dto.RoleDTO;
+import com.fincons.dto.UserDTO;
+import com.fincons.entity.Role;
+import com.fincons.entity.User;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -23,6 +29,36 @@ public class AppConfig {
     @Bean
     public LockProvider lockProvider( final DataSource dataSource) {
         return new JdbcTemplateLockProvider(dataSource);
+    }
+
+    @Bean
+    public ModelMapper modelMapperUser() {
+
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.addMappings(new PropertyMap<User, UserDTO>() {
+
+            @Override
+            protected void configure(){
+                skip(destination.getRoles());
+            }
+        });
+
+        return modelMapper;
+    }
+
+    @Bean
+    public ModelMapper modelMapperRole() {
+
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.addMappings(new PropertyMap<Role, RoleDTO>() {
+
+            @Override
+            protected void configure(){
+                skip(destination.getUsers());
+            }
+        });
+
+        return modelMapper;
     }
 
 
