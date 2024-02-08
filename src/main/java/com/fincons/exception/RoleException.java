@@ -1,8 +1,5 @@
 package com.fincons.exception;
-import com.fincons.dto.UserDTO;
-import com.fincons.utility.ReturnObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RoleException extends Exception{

@@ -7,7 +7,6 @@ import com.fincons.exception.RoleException;
 import com.fincons.mapper.UserAndRoleMapper;
 import com.fincons.service.authService.RoleService;
 import com.fincons.utility.GenericResponse;
-import com.fincons.utility.ReturnObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -130,8 +129,14 @@ public class RoleController {
 
         try{
 
-            GenericResponse<String> roleDeleted = roleService.deleteRole(roleId,deleteUsers);
-            return ResponseEntity.status(200).body(roleDeleted);
+            String roleDeleted = roleService.deleteRole(roleId,deleteUsers);
+            return ResponseEntity.status(200).body(
+                    GenericResponse.<String>builder()
+                            .status(HttpStatus.resolve(200))
+                            .success(true)
+                            .message(roleDeleted)
+                            .build()
+            );
 
         }catch(ResourceNotFoundException | RoleException re){
             return ResponseEntity.status(200).body(

@@ -1,7 +1,6 @@
 package com.fincons.service.authService;
 
 import com.fincons.dto.RoleDTO;
-import com.fincons.dto.UserDTO;
 import com.fincons.entity.Role;
 import com.fincons.entity.User;
 import com.fincons.exception.ResourceNotFoundException;
@@ -9,16 +8,10 @@ import com.fincons.exception.RoleException;
 import com.fincons.mapper.UserAndRoleMapper;
 import com.fincons.repository.RoleRepository;
 import com.fincons.repository.UserRepository;
-import com.fincons.utility.GenericResponse;
-import com.fincons.utility.ReturnObject;
 import com.fincons.utility.RoleValidator;
-import org.antlr.v4.runtime.TokenStreamRewriter;
-import org.modelmapper.internal.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,7 +92,7 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public GenericResponse<String> deleteRole(long roleId, boolean deleteUsersAssociated) throws RoleException {  //  if Boolean deleteUsersAssociated == null -- > nullPointerExepciont
+    public String deleteRole(long roleId, boolean deleteUsersAssociated) throws RoleException {  //  if Boolean deleteUsersAssociated == null -- > nullPointerExepciont
 
         // se non presente genera eccezione
         Optional<Role> roleToDelete = Optional.ofNullable(roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Role does not Exist")));
@@ -107,7 +100,7 @@ public class RoleServiceImpl implements RoleService{
         if (roleToDelete.isPresent() && !roleToDelete.get().getName().equals("ROLE_ADMIN"))  {
             if (roleToDelete.get().getUsers().isEmpty()) {
                 roleRepository.deleteById(roleId);
-                return new GenericResponse<>(HttpStatus.OK,true,"Role deleted successfully!");
+                return "Role deleted successfully!";
 
             } else {
                 if (deleteUsersAssociated) {
@@ -115,7 +108,7 @@ public class RoleServiceImpl implements RoleService{
                     roleToDelete.get().getUsers()
                             .forEach(user -> userRepository.delete(user));
                     roleRepository.deleteById(roleToDelete.get().getId());
-                    return new GenericResponse<>(HttpStatus.OK,true,"Role and users associated, deleted!");
+                    return "Role and users associated, deleted!";
                 } else {
                     List<Long> idOfUsersToModifyRole = roleToDelete.get()
                             .getUsers()
