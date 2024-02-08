@@ -16,7 +16,7 @@ public interface RoleService {
     Role updateRole(long roleId, RoleDTO roleModifiedDTO) throws RoleException;
 
 
-    GenericResponse<ReturnObject> deleteRole(long roleId, boolean deleteUsers) throws RoleException;
+    GenericResponse<String> deleteRole(long roleId, boolean deleteUsers) throws RoleException;
 
-    List<Role> findList();
+    List<Role> findAllRoles();
 }

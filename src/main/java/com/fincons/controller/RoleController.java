@@ -38,9 +38,9 @@ public class RoleController {
 
     // /company-employee-management/v1/role/list
     @GetMapping("${role.list}")
-        public ResponseEntity<GenericResponse<List<RoleDTO>>> getList () {
+        public ResponseEntity<GenericResponse<List<RoleDTO>>> getAllRoles () {
 
-                List<RoleDTO> listRoleDTOs =  roleService.findList()
+                List<RoleDTO> listRoleDTOs =  roleService.findAllRoles()
                         .stream()
                         .map(r -> userAndRoleMapper.roleToRoleDto(r))
                         .toList();
@@ -48,7 +48,7 @@ public class RoleController {
                 return ResponseEntity.ok(GenericResponse.<List<RoleDTO>>builder()
                         .status(HttpStatus.OK)
                         .success(true)
-                        .message("List found!")
+                        .message("Role list found!")
                         .data(listRoleDTOs)
                         .build());
     }
@@ -106,12 +106,12 @@ public class RoleController {
     // TODO modify permission an admin can modify a roleName but can't modify a ROLE_ADMIN
     public ResponseEntity<GenericResponse<RoleDTO>> updateRole(@PathVariable long roleId, @RequestBody RoleDTO roleModifiedDTO) {
         try{
-            RoleDTO newRoleModifiedTO = userAndRoleMapper.roleToRoleDto(roleService.updateRole(roleId,roleModifiedDTO));
+            RoleDTO updatedRole  = userAndRoleMapper.roleToRoleDto(roleService.updateRole(roleId,roleModifiedDTO));
             return ResponseEntity.status(200).body(GenericResponse.<RoleDTO>builder()
                     .status(HttpStatus.OK)
                     .success(true)
                     .message("Role updated Succesfully!!!")
-                    .data(newRoleModifiedTO)
+                    .data(updatedRole)
                     .build());
         }catch(RoleException re){
             return ResponseEntity.status(200).body(GenericResponse.<RoleDTO>builder()
@@ -122,17 +122,15 @@ public class RoleController {
         }
     }
 
-    // delete.role.uri = ${role.uri}/delete
-    //  Role Service works when a role has no relationship (Example, I deleted role_manager, it wasn't assigned to no-one user)
-    // i test now to delete a role guest, it has relationship with an user / ok doesn't work
+
     @DeleteMapping("${delete.role}/{roleId}")
-    public ResponseEntity<GenericResponse<ReturnObject>> deleteRole(
+    public ResponseEntity<GenericResponse<String>> deleteRole(
             @PathVariable long roleId,
-            @RequestParam (name = "deleteUsers" , required = false) boolean deleteUsersAnyway) {
+            @RequestParam (name = "deleteUsers" , required = false) boolean deleteUsers) {
 
         try{
 
-            GenericResponse<ReturnObject> roleDeleted = roleService.deleteRole(roleId,deleteUsersAnyway);
+            GenericResponse<String> roleDeleted = roleService.deleteRole(roleId,deleteUsers);
             return ResponseEntity.status(200).body(roleDeleted);
 
         }catch(ResourceNotFoundException | RoleException re){

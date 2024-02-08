@@ -35,7 +35,7 @@ public class RoleServiceImpl implements RoleService{
     private UserAndRoleMapper userAndRoleMapper;
 
     @Override
-    public List<Role> findList() {
+    public List<Role> findAllRoles() {
         return roleRepository.findAll();
     }
 
@@ -99,7 +99,7 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public GenericResponse<ReturnObject> deleteRole(long roleId, boolean deleteUsersAssociated) throws RoleException {  //  if Boolean deleteUsersAssociated == null -- > nullPointerExepciont
+    public GenericResponse<String> deleteRole(long roleId, boolean deleteUsersAssociated) throws RoleException {  //  if Boolean deleteUsersAssociated == null -- > nullPointerExepciont
 
         // se non presente genera eccezione
         Optional<Role> roleToDelete = Optional.ofNullable(roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Role does not Exist")));
@@ -122,10 +122,8 @@ public class RoleServiceImpl implements RoleService{
                             .stream()
                             .map(User::getId)
                             .toList();
-                    ReturnObject rO = new ReturnObject();
-                    rO.setMessage("You have to change role's name of these users before!");
-                    rO.setList(idOfUsersToModifyRole);
-                    return new GenericResponse<>(HttpStatus.resolve(409),false,rO);
+
+                    throw new RoleException("You have to change before the role's name of these users: List of id of users : " + idOfUsersToModifyRole);
                 }
             }
         }else{

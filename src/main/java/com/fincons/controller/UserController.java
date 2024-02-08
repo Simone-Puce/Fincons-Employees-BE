@@ -89,12 +89,12 @@ public class UserController {
             @RequestBody UserDTO userDTO,
             @RequestParam(name = "admin", required = false) String passwordForAdmin) {
         try {
-            UserDTO userToShow = userAndRoleMapper.userToUserDto(userService.registerNewUser(userDTO, passwordForAdmin));
+            UserDTO registeredUser = userAndRoleMapper.userToUserDto(userService.registerNewUser(userDTO, passwordForAdmin));
             return ResponseEntity.ok(GenericResponse.<UserDTO>builder()
                     .status(HttpStatus.OK)
                     .success(true)
                     .message("Registered Succesfully!!!")
-                    .data(userToShow)
+                    .data(registeredUser)
                     .build());
 
         } catch (EmailException ee) {
@@ -124,13 +124,13 @@ public class UserController {
             ) throws Exception {
         try {
 
-            UserDTO isUserModified =userAndRoleMapper.userToUserDto(userService.updateUser(email, userModified, passwordForAdmin));
+            UserDTO updatedUser =userAndRoleMapper.userToUserDto(userService.updateUser(email, userModified, passwordForAdmin));
             return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<UserDTO>builder()
                             .status(HttpStatus.OK)
                             .success(true)
                             .message("User modified succesfully!")
-                            .data(isUserModified).build()
+                            .data(updatedUser).build()
             );
 
         } catch (RoleException re) {
@@ -185,7 +185,7 @@ public class UserController {
 
 
     @GetMapping("${detail.userdto}")
-    public ResponseEntity<GenericResponse<UserDTO>> userDetails(@RequestParam String email) {
+    public ResponseEntity<GenericResponse<UserDTO>> getUserByEmail(@RequestParam String email) {
         UserDTO userDTO = userAndRoleMapper.userToUserDto(userService.getUserDtoByEmail(email));
         return ResponseEntity.status(HttpStatus.OK).body(
                 GenericResponse.<UserDTO>builder()
