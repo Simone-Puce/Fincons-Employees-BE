@@ -56,11 +56,11 @@ public class UserServiceImpl  implements UserService{
 
 
     @Override
-    public UserDTO registerNewUser(UserDTO userDTO, String passwordForAdmin) throws EmailException, PasswordException {
+    public User registerNewUser(UserDTO userDTO, String passwordForAdmin) throws EmailException, PasswordException {
 
         String emailDto = userDTO.getEmail().toLowerCase().replace(" ", "");
 
-        if (emailDto.isEmpty() && !EmailValidator.isValidEmail(emailDto) && userRepo.existsByEmail(emailDto)) {
+        if (emailDto.isEmpty() || !EmailValidator.isValidEmail(emailDto) || userRepo.existsByEmail(emailDto)) {
             LOG.warn("Invalid or existing email!!");
             throw new EmailException(EmailException.emailInvalidOrExist());
         }
@@ -80,7 +80,8 @@ public class UserServiceImpl  implements UserService{
             userToSave.setGeneratedPassword(false);
             User userSaved = userRepo.save(userToSave);
 
-            return userAndRoleMapper.userToUserDto(userSaved);
+            return userSaved;
+                    //userAndRoleMapper.userToUserDto(userSaved);
     }
 
     @Override
@@ -96,7 +97,7 @@ public class UserServiceImpl  implements UserService{
     }
 
     @Override
-    public UserDTO updateUser(String email, UserDTO userModified, String passwordForAdmin) {
+    public User updateUser(String email, UserDTO userModified, String passwordForAdmin) {
         if (email.isEmpty() && !EmailValidator.isValidEmail(email)) {
             throw new ResourceNotFoundException("Invalid email!");
         }
@@ -114,12 +115,12 @@ public class UserServiceImpl  implements UserService{
                         .map(role -> userAndRoleMapper.dtoToRole(role))
                         .collect(Collectors.toList()));
             }
-            User userSaved = userRepo.save(userFound);
-            return userAndRoleMapper.userToUserDto(userSaved);
+        return userRepo.save(userFound);
+
     }
 
     @Override
-    public UserDTO updateUserPassword(String email, String password, String newPassword) throws EmailException, PasswordException {
+    public User updateUserPassword(String email, String password, String newPassword) throws EmailException, PasswordException {
 
         //if email exist
         if(userRepo.findByEmail(email) == null && !EmailValidator.isValidEmail(email)) {
@@ -140,9 +141,8 @@ public class UserServiceImpl  implements UserService{
 
         userToModify.setPassword(passwordEncoder.encode(newPassword));
 
-        User userSaved = userRepo.save(userToModify);
+        return userRepo.save(userToModify);
 
-        return userAndRoleMapper.userToUserDto(userSaved);
     }
 
     @Override
@@ -165,9 +165,8 @@ public class UserServiceImpl  implements UserService{
         }
     }
     @Override
-    public UserDTO getUserDtoByEmail(String email) {
-        User userFounded = userRepo.findByEmail(email);
-        return userAndRoleMapper.userToUserDto(userFounded);
+    public User getUserDtoByEmail(String email) {
+        return userRepo.findByEmail(email);
     }
 
     public Role roleToAssign(String nomeRuolo) {

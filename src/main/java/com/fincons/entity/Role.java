@@ -6,9 +6,11 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.util.List;
 
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -27,25 +29,19 @@ public class Role {
     @ManyToMany(mappedBy="roles")
     private List<User> users;
 
-
-    public long getId() {
-        return id;
+    @PreRemove
+    public void removeUsersAssociations() {
+        for (User user: this.users) {
+            user.getRoles().remove(this);
+        }
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<User> getUsers() {
-        return users;
     }
 
     public void setUsers(List<User> users) {

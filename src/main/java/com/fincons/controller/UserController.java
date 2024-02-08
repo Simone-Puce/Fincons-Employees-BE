@@ -4,6 +4,7 @@ import com.fincons.exception.EmailException;
 import com.fincons.exception.PasswordException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.RoleException;
+import com.fincons.mapper.UserAndRoleMapper;
 import com.fincons.service.authService.UserService;
 import com.fincons.dto.UserDTO;
 import com.fincons.jwt.JwtAuthResponse;
@@ -22,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserAndRoleMapper userAndRoleMapper;
 
     @GetMapping("${registered.users}")
     public String registeredUsers() {
@@ -85,12 +89,12 @@ public class UserController {
             @RequestBody UserDTO userDTO,
             @RequestParam(name = "admin", required = false) String passwordForAdmin) {
         try {
-            UserDTO userToShow = userService.registerNewUser(userDTO, passwordForAdmin);
+            UserDTO registeredUser = userAndRoleMapper.userToUserDto(userService.registerNewUser(userDTO, passwordForAdmin));
             return ResponseEntity.ok(GenericResponse.<UserDTO>builder()
                     .status(HttpStatus.OK)
                     .success(true)
                     .message("Registered Succesfully!!!")
-                    .data(userToShow)
+                    .data(registeredUser)
                     .build());
 
         } catch (EmailException ee) {
@@ -120,13 +124,13 @@ public class UserController {
             ) throws Exception {
         try {
 
-            UserDTO isUserModified = userService.updateUser(email, userModified, passwordForAdmin);
+            UserDTO updatedUser =userAndRoleMapper.userToUserDto(userService.updateUser(email, userModified, passwordForAdmin));
             return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<UserDTO>builder()
                             .status(HttpStatus.OK)
                             .success(true)
                             .message("User modified succesfully!")
-                            .data(isUserModified).build()
+                            .data(updatedUser).build()
             );
 
         } catch (RoleException re) {
@@ -161,7 +165,7 @@ public class UserController {
             @RequestParam  String password,
             @RequestParam String newPassword){
         try{
-            UserDTO userDTO = userService.updateUserPassword(email, password, newPassword);
+            UserDTO userDTO =userAndRoleMapper.userToUserDto(userService.updateUserPassword(email, password, newPassword));
             return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<UserDTO>builder()
                             .status(HttpStatus.resolve(200))
@@ -181,8 +185,8 @@ public class UserController {
 
 
     @GetMapping("${detail.userdto}")
-    public ResponseEntity<GenericResponse<UserDTO>> userDetails(@RequestParam String email) {
-        UserDTO userDTO = userService.getUserDtoByEmail(email);
+    public ResponseEntity<GenericResponse<UserDTO>> getUserByEmail(@RequestParam String email) {
+        UserDTO userDTO = userAndRoleMapper.userToUserDto(userService.getUserDtoByEmail(email));
         return ResponseEntity.status(HttpStatus.OK).body(
                 GenericResponse.<UserDTO>builder()
                         .status(HttpStatus.OK)

@@ -1,10 +1,21 @@
 package com.fincons.exception;
 
+import java.util.List;
+
 public class RoleException extends Exception{
 
 
-    public RoleException(String meessage){
-        super(meessage);
+    String message;
+    List<Long> list;
+
+    public RoleException(String message) {
+        super(message);
+    }
+
+    public RoleException(String message, List<Long> list){
+        super(message);
+        this.message = message;
+        this.list = list;
     }
 
     public static String userHasNotPermission(){
@@ -15,8 +26,11 @@ public class RoleException extends Exception{
         return "Role does not respect regex of ROLE_***** .";
     }
     public static String roleExistException(){
-        return "Role exist yet! .";
+        return "Role exist yet!";
     }
+
+
+
 
 
 }
