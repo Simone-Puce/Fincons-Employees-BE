@@ -4,6 +4,7 @@ import com.fincons.dto.EmployeeDTO;
 import com.fincons.dto.ErrorDetailDTO;
 import com.fincons.dto.ImportFileDTO;
 import com.fincons.dto.ImportResultDTO;
+import com.fincons.enums.ErrorCode;
 import com.fincons.enums.Gravity;
 import com.fincons.enums.ProcessingStatus;
 import com.fincons.exception.EmailException;
@@ -17,10 +18,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -126,17 +130,39 @@ public class ImportServiceImpl implements ImportService {
             if (employeeList.isEmpty()) {
                 ImportErrorUtility.emptyListAfterValidation(errorList, importResult);
             } else {
-
                 //Si passa alla persistenza degli impiegati, ritornando eventualmente una lista di errori se qualche dipendente è già presente.
                 //SETTANDO IN UNA APPOSITA LISTA, I DUPLICATI TROVATI DURANTE L'INSERIMENTO NEL DB.
+                List<ErrorDetailDTO> duplicatedEmployee = new ArrayList<>();
+                List<ErrorDetailDTO> duplicatedUser = new ArrayList<>();
 
-                List<ErrorDetailDTO> duplicatedEmployee = persistenceEmployeeService.addIfNotPresent(employeeList);
+                for(EmployeeDTO employee : employeeList){
+                   try{
+                       persistenceEmployeeService.addIfNotPresent(employee, duplicatedEmployee);
+                   }catch (DataIntegrityViolationException dataIntegrityViolationException){
+                       //System.out.println("Esiste già un account con questa mail: " + employee.getEmail() +"\nQuindi il record verrà ignorato.");
+                       duplicatedUser.add(new ErrorDetailDTO(employee.getRowNum(), "Email: "+ employee.getEmail(), ErrorCode.USER_ALREADY_EXISTS));
+                   }catch(RuntimeException e){
+                       logger.error("Errore generico", e);
+                   }
+                }
+
+
+                /*
+                try{
+                    duplicatedEmployee = persistenceEmployeeService.addIfNotPresent(employeeList);
+
+                }catch(RuntimeException e){
+                    System.out.println("Si sono verificati degli errori sql." + e.getMessage());
+
+                }
+                */
                 //setto la lista generale per ritornarla comunque nel corpo della risposta di tutti gli errori
                 errorList.addAll(duplicatedEmployee);
+                errorList.addAll(duplicatedUser);
                 importResult.setErrors(errorList);
-                //TODO - ALTRO METODO PRIVATO PER SETTARE L'IMPORT RESULT
-                // Aggiorna l'oggetto ImportResult con gli errori riscontrati nel processo di importazione
-                setImportResult(importResult, employeeList, duplicatedEmployee);
+
+
+                setImportResult(importResult, employeeList, duplicatedEmployee, duplicatedUser);
 
 
         }
@@ -144,11 +170,11 @@ public class ImportServiceImpl implements ImportService {
 
         }
     }
-    private void setImportResult(ImportResultDTO importResult, List<EmployeeDTO> employeeList,List<ErrorDetailDTO> duplicatedEmployee){
+    private void setImportResult(ImportResultDTO importResult, List<EmployeeDTO> employeeList,List<ErrorDetailDTO> duplicatedEmployee, List<ErrorDetailDTO> duplicatedUser){
         if (importResult.getErrors().size() > 0 && employeeList.size() > 0) {
             //se vengono trovati N dipendenti duplicati tanto quanti N dipendenti da aggiungere
             //l'import result sarà not loaded dato che nessun dipendente verrà aggiunto al db.
-            if (duplicatedEmployee.size() == employeeList.size()) {
+            if (duplicatedEmployee.size() == employeeList.size() || duplicatedUser.size()== employeeList.size() || (duplicatedEmployee.size()+duplicatedUser.size()) == employeeList.size()) {
                 importResult.setStatus(ProcessingStatus.NOT_LOADED);
             } else {
                 importResult.setStatus(ProcessingStatus.LOADED_WITH_ERRORS);

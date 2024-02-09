@@ -2,15 +2,15 @@ package com.fincons.enums;
 
 public enum ErrorCode{
 
-    //100+(N. ERRORE) RISERVATO PER GLI UTENTI
+    //100+(N. ERRORE) RISERVATO PER I DIPENDENTI E USER(ACCOUNT)
     //150+(N. ERRORE) RISERVATO PER GLI ERRORI DI VALIDAZIONE
     //200+(N. ERRORE) RISERVATO PER I FILE
     //500+(N. ERRORE) ERRORI GENERICI DI SISTEMA
 
     //----------------------------PER GLI USER/DIPENDENTI-------------------------
-    RESOURCE_ALREADY_EXISTS(1001, Gravity.BLOCKING, "Dipendente esistente", "Dipendente già esistente."),
+    RESOURCE_ALREADY_EXISTS(1001, Gravity.BLOCKING, "Dipendente esistente", "Il dipendente specificato è già presente."),
 
-    USER_ALREADY_EXISTS(1002, Gravity.BLOCKING, "Utente esistente", "Utente già esistente."),
+    USER_ALREADY_EXISTS(1002, Gravity.BLOCKING, "Utente esistente", "L'account specificato è già esistente."),
 
     //----------------------------PER LA VALIDAZIONE-------------------------
     MISSING_REQUIRED_FIELD(1501, Gravity.BLOCKING, "Manca un parametro obbligatorio", "Manca un parametro obbligatorio"),

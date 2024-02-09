@@ -26,6 +26,8 @@ import com.fincons.utility.EmailValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -186,7 +188,7 @@ public class UserServiceImpl  implements UserService{
 
 
     //METODO PER AGGIUNGERE UN NUOVO USER IN SEGUITO ALLA LETTURA DI UN FILE.
-    public boolean addNewUser(User user){
+    public User addNewUser(User user) throws RuntimeException {
 
         String emailUser = user.getEmail().toLowerCase().replace(" ", "");
         // Controllo se l'indirizzo email è valido e non esiste un utente registrato con la mail specificata
@@ -196,7 +198,7 @@ public class UserServiceImpl  implements UserService{
             user.setRoles(List.of(role));
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepo.save(user);
-            return true;
+            return user;
     //    } else{
     //        return false;
     //    }
