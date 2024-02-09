@@ -26,7 +26,7 @@ public class PersistenceEmployeeServiceImpl implements PersistenceEmployeeServic
     @Autowired
     EmployeeService employeeService;
 
-    //rebase, con difficoltà //implementata funzione //gestione transactional //attesa lorenzo per i campi(?)
+    
     @Autowired
     UserServiceImpl userService;
 
