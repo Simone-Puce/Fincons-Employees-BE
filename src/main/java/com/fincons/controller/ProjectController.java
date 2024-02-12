@@ -3,7 +3,7 @@ package com.fincons.controller;
 import com.fincons.utility.GenericResponse;
 import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Project;
-import com.fincons.exception.DuplicateNameException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ProjectMapper;
@@ -34,7 +34,7 @@ public class ProjectController {
 
             GenericResponse<ProjectDTO> response = GenericResponse.success(
                     projectDTO,
-                    "Success: Found project with ID " + projectId + ".",
+                    "Success: Found project with id: " + projectId + ".",
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);
@@ -86,7 +86,7 @@ public class ProjectController {
 
             GenericResponse<ProjectDTO> response = GenericResponse.success(
                     projectDTO2,
-                    "Success: Project with ID " + project.getProjectId() + " has been successfully updated!",
+                    "Success: Project with id: " + project.getProjectId() + " has been successfully updated!",
                     HttpStatus.OK);
             return ResponseEntity.ok(response);
 
@@ -98,7 +98,7 @@ public class ProjectController {
                             HttpStatus.BAD_REQUEST
                     )
             );
-        } catch (DuplicateNameException dne) {
+        } catch (DuplicateException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -118,7 +118,7 @@ public class ProjectController {
 
             GenericResponse<ProjectDTO> response = GenericResponse.success(
                     projectDTO2,
-                    "Success: Project with ID " + projectId + " has been successfully updated!",
+                    "Success: Project with id: " + projectId + " has been successfully updated!",
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);
@@ -138,7 +138,7 @@ public class ProjectController {
                             HttpStatus.BAD_REQUEST
                     )
             );
-        } catch (DuplicateNameException dne) {
+        } catch (DuplicateException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -153,7 +153,7 @@ public class ProjectController {
         try {
             projectService.deleteProjectById(projectId);
             GenericResponse<ProjectDTO> response = GenericResponse.empty(
-                    "Success: project with ID " + projectId + " has been successfully deleted! ",
+                    "Success: project with id: " + projectId + " has been successfully deleted! ",
                     HttpStatus.OK);
 
             return ResponseEntity.ok(response);

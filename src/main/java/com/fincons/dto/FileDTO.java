@@ -22,7 +22,7 @@ public class FileDTO {
 
     private String description;
 
-    private String empId;
+    private String empSsn;
 
 
     @JsonCreator
@@ -32,13 +32,13 @@ public class FileDTO {
             @JsonProperty("name") String name,
             @JsonProperty("extension") String extension,
             @JsonProperty("description") String description,
-            @JsonProperty("empId") String empId
+            @JsonProperty("empSsn") String empSsn
     ) {
         this.id = id;
         this.file64 = file64;
         this.name = name;
         this.extension = extension;
         this.description = description;
-        this.empId = empId;
+        this.empSsn = empSsn;
     }
 }

@@ -12,7 +12,7 @@ import lombok.Setter;
 public class EmployeeProjectDTO {
 
     private String lastNameEmployee;
-    private String employeeId;
+    private String ssn;
     private String nameProject;
     private String projectId;
 

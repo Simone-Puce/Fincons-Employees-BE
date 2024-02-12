@@ -5,7 +5,7 @@ import com.fincons.utility.GenericResponse;
 import com.fincons.dto.DepartmentDTO;
 import com.fincons.dto.EmployeeDepartmentDTO;
 import com.fincons.entity.Department;
-import com.fincons.exception.DuplicateNameException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.DepartmentMapper;
@@ -29,16 +29,16 @@ public class DepartmentController {
     @Autowired
     private DepartmentMapper modelMapperDepartment;
 
-    @GetMapping(value = "${department.find-by-id}")
-    public ResponseEntity<GenericResponse<DepartmentDTO>> getDepartmentById(@RequestParam String departmentId){
+    @GetMapping(value = "${department.find-by-code}")
+    public ResponseEntity<GenericResponse<DepartmentDTO>> getDepartmentByCode(@RequestParam String departmentCode){
 
         try {
-            Department department = departmentService.getDepartmentById(departmentId);
+            Department department = departmentService.getDepartmentByCode(departmentCode);
             DepartmentDTO departmentDTO = modelMapperDepartment.mapToDTO(department);
 
             GenericResponse<DepartmentDTO> response = GenericResponse.success(
                     departmentDTO,
-                    "Success: Found position with ID " + departmentId + ".",
+                    "Success: Found department with code: " + departmentCode + ".",
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);
@@ -87,7 +87,7 @@ public class DepartmentController {
 
             GenericResponse<DepartmentDTO> response = GenericResponse.success(
                     departmentDTO2,
-                    "Success: Department with ID " + department.getDepartmentId() + " has been successfully updated!",
+                    "Success: Department with code: " + department.getDepartmentCode() + " has been successfully updated!",
                     HttpStatus.OK);
             return ResponseEntity.ok(response);
 
@@ -98,7 +98,7 @@ public class DepartmentController {
                             HttpStatus.BAD_REQUEST
                     )
             );
-        } catch (DuplicateNameException dne) {
+        } catch (DuplicateException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -109,15 +109,15 @@ public class DepartmentController {
     }
 
     @PutMapping(value = "${department.update}")
-    public ResponseEntity<GenericResponse<DepartmentDTO>> updateDepartmentById(@RequestParam String departmentId, @RequestBody DepartmentDTO departmentDTO) {
+    public ResponseEntity<GenericResponse<DepartmentDTO>> updateDepartmentByCode(@RequestParam String departmentCode, @RequestBody DepartmentDTO departmentDTO) {
         try {
-            Department department = departmentService.updateDepartmentById(departmentId, departmentDTO);
+            Department department = departmentService.updateDepartmentByCode(departmentCode, departmentDTO);
 
             DepartmentDTO departmentDTO2 = modelMapperDepartment.mapToDTO(department);
 
             GenericResponse<DepartmentDTO> response = GenericResponse.success(
                     departmentDTO2,
-                    "Success: Department with ID " + departmentId + " has been successfully updated!",
+                    "Success: Department with code: " + departmentCode + " has been successfully updated!",
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);
@@ -135,7 +135,7 @@ public class DepartmentController {
                             HttpStatus.BAD_REQUEST
                     )
             );
-        } catch (DuplicateNameException dne) {
+        } catch (DuplicateException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -146,11 +146,11 @@ public class DepartmentController {
     }
 
     @DeleteMapping(value = "${department.delete}")
-    public ResponseEntity<GenericResponse<DepartmentDTO>> deleteDepartmentById(@RequestParam String departmentId) {
+    public ResponseEntity<GenericResponse<DepartmentDTO>> deleteDepartmentByCode(@RequestParam String departmentCode) {
         try {
-            departmentService.deleteDepartmentById(departmentId);
+            departmentService.deleteDepartmentByCode(departmentCode);
             GenericResponse<DepartmentDTO> response = GenericResponse.empty(
-                    "Success: Department with ID " + departmentId + " has been successfully deleted! ",
+                    "Success: Department with code: " + departmentCode + " has been successfully deleted! ",
                     HttpStatus.OK
             );
 
@@ -173,10 +173,10 @@ public class DepartmentController {
     }
 
     @GetMapping(value = "${department.find-employee-by-iddepartment}")
-    public ResponseEntity<GenericResponse<List<EmployeeDepartmentDTO>>> getDepartmentFindEmployee(@RequestParam String departmentId) {
+    public ResponseEntity<GenericResponse<List<EmployeeDepartmentDTO>>> getDepartmentEmployeesFindByCodeDepartment(@RequestParam String departmentCode) {
 
         try {
-            List<EmployeeDepartmentDTO> employeeDepartmentDTOList = departmentService.getDepartmentEmployeesFindByIdDepartment(departmentId);
+            List<EmployeeDepartmentDTO> employeeDepartmentDTOList = departmentService.getDepartmentEmployeesFindByCodeDepartment(departmentCode);
             GenericResponse<List<EmployeeDepartmentDTO>> response = GenericResponse.success(
                     employeeDepartmentDTOList,
                     "Success: This Department has " + employeeDepartmentDTOList.size() +

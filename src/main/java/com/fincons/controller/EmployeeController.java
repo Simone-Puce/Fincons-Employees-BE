@@ -8,7 +8,7 @@ import com.fincons.utility.GenericResponse;
 import com.fincons.dto.EmployeeDTO;
 import com.fincons.entity.Employee;
 import com.fincons.dto.EmployeeProjectDTO;
-import com.fincons.exception.DuplicateNameException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.EmployeeMapper;
@@ -40,15 +40,15 @@ public class EmployeeController {
     @Autowired
     private ImportService importService;
 
-    @GetMapping(value = "${employee.find-project-by-id}")
-    public ResponseEntity<GenericResponse<EmployeeDTO>> getEmployeeById(@RequestParam String employeeId) {
+    @GetMapping(value = "${employee.find-by-ssn}")
+    public ResponseEntity<GenericResponse<EmployeeDTO>> getEmployeeBySsn(@RequestParam String ssn) {
         try {
-            Employee employee = employeeService.getEmployeeById(employeeId);
+            Employee employee = employeeService.getEmployeeBySsn(ssn);
             EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTO(employee);
 
             GenericResponse<EmployeeDTO> response = GenericResponse.success(
                     employeeDTO,
-                    "Success: Found Employee with ID " + employeeId + ".",
+                    "Success: Found Employee with SSN " + ssn + ".",
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);
@@ -71,7 +71,7 @@ public class EmployeeController {
 
     }
 
-    @GetMapping(value = "${employee.find-project-by-email}")
+    @GetMapping(value = "${employee.find-by-email}")
     public ResponseEntity<GenericResponse<EmployeeDTO>> getDepartmentByEmail(@RequestParam String email) {
         try {
             Employee employee = employeeService.getEmployeeByEmail(email);
@@ -129,7 +129,7 @@ public class EmployeeController {
 
             GenericResponse<EmployeeDTO> response = GenericResponse.success(
                     employeeDTO2,
-                    "Success: Employee with ID " + employee.getEmployeeId() + " has been successfully updated!",
+                    "Success: Employee with SSN " + employee.getSsn() + " has been successfully updated!",
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);
@@ -147,7 +147,7 @@ public class EmployeeController {
                             HttpStatus.BAD_REQUEST
                     )
             );
-        } catch (DuplicateNameException dne) {
+        } catch (DuplicateException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -158,14 +158,14 @@ public class EmployeeController {
     }
 
     @PutMapping(value = "${employee.update}")
-    public ResponseEntity<Object> updateEmployeeById(@RequestParam String employeeId, @RequestBody EmployeeDTO employeeDTO) {
+    public ResponseEntity<Object> updateEmployeeBySsn(@RequestParam String ssn, @RequestBody EmployeeDTO employeeDTO) {
         try {
-            Employee employee = employeeService.updateEmployeeById(employeeId, employeeDTO);
+            Employee employee = employeeService.updateEmployeeBySsn(ssn, employeeDTO);
             EmployeeDTO employeeDTO2 = modelMapperEmployee.mapToDTO(employee);
 
             GenericResponse<EmployeeDTO> response = GenericResponse.success(
                     employeeDTO2,
-                    "Success: Employee with ID " + employeeId + " has been successfully updated!",
+                    "Success: Employee with SSN " + ssn + " has been successfully updated!",
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);
@@ -183,7 +183,7 @@ public class EmployeeController {
                             HttpStatus.BAD_REQUEST
                     )
             );
-        } catch (DuplicateNameException dne) {
+        } catch (DuplicateException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -194,11 +194,11 @@ public class EmployeeController {
     }
 
     @DeleteMapping(value = "${employee.delete}")
-    public ResponseEntity<GenericResponse<EmployeeDTO>> deleteEmployeeById(@RequestParam String employeeId) {
+    public ResponseEntity<GenericResponse<EmployeeDTO>> deleteEmployeeBySsn(@RequestParam String ssn) {
         try {
-            employeeService.deleteEmployeeById(employeeId);
+            employeeService.deleteEmployeeBySsn(ssn);
             GenericResponse<EmployeeDTO> response = GenericResponse.empty(
-                    "Success: Department with ID " + employeeId + " has been successfully deleted! ",
+                    "Success: Department with SSN " + ssn + " has been successfully deleted! ",
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);
@@ -219,10 +219,12 @@ public class EmployeeController {
         }
     }
 
-    @GetMapping(value = "${employee.find-employee-project}")
-    public ResponseEntity<GenericResponse<List<ProjectDTO>>> getAllEmployeesProjects(@RequestParam String employeeId) {
+    @GetMapping(value = "${employee.find-employee-projects}")
+    public ResponseEntity<GenericResponse<List<ProjectDTO>>> getAllEmployeeProjects(
+            @RequestParam(value = "ssn") String ssn
+    ) {
         try {
-            List<Project> projects = employeeService.findAllEmployeeProjects(employeeId);
+            List<Project> projects = employeeService.findAllEmployeeProjects(ssn);
 
             List<ProjectDTO> projectsDTO = new ArrayList<>();
 
@@ -253,7 +255,7 @@ public class EmployeeController {
         }
     }
 
-    @GetMapping(value = "${employee.list-employee-project}")
+    @GetMapping(value = "${employee.list-employees-projects}")
     public ResponseEntity<GenericResponse<List<EmployeeProjectDTO>>> getAllEmployeeProject() {
 
         List<EmployeeProjectDTO> employeeProjectDTO = employeeService.getAllEmployeeProject();
@@ -268,13 +270,13 @@ public class EmployeeController {
     }
 
     @PostMapping(value = "${employee.create-employee-project}")
-    public ResponseEntity<GenericResponse<EmployeeProjectDTO>> createEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId) {
+    public ResponseEntity<GenericResponse<EmployeeProjectDTO>> createEmployeeProject(@RequestParam String ssn, @RequestParam String projectId) {
         try {
-            EmployeeProjectDTO employeeProjectDTO = employeeService.addEmployeeProject(employeeId, projectId);
+            EmployeeProjectDTO employeeProjectDTO = employeeService.addEmployeeProject(ssn, projectId);
 
             GenericResponse<EmployeeProjectDTO> response = GenericResponse.success(
                     employeeProjectDTO,
-                    "Success: Addition of relationship between employee with ID: " + employeeId + " and project with ID: " + projectId,
+                    "Success: Addition of relationship between employee with SSN: " + ssn + " and project with ID: " + projectId,
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);
@@ -292,7 +294,7 @@ public class EmployeeController {
                     GenericResponse.error(
                             rnfe.getMessage(),
                             HttpStatus.NOT_FOUND));
-        } catch (DuplicateNameException dne) {
+        } catch (DuplicateException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -303,13 +305,13 @@ public class EmployeeController {
     }
 
     @PutMapping(value = "${employee.update-employee-project}")
-    public ResponseEntity<GenericResponse<EmployeeProjectDTO>> updateEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId, @RequestBody EmployeeProjectDTO employeeProjectDTO) {
+    public ResponseEntity<GenericResponse<EmployeeProjectDTO>> updateEmployeeProject(@RequestParam String ssn, @RequestParam String projectId, @RequestBody EmployeeProjectDTO employeeProjectDTO) {
         try {
-            EmployeeProjectDTO employeeProjectDTO1 = employeeService.updateEmployeeProject(employeeId, projectId, employeeProjectDTO);
+            EmployeeProjectDTO employeeProjectDTO1 = employeeService.updateEmployeeProject(ssn, projectId, employeeProjectDTO);
             GenericResponse<EmployeeProjectDTO> response = GenericResponse.success(
                     employeeProjectDTO,
-                    "Success: Relationship updated between employee with ID " + employeeId + " and project with ID " + projectId + ". " +
-                            "Updated details for employee with ID " + employeeProjectDTO1.getEmployeeId() + " and project with ID " + employeeProjectDTO1.getProjectId() + ".",
+                    "Success: Relationship updated between employee with SSN " + ssn + " and project with ID " + projectId + ". " +
+                            "Updated details for employee with ID " + employeeProjectDTO1.getSsn() + " and project with ID " + employeeProjectDTO1.getProjectId() + ".",
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);
@@ -319,7 +321,7 @@ public class EmployeeController {
                             iae.getMessage(),
                             HttpStatus.NOT_FOUND)
             );
-        } catch (DuplicateNameException dne) {
+        } catch (DuplicateException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -330,11 +332,11 @@ public class EmployeeController {
     }
 
     @DeleteMapping(value = "${employee.delete-employee-project}")
-    public ResponseEntity<GenericResponse<EmployeeProjectDTO>> deleteEmployeeProject(@RequestParam String employeeId, @RequestParam String projectId) {
+    public ResponseEntity<GenericResponse<EmployeeProjectDTO>> deleteEmployeeProject(@RequestParam String ssn, @RequestParam String projectId) {
         try {
-            employeeService.deleteEmployeeProject(employeeId, projectId);
+            employeeService.deleteEmployeeProject(ssn, projectId);
             GenericResponse<EmployeeProjectDTO> response = GenericResponse.empty(
-                    "Success: Relationship deleted between employee with ID " + employeeId + " and project with ID " + projectId + ".",
+                    "Success: Relationship deleted between employee with SSN " + ssn + " and project with ID " + projectId + ".",
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);

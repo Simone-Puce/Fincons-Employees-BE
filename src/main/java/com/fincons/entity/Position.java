@@ -25,9 +25,8 @@ public class Position {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "position_uuid")
-    @UuidGenerator
-    private String positionId;
+    @Column(name = "position_code")
+    private String positionCode;
 
     @Column
     private String name;
@@ -37,26 +36,8 @@ public class Position {
 
     @OneToMany(
             mappedBy = "position",
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST})
+            fetch = FetchType.LAZY)
     private List<Employee> employees;
-
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
-    public Double getSalary() {
-        return salary;
-    }
-
-    public void setSalary(Double salary) {
-        this.salary = salary;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
-
 
     public Position(Long id, String name, Double salary) {
         this.id = id;

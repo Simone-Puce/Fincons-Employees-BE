@@ -3,7 +3,7 @@ package com.fincons.controller;
 import com.fincons.utility.GenericResponse;
 import com.fincons.dto.PositionDTO;
 import com.fincons.entity.Position;
-import com.fincons.exception.DuplicateNameException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.PositionMapper;
@@ -27,15 +27,15 @@ public class PositionController {
     @Autowired
     private PositionMapper modelMapperPosition;
 
-    @GetMapping(value = "${position.find-position-by-id}")
-    public ResponseEntity<GenericResponse<PositionDTO>> getPositionById(@RequestParam String positionId){
+    @GetMapping(value = "${position.find-position-by-code}")
+    public ResponseEntity<GenericResponse<PositionDTO>> getPositionByCode(@RequestParam String positionCode){
 
         try {
-            Position position = positionService.getPositionById(positionId);
+            Position position = positionService.getPositionByCode(positionCode);
             PositionDTO positionDTO = modelMapperPosition.mapToDTO(position);
             GenericResponse<PositionDTO> response = GenericResponse.success(
                     positionDTO,
-                    "Success: Found position with ID " + positionId + ".",
+                    "Success: Found position with code: " + positionCode + ".",
                     HttpStatus.OK);
 
             return ResponseEntity.ok(response);
@@ -84,7 +84,7 @@ public class PositionController {
 
             GenericResponse<PositionDTO> response = GenericResponse.success(
                     positionDTO2,
-                    "Success: Position with ID " + position.getId() + " has been successfully updated!",
+                    "Success: Position with code: " + position.getPositionCode() + " has been successfully updated!",
                     HttpStatus.OK);
             return ResponseEntity.ok(response);
 
@@ -96,7 +96,7 @@ public class PositionController {
                             HttpStatus.BAD_REQUEST
                     )
             );
-        } catch (DuplicateNameException dne) {
+        } catch (DuplicateException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -108,14 +108,14 @@ public class PositionController {
 
 
     @PutMapping(value = "${position.update}")
-    public ResponseEntity<Object> updatePositionById(@RequestParam String positionId, @RequestBody PositionDTO positionDTO) {
+    public ResponseEntity<Object> updatePositionByCode(@RequestParam String positionCode, @RequestBody PositionDTO positionDTO) {
         try {
-            Position position = positionService.updatePositionById(positionId, positionDTO);
+            Position position = positionService.updatePositionByCode(positionCode, positionDTO);
 
             PositionDTO positionDTO2 = modelMapperPosition.mapToDTO(position);
             GenericResponse<PositionDTO> response = GenericResponse.success(
                     positionDTO2,
-                    "Success: Position with ID " + positionId + " has been successfully updated!",
+                    "Success: Position with code: " + positionCode + " has been successfully updated!",
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);
@@ -133,7 +133,7 @@ public class PositionController {
                             HttpStatus.BAD_REQUEST
                     )
             );
-        } catch (DuplicateNameException dne) {
+        } catch (DuplicateException dne) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             dne.getMessage(),
@@ -144,11 +144,11 @@ public class PositionController {
     }
 
     @DeleteMapping(value = "${position.delete}")
-    public ResponseEntity<GenericResponse<PositionDTO>> deletePositionById(@RequestParam String positionId) {
+    public ResponseEntity<GenericResponse<PositionDTO>> deletePositionByCode(@RequestParam String positionCode) {
         try {
-            positionService.deletePositionById(positionId);
+            positionService.deletePositionByCode(positionCode);
             GenericResponse<PositionDTO> response = GenericResponse.empty(
-                    "Success: Position with ID " + positionId + " has been successfully deleted! ",
+                    "Success: Position with code: " + positionCode + " has been successfully deleted! ",
                     HttpStatus.OK);
 
             return ResponseEntity.ok(response);

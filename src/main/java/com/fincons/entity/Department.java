@@ -28,9 +28,8 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "department_uuid")
-    @UuidGenerator
-    private String departmentId;
+    @Column(name = "department_code")
+    private String departmentCode;
 
     @Column
     private String name;
@@ -41,8 +40,7 @@ public class Department {
 
     @OneToMany(
             mappedBy = "department",
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST})
+            fetch = FetchType.LAZY)
     private List<Employee> employees;
 
 
@@ -58,23 +56,11 @@ public class Department {
         this.city = city;
     }
 
-    public Department(Long id, String departmentId, String name, String address, String city) {
+    public Department(Long id, String departmentCode, String name, String address, String city) {
         this.id = id;
-        this.departmentId = departmentId;
+        this.departmentCode = departmentCode;
         this.name = name;
         this.address = address;
         this.city = city;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Department that)) return false;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName()) && Objects.equals(getAddress(), that.getAddress()) && Objects.equals(getCity(), that.getCity()) && Objects.equals(getEmployees(), that.getEmployees());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName(), getAddress(), getCity(), getEmployees());
     }
 }

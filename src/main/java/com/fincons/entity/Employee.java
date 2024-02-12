@@ -1,21 +1,16 @@
 package com.fincons.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.UuidGenerator;
+
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.List;
 
 
@@ -32,10 +27,8 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "employee_uuid")
-    @UuidGenerator
-    private String employeeId;
-
+    @Column(name = "ssn")
+    private String ssn;
 
     @Column(name = "first_name")
     private String firstName;

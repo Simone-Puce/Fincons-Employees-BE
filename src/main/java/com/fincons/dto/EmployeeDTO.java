@@ -20,7 +20,7 @@ import java.util.List;
 public class EmployeeDTO {
 
 
-    private String employeeId;
+    private String ssn;
     private String firstName;
     private String lastName;
     private String gender;
@@ -28,8 +28,8 @@ public class EmployeeDTO {
     private LocalDate birthDate;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String departmentId;
-    private String positionId;
+    private String departmentCode;
+    private String positionCode;
     private List<ProjectDTO> projects;
     private List<FileDTO> fileList;
     private long rowNum;
@@ -57,7 +57,7 @@ public class EmployeeDTO {
         this.endDate = endDate;
     }
 
-    public EmployeeDTO(String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, String departmentId, String positionId) {
+    public EmployeeDTO(String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, String departmentCode, String positionCode) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -65,8 +65,8 @@ public class EmployeeDTO {
         this.birthDate = birthDate;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.departmentId = departmentId;
-        this.positionId = positionId;
+        this.departmentCode = departmentCode;
+        this.positionCode = positionCode;
     }
 
 }

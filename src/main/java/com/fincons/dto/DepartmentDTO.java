@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DepartmentDTO {
-    private String departmentId;
+    private String departmentCode;
     private String name;
     private String address;
     private String city;
@@ -28,8 +28,8 @@ public class DepartmentDTO {
         this.city = city;
     }
 
-    public DepartmentDTO(String departmentId, String name, String address, String city) {
-        this.departmentId = departmentId;
+    public DepartmentDTO(String departmentCode, String name, String address, String city) {
+        this.departmentCode = departmentCode;
         this.name = name;
         this.address = address;
         this.city = city;

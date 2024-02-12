@@ -2,7 +2,7 @@ package com.fincons.service.employeeService.impl;
 
 import com.fincons.dto.PositionDTO;
 import com.fincons.entity.Position;
-import com.fincons.exception.DuplicateNameException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.PositionMapper;
@@ -11,10 +11,8 @@ import com.fincons.service.employeeService.PositionService;
 import com.fincons.utility.ValidateSingleField;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,9 +27,9 @@ public class PositionServiceImpl implements PositionService {
     private PositionMapper modelMapperPosition;
 
     @Override
-    public Position getPositionById(String positionId) {
-        ValidateSingleField.validateSingleField(positionId);
-        return validatePositionById(positionId);
+    public Position getPositionByCode(String positionCode) {
+        ValidateSingleField.validateSingleField(positionCode);
+        return validatePositionByCode(positionCode);
     }
 
     @Override
@@ -57,70 +55,70 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public Position updatePositionById(String positionId, PositionDTO positionDTO) {
+    public Position updatePositionByCode(String positionCode, PositionDTO positionDTO) {
 
         //Condition for not have null attributes
-        ValidateSingleField.validateSingleField(positionId);
+        ValidateSingleField.validateSingleField(positionCode);
         validatePositionFields(positionDTO);
 
         List<Position> positions = positionRepository.findAll();
 
-        //Check if the specified ID exists
-        Position position = validatePositionById(positionId);
+        //Check if the specified CODE exists
+        Position position = validatePositionByCode(positionCode);
 
+        List<Position> positionsWithoutPositionCodeChosed = new ArrayList<>();
 
-        position.setPositionId(positionId);
+        for(Position p: positions){
+            if(!Objects.equals(p.getPositionCode(), positionCode)){
+                positionsWithoutPositionCodeChosed.add(p);
+            }
+        }
+
+        position.setPositionCode(positionDTO.getPositionCode());
         position.setName(positionDTO.getName());
         position.setSalary(positionDTO.getSalary());
 
 
-        List<Position> positionsWithoutPositionIdChosed = new ArrayList<>();
-
-        for(Position p: positions){
-            if(!Objects.equals(p.getPositionId(), positionId)){
-                positionsWithoutPositionIdChosed.add(p);
-            }
-        }
-
-        if(positionsWithoutPositionIdChosed.isEmpty()){
+        if(positionsWithoutPositionCodeChosed.isEmpty()){
             positionRepository.save(position);
         }
         else {
-            for (Position p : positionsWithoutPositionIdChosed) {
-                if (p.getName().equals(position.getName()) &&
+            for (Position p : positionsWithoutPositionCodeChosed) {
+                if(p.getPositionCode().equals(position.getPositionCode())){
+                    throw new DuplicateException("This code: " + positionDTO.getPositionCode() + " is already taken");
+                }
+                else if (p.getName().equals(position.getName()) &&
                         p.getSalary().equals(position.getSalary())
                 ) {
-                    throw new IllegalArgumentException("The position existing yet");
-                } else {
-                    positionRepository.save(position);
-                    break;
+                    throw new DuplicateException("The name with this salary is already taken");
                 }
             }
+            positionRepository.save(position);
         }
-
         return position;
     }
 
     @Override
-    public void deletePositionById(String positionId) {
+    public void deletePositionByCode(String positionCode) {
 
-        ValidateSingleField.validateSingleField(positionId);
-        Position position = validatePositionById(positionId);
+        ValidateSingleField.validateSingleField(positionCode);
+        Position position = validatePositionByCode(positionCode);
         positionRepository.deleteById(position.getId());
     }
 
-    public Position validatePositionById(String positionId) {
-        Position position = positionRepository.findPositionByPositionId(positionId);
+    public Position validatePositionByCode(String positionCode) {
+        Position position = positionRepository.findPositionByPositionCode(positionCode);
 
         if (position == null) {
-            throw new ResourceNotFoundException("Position with ID: " + positionId + " not found");
+            throw new ResourceNotFoundException("Position with code: " + positionCode + " not found");
         }
         return position;
     }
 
     private void validatePositionFields(PositionDTO positionDTO){
         //If one field is true run Exception
-        if (Strings.isEmpty(positionDTO.getName()) ||
+        if (Strings.isEmpty(positionDTO.getPositionCode()) ||
+                Strings.isEmpty(positionDTO.getName()) ||
                 Objects.isNull(positionDTO.getSalary())) {
             throw new IllegalArgumentException("The fields of the Position can't be null or empty");
         }
@@ -128,8 +126,12 @@ public class PositionServiceImpl implements PositionService {
 
     private void checkForDuplicatePosition(PositionDTO positionDTO, List<Position> positions){
         for(Position position1 : positions){
-            if(position1.getName().equals(positionDTO.getName())){
-                throw new DuplicateNameException("Position with the same name, already exists");
+            if (position1.getPositionCode().equals(positionDTO.getPositionCode())){
+                throw new DuplicateException("Position with the same code, already exists");
+            }
+            if(position1.getName().equals(positionDTO.getName()) &&
+                    position1.getSalary().equals(positionDTO.getSalary()) ){
+                throw new DuplicateException("Position with the same name and salary, already exists");
             }
         }
     }

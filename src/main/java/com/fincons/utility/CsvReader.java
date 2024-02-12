@@ -111,7 +111,7 @@ public class CsvReader implements ImportFileReader {
 
 
                 //CREA UN EMPLOYEE DTO
-                EmployeeDTO personToAdd = new EmployeeDTO(nome, cognome, genere,email, dataDiNascita, dataDiInizio,dataDiFine,dipartimento.getDepartmentId() , posizione.getPositionId());
+                EmployeeDTO personToAdd = new EmployeeDTO(nome, cognome, genere,email, dataDiNascita, dataDiInizio,dataDiFine,dipartimento.getDepartmentCode() , posizione.getPositionCode());
                 personToAdd.setRowNum(record.getRecordNumber() + 1);
                 //AGGIUNGILO ALLA LISTA
                 employeeToAdd.add(personToAdd);

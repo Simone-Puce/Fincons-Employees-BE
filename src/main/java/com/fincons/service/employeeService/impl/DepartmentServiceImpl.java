@@ -3,7 +3,7 @@ package com.fincons.service.employeeService.impl;
 import com.fincons.dto.DepartmentDTO;
 import com.fincons.entity.Department;
 import com.fincons.dto.EmployeeDepartmentDTO;
-import com.fincons.exception.DuplicateNameException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.DepartmentMapper;
@@ -14,7 +14,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,9 +35,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Department getDepartmentById(String departmentId) {
-        ValidateSingleField.validateSingleField(departmentId); //TODO
-        return validateDepartmentById(departmentId);
+    public Department getDepartmentByCode(String departmentCode) {
+        ValidateSingleField.validateSingleField(departmentCode);
+        return validateDepartmentByCode(departmentCode);
 
     }
 
@@ -65,75 +64,75 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Department updateDepartmentById(String departmentId, DepartmentDTO departmentDTO) {
+    public Department updateDepartmentByCode(String departmentCode, DepartmentDTO departmentDTO) {
 
-        ValidateSingleField.validateSingleField(departmentId);
+        ValidateSingleField.validateSingleField(departmentCode);
         //Condition for not have null attributes
         validateDepartmentFields(departmentDTO);
 
         List<Department> departments = departmentRepository.findAll();
 
         //Check if the specified ID exists
-        Department department = validateDepartmentById(departmentId);
+        Department department = validateDepartmentByCode(departmentCode);
 
-        department.setDepartmentId(departmentId);
+        List<Department> departmentsWithoutDepartmentCodeChosed = new ArrayList<>();
+
+        for (Department d : departments ) {
+            if(!Objects.equals(d.getDepartmentCode(), departmentCode)){
+                departmentsWithoutDepartmentCodeChosed.add(d);
+            }
+        }
+
+        //Set the new instance department
+        department.setDepartmentCode(departmentDTO.getDepartmentCode());
         department.setName(departmentDTO.getName());
         department.setAddress(departmentDTO.getAddress());
         department.setCity(departmentDTO.getCity());
 
-        List<Department> departmentsWithoutDepartmentIdChosed = new ArrayList<>();
-
-        for (Department d : departments ) {
-            if(!Objects.equals(d.getDepartmentId(), departmentId)){
-                departmentsWithoutDepartmentIdChosed.add(d);
-            }
-        }
-        if(departmentsWithoutDepartmentIdChosed.isEmpty()){
+        if(departmentsWithoutDepartmentCodeChosed.isEmpty()){
             departmentRepository.save(department);
         }
         else {
-            for (Department d : departmentsWithoutDepartmentIdChosed ) {
-                if(d.getName().equals(department.getName()) &&
-                        d.getAddress().equals(department.getAddress()) &&
-                        d.getCity().equals(department.getCity())
-                ){
-                    throw new DuplicateNameException("The department existing yet");
-                }else{
-                    departmentRepository.save(department);
-                    break;
+            for (Department d : departmentsWithoutDepartmentCodeChosed ) {
+                if(d.getDepartmentCode().equals(department.getDepartmentCode())){
+                    throw new DuplicateException("This code: " + departmentDTO.getDepartmentCode() + " is already taken" );
+                } else if (d.getName().equals(department.getName())) {
+                    throw new DuplicateException("This name " + departmentDTO.getName() + " is already taken");
                 }
             }
+            departmentRepository.save(department);
         }
         return department;
     }
 
     @Override
-    public void deleteDepartmentById(String departmentId) {
-        ValidateSingleField.validateSingleField(departmentId);
-        Department department = validateDepartmentById(departmentId);
+    public void deleteDepartmentByCode(String departmentCode) {
+        ValidateSingleField.validateSingleField(departmentCode);
+        Department department = validateDepartmentByCode(departmentCode);
         departmentRepository.deleteById(department.getId());
     }
 
     @Override
-    public List<EmployeeDepartmentDTO> getDepartmentEmployeesFindByIdDepartment(String departmentId) {
-        ValidateSingleField.validateSingleField(departmentId);
-        Department department = validateDepartmentById(departmentId);
+    public List<EmployeeDepartmentDTO> getDepartmentEmployeesFindByCodeDepartment(String departmentCode) {
+        ValidateSingleField.validateSingleField(departmentCode);
+        Department department = validateDepartmentByCode(departmentCode);
 
         return departmentRepository.getDepartmentEmployeesFindByIdDepartment(department.getId());
     }
 
-    public Department validateDepartmentById(String departmentId){
-        Department existingDepartment = departmentRepository.findDepartmentByDepartmentId(departmentId);
+    public Department validateDepartmentByCode(String departmentCode){
+        Department existingDepartment = departmentRepository.findDepartmentByDepartmentCode(departmentCode);
 
         if(Objects.isNull(existingDepartment)){
-            throw new ResourceNotFoundException("Department with ID: " + departmentId + " not found");
+            throw new ResourceNotFoundException("Department with code: " + departmentCode + " not found");
         }
         return existingDepartment;
     }
 
     public void validateDepartmentFields(DepartmentDTO departmentDTO){
         //If one field is true run Exception
-        if (Strings.isEmpty(departmentDTO.getName())||
+        if (Strings.isEmpty(departmentDTO.getDepartmentCode())||
+                Strings.isEmpty(departmentDTO.getName())||
                 Strings.isEmpty(departmentDTO.getAddress()) ||
                 Strings.isEmpty(departmentDTO.getCity())) {
             throw new IllegalArgumentException("The fields of the Department can't be null or empty");
@@ -142,7 +141,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     public void checkForDuplicateDepartment(DepartmentDTO departmentDTO, List<Department> departments){
         for (Department department1 : departments) {
             if (department1.getName().equals(departmentDTO.getName())) {
-                throw new DuplicateNameException("Department with the same name, already exists");
+                throw new DuplicateException("Department with the same name, already exists");
+            } else if (department1.getDepartmentCode().equals(departmentDTO.getDepartmentCode())) {
+                throw new DuplicateException("Department with the same code, already exists");
+
             }
         }
     }

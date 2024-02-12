@@ -9,17 +9,17 @@ import java.util.List;
 
 public interface EmployeeService {
 
-    Employee getEmployeeById(String idEmployee);
+    Employee getEmployeeBySsn(String ssn);
     Employee getEmployeeByEmail(String email);
     List<Employee> getAllEmployees();
     Employee createEmployee(EmployeeDTO employeeDTO);
-    Employee updateEmployeeById(String idEmployee, EmployeeDTO employeeDTO);
-    void deleteEmployeeById(String idEmployee);
-    List<Project> findAllEmployeeProjects(String idEmployee);
+    Employee updateEmployeeBySsn(String ssn, EmployeeDTO employeeDTO);
+    void deleteEmployeeBySsn(String ssn);
+    List<Project> findAllEmployeeProjects(String ssn);
     List<EmployeeProjectDTO> getAllEmployeeProject();
-    EmployeeProjectDTO addEmployeeProject(String idEmployee, String idProject);
-    EmployeeProjectDTO updateEmployeeProject(String idEmployee, String idProject, EmployeeProjectDTO employeeProjectDTO);
-    void deleteEmployeeProject(String idEmployee, String idProject);
+    EmployeeProjectDTO addEmployeeProject(String ssn, String idProject);
+    EmployeeProjectDTO updateEmployeeProject(String ssn, String idProject, EmployeeProjectDTO employeeProjectDTO);
+    void deleteEmployeeProject(String ssn, String idProject);
 
     //aggiunti questi due metodi per evitare validazioni e controlli già implementati in questo service perché
     //vanno in contrasto con i miei validator e controlli

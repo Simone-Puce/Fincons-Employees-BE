@@ -3,28 +3,21 @@ package com.fincons.serviceTest;
 import com.fincons.controller.DepartmentController;
 import com.fincons.dto.DepartmentDTO;
 import com.fincons.entity.Department;
-import com.fincons.entity.Employee;
-import com.fincons.entity.Position;
-import com.fincons.exception.DuplicateNameException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.DepartmentMapper;
 import com.fincons.repository.DepartmentRepository;
 import com.fincons.service.employeeService.impl.DepartmentServiceImpl;
 import com.fincons.utility.ValidateSingleField;
-import org.apache.logging.log4j.util.Strings;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
@@ -37,7 +30,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -71,11 +63,11 @@ public class DepartmentServiceTest {
     @Test
     void testValidateDepartmentById(){
         String departmentId = "UUID-TEST";
-        when(departmentRepository.findDepartmentByDepartmentId(departmentId)).thenReturn(null);
+        when(departmentRepository.findDepartmentByDepartmentCode(departmentId)).thenReturn(null);
         //Assert exception
         assertThrows(ResourceNotFoundException.class, () -> {
             // Finally run the method from service and save response
-            departmentServiceImpl.getDepartmentById(departmentId);
+            departmentServiceImpl.getDepartmentByCode(departmentId);
         });
     }
     @Test
@@ -98,7 +90,7 @@ public class DepartmentServiceTest {
         DepartmentDTO departmentInput = new DepartmentDTO("uuid", "name2", "address3", "city3");
         departmentsRep.add(department1);
         departmentsRep.add(department2);
-        assertThrows(DuplicateNameException.class, () -> {
+        assertThrows(DuplicateException.class, () -> {
             departmentServiceImpl.checkForDuplicateDepartment(departmentInput, departmentsRep);
         });
     }
@@ -124,7 +116,7 @@ public class DepartmentServiceTest {
     @Test
     void testServiceGetDepartmentById() {
         DepartmentDTO departmentDTO = new DepartmentDTO("uuid-1234", "name", "address", "city");
-        ValidateSingleField.validateSingleField(departmentDTO.getDepartmentId());
+        ValidateSingleField.validateSingleField(departmentDTO.getDepartmentCode());
         assertThrows(ResourceNotFoundException.class, () -> {
             departmentServiceImpl.validateDepartmentFields(departmentDTO);
         });
@@ -133,7 +125,7 @@ public class DepartmentServiceTest {
     @Test
     void testServiceGetDepartmentByIdWrongUUID() {
         DepartmentDTO departmentDTO = new DepartmentDTO("uuid-1234", "name", "address", "city");
-        ValidateSingleField.validateSingleField(departmentDTO.getDepartmentId());
+        ValidateSingleField.validateSingleField(departmentDTO.getDepartmentCode());
         assertThrows(ResourceNotFoundException.class, () -> {
             departmentServiceImpl.validateDepartmentFields(departmentDTO);
         });

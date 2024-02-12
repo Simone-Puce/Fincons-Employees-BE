@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PositionDTO {
-    private String positionId;
+    private String positionCode;
     private String name;
     private Double salary;
     private List<EmployeeDTO> employees;

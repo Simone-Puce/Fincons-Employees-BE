@@ -2,7 +2,7 @@ package com.fincons.service.employeeService.impl;
 
 import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Project;
-import com.fincons.exception.DuplicateNameException;
+import com.fincons.exception.DuplicateException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ProjectMapper;
@@ -68,11 +68,6 @@ public class ProjectServiceImpl implements ProjectService {
         //Check if the specified ID exists
         Project project = validateProjectById(projectId);
 
-        project.setProjectId(projectId);
-        project.setName(projectDTO.getName());
-        project.setArea(projectDTO.getArea());
-        project.setPriority(projectDTO.getPriority());
-
         List<Project> projectstWithoutProjectIdChosed = new ArrayList<>();
 
         for (Project p : projects ) {
@@ -80,6 +75,12 @@ public class ProjectServiceImpl implements ProjectService {
                 projectstWithoutProjectIdChosed.add(p);
             }
         }
+
+        project.setProjectId(projectDTO.getProjectId());
+        project.setName(projectDTO.getName());
+        project.setArea(projectDTO.getArea());
+        project.setPriority(projectDTO.getPriority());
+
         if(projectstWithoutProjectIdChosed.isEmpty()){
             projectRepository.save(project);
         }
@@ -88,13 +89,10 @@ public class ProjectServiceImpl implements ProjectService {
                 if (p.getName().equals(project.getName())
                 ) {
                     throw new IllegalArgumentException("The project existing yet");
-                } else {
-                    projectRepository.save(project);
-                    break;
                 }
             }
+            projectRepository.save(project);
         }
-
         return project;
     }
 
@@ -126,7 +124,7 @@ public class ProjectServiceImpl implements ProjectService {
     private void checkForDuplicateProject(ProjectDTO projectDTO, List<Project> projects){
         for (Project project1 : projects){
             if(project1.getName().equals(projectDTO.getName())){
-                throw new DuplicateNameException("Project with the same name, already exists");
+                throw new DuplicateException("Project with the same name, already exists");
             }
         }
     }

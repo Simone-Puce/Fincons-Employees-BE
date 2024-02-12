@@ -42,8 +42,8 @@ public class FileServiceImpl implements FileServiceApi {
 
     @Override
     public FileDTO uploadFile(FileDTO fileDTO) {
-        Employee employee = employeeServiceImpl.validateEmployeeById(fileDTO.getEmpId());
-        fileDTO.setEmpId(employee.getId().toString());
+        Employee employee = employeeServiceImpl.validateEmployeeBySsn(fileDTO.getEmpSsn());
+        fileDTO.setEmpSsn(employee.getId().toString());
 
         File file = fileMapper.mapFileDtotoFile(fileDTO);
         file.setEmp(employee);

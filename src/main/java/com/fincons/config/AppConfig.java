@@ -1,8 +1,10 @@
 package com.fincons.config;
 
+import com.fincons.dto.DepartmentDTO;
 import com.fincons.dto.EmployeeDTO;
 import com.fincons.dto.FileDTO;
 import com.fincons.dto.ProjectDTO;
+import com.fincons.entity.Department;
 import com.fincons.entity.Employee;
 import com.fincons.entity.File;
 import com.fincons.entity.Project;
@@ -15,6 +17,7 @@ import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
+import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -81,6 +84,7 @@ public class AppConfig {
     @Bean
     public ModelMapper modelMapperSkipEmployeesAndFileInProjects() {
         ModelMapper modelMapper = new ModelMapper();
+
         modelMapper.addMappings(new PropertyMap<Project, ProjectDTO>() {
             @Override
             protected void configure() {
@@ -91,7 +95,7 @@ public class AppConfig {
             @Override
             protected void configure(){
                 skip(destination.getFile64());
-                skip(destination.getEmpId());
+                skip(destination.getEmpSsn());
             }
         });
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
