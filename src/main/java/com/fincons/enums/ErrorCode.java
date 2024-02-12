@@ -8,7 +8,7 @@ public enum ErrorCode{
     //500+(N. ERRORE) ERRORI GENERICI DI SISTEMA
 
     //----------------------------PER GLI USER/DIPENDENTI-------------------------
-    RESOURCE_ALREADY_EXISTS(1001, Gravity.BLOCKING, "Dipendente esistente", "Il dipendente specificato è già presente."),
+    EMPLOYEE_ALREADY_EXISTS(1001, Gravity.BLOCKING, "Dipendente esistente", "Il dipendente specificato è già presente."),
 
     USER_ALREADY_EXISTS(1002, Gravity.BLOCKING, "Utente esistente", "L'account specificato è già esistente."),
 

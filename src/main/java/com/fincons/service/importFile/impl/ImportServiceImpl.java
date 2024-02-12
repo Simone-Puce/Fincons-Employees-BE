@@ -7,7 +7,6 @@ import com.fincons.dto.ImportResultDTO;
 import com.fincons.enums.ErrorCode;
 import com.fincons.enums.Gravity;
 import com.fincons.enums.ProcessingStatus;
-import com.fincons.exception.EmailException;
 import com.fincons.service.employeeService.EmployeeService;
 import com.fincons.service.importFile.ImportFileReader;
 import com.fincons.service.importFile.ImportService;
@@ -23,8 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,10 +30,6 @@ import java.util.List;
 @Service
 public class ImportServiceImpl implements ImportService {
     private static final Logger logger = LoggerFactory.getLogger(ImportServiceImpl.class);
-
-    @Autowired
-    private EmployeeService employeeService;
-
     @Autowired
     private PersistenceEmployeeService persistenceEmployeeService;
 
@@ -139,28 +132,15 @@ public class ImportServiceImpl implements ImportService {
                    try{
                        persistenceEmployeeService.addIfNotPresent(employee, duplicatedEmployee);
                    }catch (DataIntegrityViolationException dataIntegrityViolationException){
-                       //System.out.println("Esiste già un account con questa mail: " + employee.getEmail() +"\nQuindi il record verrà ignorato.");
                        duplicatedUser.add(new ErrorDetailDTO(employee.getRowNum(), "Email: "+ employee.getEmail(), ErrorCode.USER_ALREADY_EXISTS));
                    }catch(RuntimeException e){
                        logger.error("Errore generico", e);
                    }
                 }
-
-
-                /*
-                try{
-                    duplicatedEmployee = persistenceEmployeeService.addIfNotPresent(employeeList);
-
-                }catch(RuntimeException e){
-                    System.out.println("Si sono verificati degli errori sql." + e.getMessage());
-
-                }
-                */
                 //setto la lista generale per ritornarla comunque nel corpo della risposta di tutti gli errori
                 errorList.addAll(duplicatedEmployee);
                 errorList.addAll(duplicatedUser);
                 importResult.setErrors(errorList);
-
 
                 setImportResult(importResult, employeeList, duplicatedEmployee, duplicatedUser);
 
