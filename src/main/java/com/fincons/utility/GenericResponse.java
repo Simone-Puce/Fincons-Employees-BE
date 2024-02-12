@@ -42,4 +42,15 @@ public class GenericResponse<T>  {
                 .success(false)
                 .build();
     }
+    public GenericResponse(HttpStatus status, boolean success, String message) {
+        this.status = status;
+        this.success = success;
+        this.message = message;
+    }
+    public GenericResponse(HttpStatus status, boolean success, T data) {
+        this.status = status;
+        this.success = success;
+        this.data = data;
+    }
+
 }

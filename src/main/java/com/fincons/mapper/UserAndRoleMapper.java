@@ -19,10 +19,10 @@ public class UserAndRoleMapper {
     private ModelMapper modelMapperUser;
     @Autowired
     private ModelMapper modelMapperRole;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
     private RoleRepository roleRepo;
     public User dtoToUser(UserDTO userDTO) {
         User userToSave = modelMapperUser.map(userDTO, User.class);
