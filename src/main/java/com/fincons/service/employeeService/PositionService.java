@@ -1,16 +1,19 @@
 package com.fincons.service.employeeService;
 
+import com.fincons.dto.PositionDTO;
 import com.fincons.entity.Position;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@Service
+import java.util.List;
+
+
 public interface PositionService {
 
-    ResponseEntity<Object> getPositionById(long id);
-    ResponseEntity<Object> getAllPositions();
-    ResponseEntity<Object> createPosition(Position position);
-    ResponseEntity<Object> updatePositionById(long id, Position position) throws Exception;
-    ResponseEntity<Object> deletePositionById(long id);
+    Position getPositionByCode(String positionCode);
+    List<Position> getAllPositions();
+    Position createPosition(PositionDTO positionDTO);
+    Position updatePositionByCode(String positionCode, PositionDTO positionDTO);
+    void deletePositionByCode(String positionCode);
 
 }

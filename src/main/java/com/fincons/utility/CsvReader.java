@@ -133,14 +133,12 @@ public class CsvReader implements ImportFileReader {
                 posizione.setId(Long.parseLong(pos));
 
 
-                //CREA UN EMPLOYEE DTO
+                //CREATE EMPLOYEE DTO
 
-                EmployeeDTO personToAdd = new EmployeeDTO(nome, cognome, genere, dataDiNascita, email, dataDiInizio, dataDiFine, dipartimento, posizione);
-                personToAdd.setRowNum(lineNumber);
+                EmployeeDTO personToAdd = new EmployeeDTO(nome, cognome, genere,email, dataDiNascita, dataDiInizio,dataDiFine,dipartimento.getDepartmentCode() , posizione.getPositionCode());
+                personToAdd.setRowNum(record.getRecordNumber() + 1);
 
-
-
-                //AGGIUNGILO ALLA LISTA
+                //ADD EMPLOYEE TO LIST
                 employeeToAdd.add(personToAdd);
             }
         } catch (NumberFormatException e) {

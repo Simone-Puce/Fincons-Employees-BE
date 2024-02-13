@@ -8,24 +8,17 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
-@Repository
+
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
-    Department findById(long id);
-
-
-
-    /**
-     * Quando usi NEW nella query JPA, stai dicendo al sistema di creare oggetti direttamente dalla tupla restituita, piuttosto che restituire una lista di tuple.
-     * I parametri che passo nel costruttore del DTO sono esattamente con l'ordine della select
-     */
+    Department findDepartmentByDepartmentCode(String idDepartment);
 
     @Query(
         "SELECT NEW com.fincons.dto.EmployeeDepartmentDTO(d.name, e.lastName) " +
                 "FROM Department d " +
                 "INNER JOIN Employee e ON e.department.id = d.id " +
                 "WHERE e.department.id = :id")
-    List<EmployeeDepartmentDTO> getDepartmentEmployeesFindByIdDepartment(@Param("id") long id);
+    List<EmployeeDepartmentDTO> getDepartmentEmployeesFindByIdDepartment(@Param("id") Long id);
 
 
 

@@ -21,6 +21,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -141,13 +142,10 @@ public class ImportServiceImpl implements ImportService {
                 errorList.addAll(duplicatedEmployee);
                 errorList.addAll(duplicatedUser);
                 importResult.setErrors(errorList);
-
                 setImportResult(importResult, employeeList, duplicatedEmployee, duplicatedUser);
 
 
-        }
-
-
+            }
         }
     }
     private void setImportResult(ImportResultDTO importResult, List<EmployeeDTO> employeeList,List<ErrorDetailDTO> duplicatedEmployee, List<ErrorDetailDTO> duplicatedUser){
