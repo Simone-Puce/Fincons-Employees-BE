@@ -13,6 +13,7 @@ import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.EmployeeMapper;
 import com.fincons.enums.ProcessingStatus;
+import com.fincons.exception.EmailException;
 import com.fincons.service.employeeService.EmployeeService;
 import com.fincons.service.importFile.ImportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -362,13 +363,21 @@ public class EmployeeController {
     @PostMapping("${employee.importfile}")
     public ResponseEntity<ImportResultDTO> addEmployeeFromFile(@RequestBody MultipartFile importedFile) {
 
-        ImportResultDTO importResult = importService.processImport(importedFile);
-        if (importResult.getStatus() == ProcessingStatus.NOT_LOADED) {
+            ImportResultDTO importResult = importService.processImport(importedFile);
+            if (importResult.getStatus() == ProcessingStatus.NOT_LOADED
+                    || importResult.getStatus()== ProcessingStatus.LOADED_WITH_ERRORS
+                    || importResult.getStatus()== ProcessingStatus.LOADED) {
+                return ResponseEntity.ok(importResult);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(importResult);
+            }
 
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(importResult);
-        } else {
-            return ResponseEntity.ok(importResult);
-        }
+
+
+
+
+
+
     }
 
 

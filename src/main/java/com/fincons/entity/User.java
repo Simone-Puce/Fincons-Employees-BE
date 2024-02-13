@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 @NoArgsConstructor
@@ -43,6 +44,14 @@ public class User {
 
 
 
+
+    public User(String email, String firstName, String lastName, String password) {
+        setEmail(email);
+        setFirstName(firstName);
+        setLastName(lastName);
+        setPassword(password);
+        setGeneratedPassword(true);
+    }
 
     public long getId() {
         return id;

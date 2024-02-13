@@ -68,5 +68,4 @@ public class EmployeeDTO {
         this.departmentCode = departmentCode;
         this.positionCode = positionCode;
     }
-
 }
