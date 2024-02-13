@@ -11,7 +11,6 @@ import com.fincons.repository.UserRepository;
 import com.fincons.utility.RoleValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -51,7 +50,6 @@ public class RoleServiceImpl implements RoleService{
     @Override
     public Role createRole(RoleDTO roleDTO) throws RoleException {
 
-        // See if matches with regex
         if(!RoleValidator.isValidRole(roleDTO.getName().toUpperCase())){
             throw new RoleException(RoleException.roleDoesNotRespectRegex());
         }
@@ -60,7 +58,7 @@ public class RoleServiceImpl implements RoleService{
         if(roleExist != null){
             throw new RoleException(RoleException.roleExistException());
         }
-        //I set name to Uppercase
+
         roleDTO.setName(roleDTO.getName().toUpperCase());
 
         return roleRepository.save(userAndRoleMapper.dtoToRole(roleDTO));
@@ -94,7 +92,6 @@ public class RoleServiceImpl implements RoleService{
     @Override
     public String deleteRole(long roleId, boolean deleteUsersAssociated) throws RoleException {  //  if Boolean deleteUsersAssociated == null -- > nullPointerExepciont
 
-        // se non presente genera eccezione
         Optional<Role> roleToDelete = Optional.ofNullable(roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Role does not Exist")));
 
         if (roleToDelete.isPresent() && !roleToDelete.get().getName().equals("ROLE_ADMIN"))  {

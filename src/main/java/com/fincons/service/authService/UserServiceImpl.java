@@ -1,6 +1,5 @@
 package com.fincons.service.authService;
 
-
 import com.fincons.dto.UserDTO;
 import com.fincons.entity.Role;
 import com.fincons.entity.User;
@@ -45,15 +44,13 @@ public class UserServiceImpl  implements UserService{
     private UserRepository userRepo;
     private PasswordEncoder passwordEncoder;
 
-
     @Autowired
     private UserAndRoleMapper userAndRoleMapper;
-    private JwtTokenProvider jwtTokenProvider;
 
+    private JwtTokenProvider jwtTokenProvider;
 
     @Value("${admin.password}")
     private String passwordAdmin;
-
 
     @Override
     public User registerNewUser(UserDTO userDTO, String passwordForAdmin) throws EmailException, PasswordException {
@@ -81,7 +78,6 @@ public class UserServiceImpl  implements UserService{
             User userSaved = userRepo.save(userToSave);
 
             return userSaved;
-                    //userAndRoleMapper.userToUserDto(userSaved);
     }
 
     @Override
@@ -93,7 +89,6 @@ public class UserServiceImpl  implements UserService{
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             return jwtTokenProvider.generateToken(authentication);
-
     }
 
     @Override
@@ -122,13 +117,11 @@ public class UserServiceImpl  implements UserService{
     @Override
     public User updateUserPassword(String email, String password, String newPassword) throws EmailException, PasswordException {
 
-        //if email exist
         if(userRepo.findByEmail(email) == null && !EmailValidator.isValidEmail(email)) {
             throw new EmailException(EmailException.emailInvalidOrExist());
         }
 
         User userToModify = userRepo.findByEmail(email);
-
         boolean passwordMatch = passwordEncoder.matches(password , userToModify.getPassword());
 
         if(!passwordMatch){
@@ -154,6 +147,10 @@ public class UserServiceImpl  implements UserService{
         userRepo.delete(userToRemove);
     }
 
+    @Override
+    public List<User> findAllUsers() {
+        return  userRepo.findAll();
+    }
 
     @Override
     public List<UserDTO> getAllUsers() {

@@ -1,12 +1,9 @@
 package com.fincons.security;
 
 import com.fincons.enums.RoleEndpoint;
-import com.fincons.utility.ApplicationUri;
-import com.fincons.jwt.JwtAuthenticationEntryPoint;
+import com.fincons.jwt.JwtUnauthorizedAuthenticationEntryPoint;
 import com.fincons.jwt.JwtAuthenticationFilter;
-
 import com.fincons.utility.Endpoint;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +37,7 @@ public class SecurityConfiguration {
     }
 
     @Autowired
-    private  JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private JwtUnauthorizedAuthenticationEntryPoint authenticationExeptionEntryPoint;
 
     @Autowired
     private   JwtAuthenticationFilter jwtAuthFilter;
@@ -88,10 +83,7 @@ public class SecurityConfiguration {
         http.cors(AbstractHttpConfigurer::disable);
         http.csrf(AbstractHttpConfigurer::disable);
 
-
-
         List<Endpoint> endpoints = Arrays.asList(
-
                 new Endpoint(appContext + roleBaseUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
                 new Endpoint(appContext + departmentBaseUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
                 new Endpoint(appContext + positionUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
@@ -100,12 +92,10 @@ public class SecurityConfiguration {
                 new Endpoint(appContext + emailSenderUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
                 new Endpoint(appContext + updateUserPassword + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
                 new Endpoint(appContext + employeeBaseUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
-                new Endpoint(appContext + registeredUsers, Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER))
-
+                new Endpoint(appContext + registeredUsers, List.of(RoleEndpoint.ADMIN))
         );
 
         http.authorizeHttpRequests(authz -> {
-
             for (Endpoint e: endpoints) {
                 if (e.getRoles().contains(RoleEndpoint.ADMIN) && e.getRoles().contains(RoleEndpoint.USER)) {
                     authz.requestMatchers(HttpMethod.GET, e.getPath()).hasAnyRole("ADMIN","USER");
@@ -126,7 +116,7 @@ public class SecurityConfiguration {
 
         http
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(authenticationEntryPoint));
+                        .authenticationEntryPoint(authenticationExeptionEntryPoint));
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

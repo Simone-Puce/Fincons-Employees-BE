@@ -23,4 +23,6 @@ public interface UserService {
     User updateUserPassword(String email, String password, String newPassword) throws EmailException, PasswordException;
 
     void deleteUserByEmail(String email) throws EmailException, EmailException;
+
+    List<User> findAllUsers();
 }

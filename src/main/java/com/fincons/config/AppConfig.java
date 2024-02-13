@@ -31,35 +31,5 @@ public class AppConfig {
         return new JdbcTemplateLockProvider(dataSource);
     }
 
-    @Bean
-    public ModelMapper modelMapperUser() {
-
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.addMappings(new PropertyMap<User, UserDTO>() {
-
-            @Override
-            protected void configure(){
-                skip(destination.getRoles());
-            }
-        });
-
-        return modelMapper;
-    }
-
-    @Bean
-    public ModelMapper modelMapperRole() {
-
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.addMappings(new PropertyMap<Role, RoleDTO>() {
-
-            @Override
-            protected void configure(){
-                skip(destination.getUsers());
-            }
-        });
-
-        return modelMapper;
-    }
-
 
 }

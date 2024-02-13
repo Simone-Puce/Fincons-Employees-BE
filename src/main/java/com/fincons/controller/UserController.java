@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 //@CrossOrigin("http://localhost:81")
@@ -26,11 +27,6 @@ public class UserController {
 
     @Autowired
     UserAndRoleMapper userAndRoleMapper;
-
-    @GetMapping("${registered.users}")
-    public String registeredUsers() {
-        return "Registered users";
-    }
 
     @GetMapping("${admin.base.uri}")
     public String adminEndpoint() {
@@ -52,19 +48,15 @@ public class UserController {
         return "employees!";
     }
 
-
     @PostMapping("${logout.base.uri}")
     public String logoutEmployee() {
         return "logout!";
     }
 
-    // Login
     @PostMapping("${login.base.uri}")
     public ResponseEntity<GenericResponse<JwtAuthResponse>> login(@RequestBody LoginDto loginDto) {
         try {
-            // your code goes here
             String token = userService.login(loginDto);
-
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setAccessToken(token);
 
@@ -74,15 +66,40 @@ public class UserController {
                     .message("Logged Succesfully!!!")
                     .data(jwtAuthResponse)
                     .build());
+
         } catch (Exception e) {
             return ResponseEntity.status(200).body(GenericResponse.<JwtAuthResponse>builder()
-                    .status(HttpStatus.resolve(409))
+                    .status(HttpStatus.CONFLICT)
                     .success(false)
                     .message(e.getMessage())
                     .build());
         }
     }
 
+    @GetMapping("${registered.users}")
+    public ResponseEntity<GenericResponse<List<UserDTO>>> registeredUsers() {
+
+            List<UserDTO> userDTOList =  userService.findAllUsers()
+                    .stream()
+                    .map(user -> userAndRoleMapper.userToUserDto(user))
+                    .toList();
+
+            if(!userDTOList.isEmpty()) {
+                return ResponseEntity.ok(GenericResponse.<List<UserDTO>>builder()
+                        .status(HttpStatus.OK)
+                        .success(true)
+                        .message("List of  registered users")
+                        .data(userDTOList)
+                        .build());
+            }else{
+                return ResponseEntity.ok(GenericResponse.<List<UserDTO>>builder()
+                        .status(HttpStatus.OK)
+                        .success(true)
+                        .message("List is empty")
+                        .data(userDTOList)
+                        .build());
+            }
+    }
 
     @PostMapping(value = "${register.base.uri}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GenericResponse<UserDTO>> register(
@@ -100,20 +117,19 @@ public class UserController {
         } catch (EmailException ee) {
 
             return ResponseEntity.status(200).body(GenericResponse.<UserDTO>builder()
-                    .status(HttpStatus.resolve(409))
+                    .status(HttpStatus.CONFLICT)
                     .success(false)
                     .message(EmailException.emailInvalidOrExist())
                     .build());
 
         } catch ( PasswordException pdnre) {
             return ResponseEntity.status(200).body(GenericResponse.<UserDTO>builder()
-                    .status(HttpStatus.resolve(409))
+                    .status(HttpStatus.CONFLICT)
                     .success(false)
                     .message(pdnre.getMessage())
                     .build());
         }
     }
-
 
     @PutMapping("${modify.user}")
     public ResponseEntity<GenericResponse<UserDTO>> updateUserByEmail
@@ -123,8 +139,8 @@ public class UserController {
                     @RequestParam(name = "admin", required = false) String passwordForAdmin
             ) throws Exception {
         try {
-
             UserDTO updatedUser =userAndRoleMapper.userToUserDto(userService.updateUser(email, userModified, passwordForAdmin));
+
             return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<UserDTO>builder()
                             .status(HttpStatus.OK)
@@ -132,7 +148,6 @@ public class UserController {
                             .message("User modified succesfully!")
                             .data(updatedUser).build()
             );
-
         } catch (RoleException re) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<UserDTO>builder()
@@ -141,9 +156,9 @@ public class UserController {
                             .message(re.getMessage())
                             .build());
         } catch (ResourceNotFoundException r) {
-            return ResponseEntity.status(409).body(
+            return ResponseEntity.status(200).body(
                     GenericResponse.<UserDTO>builder()
-                            .status(HttpStatus.resolve(409))
+                            .status(HttpStatus.CONFLICT)
                             .success(false)
                             .message("Resource not found!")
                             .build()
@@ -151,7 +166,7 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(409).body(
                     GenericResponse.<UserDTO>builder()
-                            .status(HttpStatus.resolve(409))
+                            .status(HttpStatus.CONFLICT)
                             .success(false)
                             .message(e.getMessage())
                             .build()
@@ -168,7 +183,7 @@ public class UserController {
             UserDTO userDTO =userAndRoleMapper.userToUserDto(userService.updateUserPassword(email, password, newPassword));
             return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<UserDTO>builder()
-                            .status(HttpStatus.resolve(200))
+                            .status(HttpStatus.OK)
                             .success(true)
                             .message("Password changed succesfully")
                             .data(userDTO)
@@ -177,7 +192,7 @@ public class UserController {
         }catch(EmailException | PasswordException ep){
             return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<UserDTO>builder()
-                            .status(HttpStatus.resolve(409))
+                            .status(HttpStatus.CONFLICT)
                             .success(false)
                             .message(ep.getMessage()).build());
         }
@@ -211,7 +226,7 @@ public class UserController {
         }catch( EmailException ednee){
             return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<Boolean>builder()
-                            .status(HttpStatus.resolve(409))
+                            .status(HttpStatus.CONFLICT)
                             .success(false)
                             .message(ednee.getMessage())
                             .build());
@@ -219,12 +234,6 @@ public class UserController {
         }
 
     }
-
-
-
-
-
-
 
 }
 
