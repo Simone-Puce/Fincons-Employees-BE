@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/company-employee-management")
 public class PositionController {
 

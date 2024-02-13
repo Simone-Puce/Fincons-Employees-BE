@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
  * @RestController viene utilizzato per creare servizi web che restituiscono dati JSON o XML
  */
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/company-employee-management")
 public class DepartmentController {
 

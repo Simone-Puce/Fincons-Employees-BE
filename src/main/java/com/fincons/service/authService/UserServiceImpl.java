@@ -115,14 +115,14 @@ public class UserServiceImpl  implements UserService{
     }
 
     @Override
-    public User updateUserPassword(String email, String password, String newPassword) throws EmailException, PasswordException {
+    public User updateUserPassword(String email, String currentPassword, String newPassword) throws EmailException, PasswordException {
 
         if(userRepo.findByEmail(email) == null && !EmailValidator.isValidEmail(email)) {
             throw new EmailException(EmailException.emailInvalidOrExist());
         }
 
         User userToModify = userRepo.findByEmail(email);
-        boolean passwordMatch = passwordEncoder.matches(password , userToModify.getPassword());
+        boolean passwordMatch = passwordEncoder.matches(currentPassword , userToModify.getPassword());
 
         if(!passwordMatch){
             throw new PasswordException(PasswordException.invalidPasswordException());

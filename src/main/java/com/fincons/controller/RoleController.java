@@ -61,7 +61,7 @@ public class RoleController {
                     .data(roleDTO)
                     .build());
         }catch(ResourceNotFoundException rnfe){
-            return ResponseEntity.status(200).body(GenericResponse.<RoleDTO>builder()
+            return ResponseEntity.ok().body(GenericResponse.<RoleDTO>builder()
                     .status(HttpStatus.NOT_FOUND)
                     .success(false)
                     .message(rnfe.getMessage())
@@ -82,7 +82,7 @@ public class RoleController {
                     .data(newRole)
                     .build());
         }catch(RoleException re ){
-            return ResponseEntity.status(200).body(GenericResponse.<RoleDTO>builder()
+            return ResponseEntity.ok().body(GenericResponse.<RoleDTO>builder()
                     .status(HttpStatus.CONFLICT)
                     .success(false)
                     .message(re.getMessage())
@@ -106,7 +106,7 @@ public class RoleController {
                     .data(updatedRole)
                     .build());
         }catch(RoleException re){
-            return ResponseEntity.status(200).body(GenericResponse.<RoleDTO>builder()
+            return ResponseEntity.ok().body(GenericResponse.<RoleDTO>builder()
                     .status(HttpStatus.CONFLICT)
                     .success(false)
                     .message(re.getMessage())
@@ -128,7 +128,7 @@ public class RoleController {
                             .build()
             );
         }catch(ResourceNotFoundException | RoleException re){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok().body(
                     GenericResponse.<String>builder()
                             .status(HttpStatus.CONFLICT)
                             .success(false)

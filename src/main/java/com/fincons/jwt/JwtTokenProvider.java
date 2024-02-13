@@ -17,14 +17,12 @@ public class JwtTokenProvider {
     private String jwtSecret;
 
     @Value("${app.jwt-expiration-milliseconds}")
-    private long jwtExpirationDate; // changed in long because expireDate is long
+    private long jwtExpirationDate;
 
-    // Generate JWT token
     public String generateToken(Authentication authentication) {
         String email = authentication.getName();
 
         Date currentDate = new Date();
-
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
 
         return Jwts.builder()
@@ -35,7 +33,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // get email from JWT token
     public String getEmailFromJWT(String token) {
 
         return Jwts.parserBuilder()
@@ -45,23 +42,18 @@ public class JwtTokenProvider {
                 .getBody().getSubject();
     }
 
-
-    // Validate JWT token
     public boolean validateToken(String token){
         try {
             Jwts.parserBuilder()
                     .setSigningKey(key())
                     .build()
                     .parseClaimsJws(token);
-            // if analysis goes up return  true
             return true;
         } catch (JwtException e) {
-            // if analysis goes down return false and exception TODO create Custom Exception for token and log it on console
             return false;
         }
     }
 
-    // key for JWT token generation and verification
     private Key key(){
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }

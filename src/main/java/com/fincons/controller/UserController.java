@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-//@CrossOrigin("http://localhost:81")
 @CrossOrigin("*")
 @RequestMapping("/company-employee-management")
 public class UserController {
@@ -68,7 +67,7 @@ public class UserController {
                     .build());
 
         } catch (Exception e) {
-            return ResponseEntity.status(200).body(GenericResponse.<JwtAuthResponse>builder()
+            return ResponseEntity.ok().body(GenericResponse.<JwtAuthResponse>builder()
                     .status(HttpStatus.CONFLICT)
                     .success(false)
                     .message(e.getMessage())
@@ -116,17 +115,17 @@ public class UserController {
 
         } catch (EmailException ee) {
 
-            return ResponseEntity.status(200).body(GenericResponse.<UserDTO>builder()
+            return ResponseEntity.ok().body(GenericResponse.<UserDTO>builder()
                     .status(HttpStatus.CONFLICT)
                     .success(false)
                     .message(EmailException.emailInvalidOrExist())
                     .build());
 
-        } catch ( PasswordException pdnre) {
-            return ResponseEntity.status(200).body(GenericResponse.<UserDTO>builder()
+        } catch ( PasswordException passwordEx) {
+            return ResponseEntity.ok().body(GenericResponse.<UserDTO>builder()
                     .status(HttpStatus.CONFLICT)
                     .success(false)
-                    .message(pdnre.getMessage())
+                    .message(passwordEx.getMessage())
                     .build());
         }
     }
@@ -156,7 +155,7 @@ public class UserController {
                             .message(re.getMessage())
                             .build());
         } catch (ResourceNotFoundException r) {
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok().body(
                     GenericResponse.<UserDTO>builder()
                             .status(HttpStatus.CONFLICT)
                             .success(false)
@@ -164,7 +163,7 @@ public class UserController {
                             .build()
             );
         } catch (Exception e) {
-            return ResponseEntity.status(409).body(
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
                     GenericResponse.<UserDTO>builder()
                             .status(HttpStatus.CONFLICT)
                             .success(false)

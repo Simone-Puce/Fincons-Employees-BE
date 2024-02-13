@@ -38,27 +38,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // Get JWT token from HTTP Request
         String token = getTokenFromRequest(request);
 
-        // Validate Token
+
         if(StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)){
-            // get email from token
+
             String email = jwtTokenProvider.getEmailFromJWT(token);
 
-            // take user from load by username (email)
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-            // create an authentication object
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     userDetails,
-                    null, // credential null couse userDetails already contains credential thanks userDetailsService.loadUserByUsername(email);
+                    null,
                     userDetails.getAuthorities());
 
-            // set details of authentication
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            // set authentication in context of security and thanks to this spring know user is  authenticated for all period or request
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
 
@@ -66,14 +61,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getTokenFromRequest(HttpServletRequest request){
-        String bearerToken = request.getHeader("Authorization"); //Header contains key-value  key = Authorization and value = Bearer token
+        String bearerToken = request.getHeader("Authorization");
 
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ") ){ // If string is not null and if string starts with "Bearer " <- space is fundamental
-            return bearerToken.substring(7, bearerToken.length()); // substring indicates from with index we must start to extract string
+        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ") ){
+            return bearerToken.substring(7, bearerToken.length());
         }
 
         return null;
-
 
     }
 }
