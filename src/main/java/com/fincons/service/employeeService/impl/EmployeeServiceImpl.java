@@ -133,7 +133,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         else {
             for (Employee e : employeesWithoutSsnChosed) {
-                //Se uno dei due campi è già stato assegnato mi lancia l'eccezione
+                //If one of the two fields has already been assigned, it throws an exception.
                 if (e.getSsn().equals(employee.getSsn())) {
                     throw new DuplicateException("This SSN " + employeeDTO.getSsn() + " already taken");
                 } else if (e.getEmail().equals(employee.getEmail())) {

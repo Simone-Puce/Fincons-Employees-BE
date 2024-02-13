@@ -26,7 +26,6 @@ import org.springframework.context.annotation.PropertySource;
 import javax.sql.DataSource;
 
 @Configuration
-//@EnableScheduling //Abilita la schedulazione delle attività
 @EnableSchedulerLock(defaultLockAtMostFor = "PT5M")// Abilita ShedLock per i lock sulle attività schedulate, con un lock massimo di 5 minuti
 @PropertySource("classpath:retryConfig.properties")
 @PropertySource("classpath:email.properties")
