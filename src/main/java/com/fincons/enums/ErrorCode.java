@@ -1,14 +1,16 @@
 package com.fincons.enums;
 
-public enum ErrorCode {
+public enum ErrorCode{
 
-    //100+(N. ERRORE) RISERVATO PER GLI UTENTI
+    //100+(N. ERRORE) RISERVATO PER I DIPENDENTI E USER(ACCOUNT)
     //150+(N. ERRORE) RISERVATO PER GLI ERRORI DI VALIDAZIONE
     //200+(N. ERRORE) RISERVATO PER I FILE
     //500+(N. ERRORE) ERRORI GENERICI DI SISTEMA
 
-    //----------------------------PER GLI UTENTI-------------------------
-    RESOURCE_ALREADY_EXISTS(1001, Gravity.BLOCKING, "Utente esistente", "Utente già esistente."),
+    //----------------------------PER GLI USER/DIPENDENTI-------------------------
+    EMPLOYEE_ALREADY_EXISTS(1001, Gravity.BLOCKING, "Dipendente esistente", "Il dipendente specificato è già presente."),
+
+    USER_ALREADY_EXISTS(1002, Gravity.BLOCKING, "Utente esistente", "L'account specificato è già esistente."),
 
     //----------------------------PER LA VALIDAZIONE-------------------------
     MISSING_REQUIRED_FIELD(1501, Gravity.BLOCKING, "Manca un parametro obbligatorio", "Manca un parametro obbligatorio"),
@@ -17,9 +19,13 @@ public enum ErrorCode {
     INVALID_NAME_SURNAME(1503, Gravity.WARNING, "Campo non valido", "Il campo inserito non è valido, controlla che non ci siano numeri e/o caratteri speciali"),
 
     INVALID_GENRE(1504, Gravity.WARNING, "Campo 'Genere' non valido", "Il campo 'Genere' inserito non è valido, deve corrispondere ai seguenti valori (M= Maschio, F=Femmina, O=Other)"),
-    INVALID_ROW(1505, Gravity.BLOCKING, "Campi non validi", "La riga non risulta valida e verrà ignorata perché i campi fondamentali non rispettano i giusti criteri."),
 
-    EMPTY_LIST_AFTER_VALIDATION(1506, Gravity.BLOCKING, "Nessun dipendente da aggiungere", "La lista dei dipendenti dopo la validazione, risulta vuota."),
+
+    INVALID_DATE(1505, Gravity.BLOCKING, "Campo 'Data' non valido", "Il campo 'Data' inserito non è valido, il dipendente associato non sarà inserito, correggere il campo e riprovare."),
+    INVALID_ROW(1506, Gravity.BLOCKING, "Campi non validi", "La riga non risulta valida e verrà ignorata perché i campi fondamentali non rispettano i giusti criteri."),
+
+    EMPTY_LIST_AFTER_VALIDATION(1507, Gravity.BLOCKING, "Nessun dipendente da aggiungere", "La lista dei dipendenti dopo la validazione, risulta vuota."),
+
 
     //----------------------------PER I FILE-------------------------
     UNEXPECTED_FORMAT(2001, Gravity.BLOCKING, "Formato sbagliato", "Formato file non supportato. "),

@@ -3,7 +3,9 @@ package com.fincons.utility;
 import com.fincons.dto.EmployeeDTO;
 import com.fincons.dto.ErrorDetailDTO;
 import com.fincons.enums.ErrorCode;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.springframework.util.StringUtils;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -91,6 +93,58 @@ public class EmployeeDataValidator {
         } else {
             return false;
         }
+
+    }
+
+
+    public static boolean isValidDate(String date) {
+
+        // Implementazione della validazione della data
+        // Ritorna true se la data è valida, altrimenti false
+
+        try{
+            if (!StringUtils.hasText(date)) {
+                return false;
+            }
+
+            final  String regex = "^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$";
+
+            if (Pattern.matches(regex, date)) {
+                return true;
+            } else {
+                return false;
+            }
+        }catch (NumberFormatException e){
+            return false;
+        }
+
+
+    }
+    public static boolean isValidDateExcelFile(String date) {
+
+        // Implementazione della validazione della data
+        // Ritorna true se la data è valida, altrimenti false
+
+
+        try{
+            double doubleDate = Double.parseDouble(date);
+            LocalDate processData = DateUtil.getLocalDateTime(doubleDate).toLocalDate();
+
+            if (!StringUtils.hasText(processData.toString())) {
+                return false;
+            }
+
+            final  String regex = "^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$";
+
+            if (Pattern.matches(regex, processData.toString())) {
+                return true;
+            } else {
+                return false;
+            }
+        }catch (NumberFormatException e){
+            return false;
+        }
+
 
     }
 

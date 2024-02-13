@@ -1,10 +1,12 @@
 package com.fincons.service.employeeService;
 
+import com.fincons.dto.EmployeeDTO;
 import com.fincons.entity.Employee;
 import com.fincons.dto.EmployeeProjectDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 @Service
 public interface EmployeeService {
 
@@ -23,6 +25,8 @@ public interface EmployeeService {
     //aggiunti questi due metodi per evitare validazioni e controlli già implementati in questo service perché
     //vanno in contrasto con i miei validator e controlli
     boolean  employeeExists(Employee employee);
+
+    void deleteEmployee(Employee employee);
 
     Employee addEmployeeFromFile(Employee employee);
 
