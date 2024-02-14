@@ -225,7 +225,6 @@ public class UserController {
                             .success(false)
                             .message(emailException.getMessage())
                             .build());
-
         } catch (RoleException roleException) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<Boolean>builder()
