@@ -11,10 +11,8 @@ import com.fincons.service.importFile.ImportFileReader;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class CsvReader implements ImportFileReader {
-    private Reader csvData;
+    private Reader csvReader;
     private CSVParser csvParser;
     private static final Logger LOGGER = LoggerFactory.getLogger(CsvReader.class);
     private int chunkSize;
@@ -42,13 +40,13 @@ public class CsvReader implements ImportFileReader {
         List<ErrorDetailDTO> errorOpenList = new ArrayList<>();
 
         try {
-            csvData = new InputStreamReader(file);
-            csvParser = CSVParser.parse(csvData, CSVFormat.DEFAULT.builder().setHeader(EmployeeHeaderCsv.class).setSkipHeaderRecord(true).build());
+            csvReader = new InputStreamReader(file);
+            csvParser = CSVParser.parse(csvReader, CSVFormat.DEFAULT.builder().setHeader(EmployeeHeaderCsv.class).setSkipHeaderRecord(true).build());
 
         } catch (Exception e) {
             LOGGER.error("Errore durante l'apertura o la lettura del file.", e);
             errorOpenList.add(new ErrorDetailDTO(ErrorCode.ERROR_OPEN_FILE));
-        }
+        }  //TODO - IOEXCEPTION
         // Chiamare readFile solo se non ci sono errori durante l'apertura del file
         return errorOpenList;
     }
@@ -82,40 +80,65 @@ public class CsvReader implements ImportFileReader {
                     errorReadingList.add(new ErrorDetailDTO(ErrorCode.MAXIMUM_ROWS));
                     return new ImportFileDTO(employeeToAdd, errorReadingList);
                 }
-
+                //LEGGO IL RECORD SUCCESSIVO
                 CSVRecord record = fileIterator.next();
+
+
+                long lineNumber=record.getRecordNumber()+1;
 
                 //PER OGNI RECORD PRENDI GLI ATTRIBUTI
                 String nome = record.get(EmployeeHeaderCsv.Nome);
                 String cognome = record.get(EmployeeHeaderCsv.Cognome);
                 String genere = record.get(EmployeeHeaderCsv.Genere);
 
+
+                LocalDate dataDiNascita=null,dataDiInizio=null,dataDiFine=null;
+
                 String dataNascita = record.get(EmployeeHeaderCsv.DataDiNascita);
-                LocalDate dataDiNascita = LocalDate.parse(dataNascita,formatter);
+                if (EmployeeDataValidator.isValidDate(dataNascita)) {
+                     dataDiNascita = LocalDate.parse(dataNascita, formatter);
+                }else{
+                    errorReadingList.add(new ErrorDetailDTO(lineNumber, "Data Di Nascita", ErrorCode.INVALID_DATE));
+                    continue;
+                }
 
 
 
                 String email = record.get(EmployeeHeaderCsv.Email);
 
                 String dataInizio = record.get(EmployeeHeaderCsv.DataInizio);
-                LocalDate dataDiInizio = LocalDate.parse(dataInizio,formatter);
 
+                if (EmployeeDataValidator.isValidDate(dataInizio)) {
+                     dataDiInizio = LocalDate.parse(dataInizio, formatter);
+                }else{
+                    errorReadingList.add(new ErrorDetailDTO(lineNumber, "Data Di Inizio", ErrorCode.INVALID_DATE));
+                    continue;
+                }
                 String dataFine = record.get(EmployeeHeaderCsv.DataFine);
-                LocalDate dataDiFine = LocalDate.parse(dataFine,formatter);
+                if (EmployeeDataValidator.isValidDate(dataFine)) {
+                     dataDiFine = LocalDate.parse(dataFine, formatter);
+                }else{
+                    errorReadingList.add(new ErrorDetailDTO(lineNumber, "Data Di Nascita", ErrorCode.INVALID_DATE));
+                    continue;
+                }
+
 
                 String dep = record.get(EmployeeHeaderCsv.Dipartimento);
                 Department dipartimento= new Department();
                 dipartimento.setId(Long.parseLong(dep));
 
                 String pos= record.get(EmployeeHeaderCsv.Posizione);
+
                 Position posizione = new Position();
                 posizione.setId(Long.parseLong(pos));
 
 
-                //CREA UN EMPLOYEE DTO
-                EmployeeDTO personToAdd = new EmployeeDTO(nome, cognome, genere,dataDiNascita,email,dataDiInizio,dataDiFine,dipartimento, posizione);
+                //CREATE EMPLOYEE DTO
+
+                EmployeeDTO personToAdd = new EmployeeDTO(nome, cognome, genere,email, dataDiNascita, dataDiInizio,dataDiFine,dipartimento.getDepartmentCode() , posizione.getPositionCode());
                 personToAdd.setRowNum(record.getRecordNumber() + 1);
-                //AGGIUNGILO ALLA LISTA
+
+                //ADD EMPLOYEE TO LIST
                 employeeToAdd.add(personToAdd);
             }
         } catch (NumberFormatException e) {
@@ -129,8 +152,8 @@ public class CsvReader implements ImportFileReader {
     @Override
     public void close() throws IOException {
         try {
-            if (csvData != null) {
-                csvData.close();
+            if (csvReader != null) {
+                csvReader.close();
             }
             if (csvParser != null) {
                 csvParser.close();

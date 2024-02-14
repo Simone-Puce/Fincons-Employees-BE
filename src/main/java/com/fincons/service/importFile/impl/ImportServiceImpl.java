@@ -4,6 +4,7 @@ import com.fincons.dto.EmployeeDTO;
 import com.fincons.dto.ErrorDetailDTO;
 import com.fincons.dto.ImportFileDTO;
 import com.fincons.dto.ImportResultDTO;
+import com.fincons.enums.ErrorCode;
 import com.fincons.enums.Gravity;
 import com.fincons.enums.ProcessingStatus;
 import com.fincons.service.employeeService.EmployeeService;
@@ -15,8 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,14 +27,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-@PropertySource("importfile.properties")
+@PropertySource("classpath:importfile.properties")
 @Service
 public class ImportServiceImpl implements ImportService {
     private static final Logger logger = LoggerFactory.getLogger(ImportServiceImpl.class);
-
-    @Autowired
-    private EmployeeService employeeService;
-
     @Autowired
     private PersistenceEmployeeService persistenceEmployeeService;
 
@@ -42,12 +39,12 @@ public class ImportServiceImpl implements ImportService {
 
 
     @Override
-    public ImportResultDTO processImport(MultipartFile file) {
+    public ImportResultDTO processImport(MultipartFile file)  {
 
         ImportResultDTO importResult = new ImportResultDTO(ImportServiceDateUtility.generateId(), file.getOriginalFilename(), file.getSize(), ImportServiceDateUtility.generateDate());
 
         List<ErrorDetailDTO> errorList = new ArrayList<>();
-
+        
         String ext = FileUtility.getExtension(file.getOriginalFilename());
         ImportFileReader fileReader = null;
         if ("csv".equalsIgnoreCase(ext)) {         // inizializza un csvReader se il file è un csv
@@ -97,9 +94,7 @@ public class ImportServiceImpl implements ImportService {
         }
         return importResult;
     }
-
-
-    private void processReadResult(ImportFileDTO readResult, ImportResultDTO importResult) {
+    private void processReadResult(ImportFileDTO readResult, ImportResultDTO importResult)  {
         //LISTA DEI DIPENDENTI
         List<EmployeeDTO> employeeList = readResult.getEmployeeList();
 
@@ -129,37 +124,47 @@ public class ImportServiceImpl implements ImportService {
             if (employeeList.isEmpty()) {
                 ImportErrorUtility.emptyListAfterValidation(errorList, importResult);
             } else {
-
                 //Si passa alla persistenza degli impiegati, ritornando eventualmente una lista di errori se qualche dipendente è già presente.
                 //SETTANDO IN UNA APPOSITA LISTA, I DUPLICATI TROVATI DURANTE L'INSERIMENTO NEL DB.
-                List<ErrorDetailDTO> duplicatedEmployee = persistenceEmployeeService.addIfNotPresent(employeeList);
+                List<ErrorDetailDTO> duplicatedEmployee = new ArrayList<>();
+                List<ErrorDetailDTO> duplicatedUser = new ArrayList<>();
+
+                for(EmployeeDTO employee : employeeList){
+                   try{
+                       persistenceEmployeeService.addIfNotPresent(employee, duplicatedEmployee);
+                   }catch (DataIntegrityViolationException dataIntegrityViolationException){
+                       duplicatedUser.add(new ErrorDetailDTO(employee.getRowNum(), "Email: "+ employee.getEmail(), ErrorCode.USER_ALREADY_EXISTS));
+                   }catch(RuntimeException e){
+                       logger.error("Errore generico", e);
+                   }
+                }
                 //setto la lista generale per ritornarla comunque nel corpo della risposta di tutti gli errori
                 errorList.addAll(duplicatedEmployee);
-
-                // Aggiorna l'oggetto ImportResult con gli errori riscontrati nel processo di importazione
+                errorList.addAll(duplicatedUser);
                 importResult.setErrors(errorList);
+                setImportResult(importResult, employeeList, duplicatedEmployee, duplicatedUser);
 
-                if (importResult.getErrors().size() > 0 && employeeList.size() > 0) {
-                    //se vengono trovati N dipendenti duplicati tanto quanti N dipendenti da aggiungere
-                    //l'import result sarà not loaded dato che nessun dipendente verrà aggiunto al db.
-                    if (duplicatedEmployee.size() == employeeList.size()) {
-                        importResult.setStatus(ProcessingStatus.NOT_LOADED);
-                    } else {
-                        importResult.setStatus(ProcessingStatus.LOADED_WITH_ERRORS);
-                    }
 
-                } else if (importResult.getErrors().size() == 0 && employeeList.size() > 0) {
-                    importResult.setStatus(ProcessingStatus.LOADED);
-                } else if (importResult.getErrors().size() == 0 && employeeList.size() == 0) {
-                    importResult.setStatus(ProcessingStatus.NOT_LOADED);
-                } else if (importResult.getErrors().size() > 0 && employeeList.size() == 0) {
-                    importResult.setStatus(ProcessingStatus.NOT_LOADED);
-                }
-                importResult.setEndProcessingDate(ImportServiceDateUtility.generateDate());
+            }
         }
-
-
+    }
+    private void setImportResult(ImportResultDTO importResult, List<EmployeeDTO> employeeList,List<ErrorDetailDTO> duplicatedEmployee, List<ErrorDetailDTO> duplicatedUser){
+        if (importResult.getErrors().size() > 0 && employeeList.size() > 0) {
+            //se vengono trovati N dipendenti duplicati tanto quanti N dipendenti da aggiungere
+            //l'import result sarà not loaded dato che nessun dipendente verrà aggiunto al db.
+            if (duplicatedEmployee.size() == employeeList.size() || duplicatedUser.size()== employeeList.size() || (duplicatedEmployee.size()+duplicatedUser.size()) == employeeList.size()) {
+                importResult.setStatus(ProcessingStatus.NOT_LOADED);
+            } else {
+                importResult.setStatus(ProcessingStatus.LOADED_WITH_ERRORS);
+            }
+        } else if (importResult.getErrors().size() == 0 && employeeList.size() > 0) {
+            importResult.setStatus(ProcessingStatus.LOADED);
+        } else if (importResult.getErrors().size() == 0 && employeeList.size() == 0) {
+            importResult.setStatus(ProcessingStatus.NOT_LOADED);
+        } else if (importResult.getErrors().size() > 0 && employeeList.size() == 0) {
+            importResult.setStatus(ProcessingStatus.NOT_LOADED);
         }
+        importResult.setEndProcessingDate(ImportServiceDateUtility.generateDate());
     }
 
 }

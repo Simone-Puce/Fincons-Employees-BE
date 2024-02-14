@@ -31,6 +31,23 @@
 		</dependency>
 
 
+		<!--JWT-->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.11.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.11.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.11.5</version>
+		</dependency>
+
 		<!--Devtools-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -144,6 +161,11 @@
 			<version>5.3.1</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>1.5.5.Final</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -221,6 +243,7 @@
 		</dependency>
 
 	</dependencies>
+
 
 	<build>
 		<plugins>

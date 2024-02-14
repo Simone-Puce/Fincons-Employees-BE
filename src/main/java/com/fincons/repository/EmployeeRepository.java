@@ -7,22 +7,21 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import java.time.LocalDate;
 import java.util.List;
 
-@Repository
+
 public interface EmployeeRepository extends JpaRepository <Employee, Long> {
 
-    Employee findById(long id);
-
+    Employee findEmployeeBySsn(String ssn);
     Employee findByEmail(String email);
 
-    @Query("SELECT e.projects FROM Employee e WHERE e.id = :employeeId")
-    List<Project> findProjectByEmployeeId(long employeeId);
+    @Query("SELECT e.projects FROM Employee e WHERE e.ssn = :ssn")
+    List<Project> findProjectsByEmployeeSsn(String ssn);
+
 
     @Query(
-            "SELECT NEW com.fincons.dto.EmployeeProjectDTO(e.lastName, e.id, p.name, p.id)" +
+            "SELECT NEW com.fincons.dto.EmployeeProjectDTO(e.lastName, e.ssn, p.name, p.projectId)" +
                     "FROM Employee e " +
                     "JOIN e.projects p"
     )
@@ -36,5 +35,6 @@ public interface EmployeeRepository extends JpaRepository <Employee, Long> {
     List<Employee> findEmployeesByTodayBirthday(@Param("birthDate") LocalDate birthDate);
 
     boolean  existsByEmail(String emailId);
+
 
 }

@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,8 +23,7 @@ import java.util.Random;
 @Service
 public class CreateNewEmployeeRandomService implements ICreateNewEmployeeRandom {
 
-    @Autowired
-    private EmployeeService EmployeeService;
+
     @Autowired
     private DepartmentService departmentService;
 
@@ -76,7 +74,6 @@ public class CreateNewEmployeeRandomService implements ICreateNewEmployeeRandom 
             emp.setPosition(position);
 
             employeeList.add(emp);
-            EmployeeService.createEmployee(emp);
         }
         logger.info("They were saved: {} Employee", employeeList.size());
     }

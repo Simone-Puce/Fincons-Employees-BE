@@ -1,8 +1,6 @@
 package com.fincons.service.employeeService.impl;
 
-import com.fincons.dto.CertificateDTO;
 import com.fincons.dto.CertificateEmployeeDTO;
-import com.fincons.entity.Certificate;
 import com.fincons.entity.CertificateEmployee;
 import com.fincons.mapper.CertificateEmployeeMapper;
 import com.fincons.repository.CertificateEmployeeRepository;
@@ -14,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 @Service
