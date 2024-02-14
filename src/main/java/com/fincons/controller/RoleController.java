@@ -49,7 +49,7 @@ public class RoleController {
                         .build());
     }
 
-    @GetMapping("${role.find-by-id}/{roleId}")  //  /v1/role/find-by-id   application.properties role.find-by-id.uri=("${role.uri}/find-by-id")    role.uri = {base.version.uri}/role    ApplicationUri -> roleFindByIdUri
+    @GetMapping("${role.find-by-id}/{roleId}")
     public ResponseEntity<GenericResponse<RoleDTO>> getRoleById(@PathVariable long roleId) {
         try{
             RoleDTO roleDTO = userAndRoleMapper.roleToRoleDto(roleService.getRoleById(roleId));
@@ -96,7 +96,8 @@ public class RoleController {
     I will not have permission anymore.
     So if it happens, you need to register new admin, after you can go to modify again a roleName.
      */
-    public ResponseEntity<GenericResponse<RoleDTO>> updateRole(@PathVariable long roleId, @RequestBody RoleDTO roleModifiedDTO) {
+    public ResponseEntity<GenericResponse<RoleDTO>> updateRole
+            (@PathVariable long roleId, @RequestBody RoleDTO roleModifiedDTO) {
         try{
             RoleDTO updatedRole  = userAndRoleMapper.roleToRoleDto(roleService.updateRole(roleId,roleModifiedDTO));
             return ResponseEntity.ok().body(GenericResponse.<RoleDTO>builder()
@@ -110,6 +111,12 @@ public class RoleController {
                     .status(HttpStatus.CONFLICT)
                     .success(false)
                     .message(re.getMessage())
+                    .build());
+        }catch(ResourceNotFoundException resourseException){
+            return ResponseEntity.ok().body(GenericResponse.<RoleDTO>builder()
+                    .status(HttpStatus.NOT_FOUND)
+                    .success(false)
+                    .message(resourseException.getMessage())
                     .build());
         }
     }

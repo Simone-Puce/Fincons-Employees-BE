@@ -20,8 +20,6 @@ public class UserAndRoleMapper {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private RoleRepository roleRepo;
     public User dtoToUser(UserDTO userDTO) {
         User userToSave = modelMapper.map(userDTO, User.class);
         userToSave.setPassword(passwordEncoder.encode(userDTO.getPassword()));

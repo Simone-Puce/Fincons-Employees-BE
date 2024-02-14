@@ -3,7 +3,7 @@ package com.fincons.service.authService;
 import com.fincons.dto.RoleDTO;
 import com.fincons.entity.Role;
 import com.fincons.exception.RoleException;
-import com.fincons.utility.GenericResponse;
+
 
 import java.util.List;
 
