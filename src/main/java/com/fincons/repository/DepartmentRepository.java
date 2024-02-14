@@ -13,6 +13,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
     Department findDepartmentByDepartmentCode(String idDepartment);
 
+
     @Query(
         "SELECT NEW com.fincons.dto.EmployeeDepartmentDTO(d.name, e.lastName) " +
                 "FROM Department d " +

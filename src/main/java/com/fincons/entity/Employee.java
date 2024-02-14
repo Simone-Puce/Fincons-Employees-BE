@@ -57,11 +57,11 @@ public class Employee {
     private LocalDate endDate;
 
     @ManyToOne
-    @JoinColumn(name = "id_department")
+    @JoinColumn(name = "code_department")
     private Department department;
 
     @ManyToOne
-    @JoinColumn(name = "id_position")
+    @JoinColumn(name = "code_position")
     private Position position;
 
     @ManyToMany(fetch = FetchType.LAZY,

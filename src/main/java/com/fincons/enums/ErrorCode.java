@@ -26,6 +26,10 @@ public enum ErrorCode{
 
     EMPTY_LIST_AFTER_VALIDATION(1507, Gravity.BLOCKING, "Nessun dipendente da aggiungere", "La lista dei dipendenti dopo la validazione, risulta vuota."),
 
+    DEPARTMENT_NOT_EXIST_OR_INVALID(1508, Gravity.BLOCKING, "Dipartimento non esistente o non valido.", "Il dipartimento specificato non esiste o è in un formato errato." ),
+
+    POSITION_NOT_EXIST_OR_INVALID(1509, Gravity.BLOCKING, "Posizione non esistente o non valida. ", "La posizione specificata non esiste o è in un formato errato. "),
+
 
     //----------------------------PER I FILE-------------------------
     UNEXPECTED_FORMAT(2001, Gravity.BLOCKING, "Formato sbagliato", "Formato file non supportato. "),

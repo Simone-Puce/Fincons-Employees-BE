@@ -28,6 +28,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     private DepartmentMapper modelMapperProject;
 
 
+
+
     @Autowired
     public DepartmentServiceImpl(DepartmentRepository departmentRepository, DepartmentMapper modelMapperProject) {
         this.departmentRepository = departmentRepository;
@@ -38,7 +40,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     public Department getDepartmentByCode(String departmentCode) {
         ValidateSingleField.validateSingleField(departmentCode);
         return validateDepartmentByCode(departmentCode);
-
     }
 
     @Override
@@ -120,7 +121,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentRepository.getDepartmentEmployeesFindByIdDepartment(department.getId());
     }
 
-    public Department validateDepartmentByCode(String departmentCode){
+    public  Department validateDepartmentByCode(String departmentCode){
         Department existingDepartment = departmentRepository.findDepartmentByDepartmentCode(departmentCode);
 
         if(Objects.isNull(existingDepartment)){
@@ -148,4 +149,7 @@ public class DepartmentServiceImpl implements DepartmentService {
             }
         }
     }
+
+
+
 }

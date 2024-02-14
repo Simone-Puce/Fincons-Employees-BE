@@ -17,7 +17,7 @@ public class EmployeeMapper {
     }
     //converti da dto ad entity
     public static Employee convertToEntity(EmployeeDTO employeeDto){
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STANDARD);
         return modelMapper.map(employeeDto, Employee.class);
     }
 

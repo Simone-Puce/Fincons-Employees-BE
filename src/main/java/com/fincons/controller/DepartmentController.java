@@ -87,7 +87,7 @@ public class DepartmentController {
 
             GenericResponse<DepartmentDTO> response = GenericResponse.success(
                     departmentDTO2,
-                    "Success: Department with code: " + department.getDepartmentCode() + " has been successfully updated!",
+                    "Success: Department with code: " + department.getDepartmentCode() + " has been successfully created!",
                     HttpStatus.OK);
             return ResponseEntity.ok(response);
 

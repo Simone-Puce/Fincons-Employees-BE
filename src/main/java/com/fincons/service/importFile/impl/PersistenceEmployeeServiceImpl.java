@@ -2,11 +2,16 @@ package com.fincons.service.importFile.impl;
 
 import com.fincons.dto.EmployeeDTO;
 import com.fincons.dto.ErrorDetailDTO;
+import com.fincons.entity.Department;
 import com.fincons.entity.Employee;
+import com.fincons.entity.Position;
 import com.fincons.entity.User;
 import com.fincons.enums.ErrorCode;
 import com.fincons.service.authService.UserServiceImpl;
 import com.fincons.service.employeeService.EmployeeService;
+import com.fincons.service.employeeService.impl.DepartmentServiceImpl;
+import com.fincons.service.employeeService.impl.EmployeeServiceImpl;
+import com.fincons.service.employeeService.impl.PositionServiceImpl;
 import com.fincons.service.importFile.PersistenceEmployeeService;
 import com.fincons.utility.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,20 +24,21 @@ import java.util.List;
 public class PersistenceEmployeeServiceImpl implements PersistenceEmployeeService {
 
     @Autowired
-    EmployeeService employeeService;
-
-
+    EmployeeServiceImpl employeeService;
+    @Autowired
+    DepartmentServiceImpl departmentService;
+    @Autowired
+    PositionServiceImpl positionService;
     @Autowired
     UserServiceImpl userService;
 
 
     @Override
     @Transactional
-    public void addIfNotPresent(EmployeeDTO employee, List<ErrorDetailDTO> duplicatedResultList) throws RuntimeException {
+    public void addIfNotPresent(Employee employeeEntity,EmployeeDTO employeeDTO ,List<ErrorDetailDTO> duplicatedResultList) throws RuntimeException {
        //TODO - contatori
-        long nRow = employee.getRowNum();
+        long nRow = employeeDTO.getRowNum();
 
-        Employee employeeEntity = EmployeeMapper.convertToEntity(employee);
         boolean employeeExists = employeeService.employeeExists(employeeEntity);
 
         if (!employeeExists) {
@@ -43,9 +49,8 @@ public class PersistenceEmployeeServiceImpl implements PersistenceEmployeeServic
             User newUser = new User(employeeEntity.getEmail(), employeeEntity.getFirstName(), employeeEntity.getLastName(), "Password!");
             userService.addNewUser(newUser);
         } else {
-            duplicatedResultList.add(new ErrorDetailDTO(nRow, "Email: " + employee.getEmail(), ErrorCode.EMPLOYEE_ALREADY_EXISTS));
+            duplicatedResultList.add(new ErrorDetailDTO(nRow, "Email: " + employeeDTO.getEmail(), ErrorCode.EMPLOYEE_ALREADY_EXISTS));
         }
-
-
     }
+
 }

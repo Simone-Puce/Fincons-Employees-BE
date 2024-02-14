@@ -125,12 +125,11 @@ public class CsvReader implements ImportFileReader {
 
                 String dep = record.get(EmployeeHeaderCsv.Dipartimento);
                 Department dipartimento= new Department();
-                dipartimento.setId(Long.parseLong(dep));
+                dipartimento.setDepartmentCode(dep);
 
                 String pos= record.get(EmployeeHeaderCsv.Posizione);
-
                 Position posizione = new Position();
-                posizione.setId(Long.parseLong(pos));
+                posizione.setPositionCode(pos);
 
 
                 //CREATE EMPLOYEE DTO

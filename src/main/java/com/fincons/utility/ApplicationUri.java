@@ -188,8 +188,6 @@ public class ApplicationUri {
     @Value("${file.delete}")
     private String fileDelete;
 
-    @Value("${file.import}")
-    private String fileImport;
 
     // EMAIL CONTROLLER
     @Value("${email.sender.base.uri}")
