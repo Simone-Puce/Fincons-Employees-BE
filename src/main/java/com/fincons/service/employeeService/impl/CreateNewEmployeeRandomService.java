@@ -23,8 +23,7 @@ import java.util.Random;
 @Service
 public class CreateNewEmployeeRandomService implements ICreateNewEmployeeRandom {
 
-    @Autowired
-    private EmployeeService EmployeeService;
+
     @Autowired
     private DepartmentService departmentService;
 
@@ -75,7 +74,6 @@ public class CreateNewEmployeeRandomService implements ICreateNewEmployeeRandom 
             emp.setPosition(position);
 
             employeeList.add(emp);
-            EmployeeService.createEmployee(emp);
         }
         logger.info("They were saved: {} Employee", employeeList.size());
     }

@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -44,6 +45,22 @@ public class User {
 
     @Column(name = "generated_password", nullable = false)
     boolean generatedPassword = false;
+
+
+
+
+
+    public User(String email, String firstName, String lastName, String password) {
+        setEmail(email);
+        setFirstName(firstName);
+        setLastName(lastName);
+        setPassword(password);
+        setGeneratedPassword(true);
+    }
+
+
+
+
 
 
 }

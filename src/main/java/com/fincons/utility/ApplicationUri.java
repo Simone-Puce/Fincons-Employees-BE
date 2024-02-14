@@ -72,8 +72,8 @@ public class ApplicationUri {
     @Value("${department.base.uri}")
     private String departmentBaseUri;
 
-    @Value("${department.find-by-id}")
-    private String departmentFindById;
+    @Value("${department.find-by-code}")
+    private String departmentFindByCode;
 
     @Value("${department.list}")
     private String departmentList;
@@ -94,8 +94,8 @@ public class ApplicationUri {
     @Value("${position.base.uri}")
     private String positionUri;
 
-    @Value("${position.find-position-by-id}")
-    private String positionFindById;
+    @Value("${position.find-position-by-code")
+    private String positionFindByCode;
 
     @Value("${position.list}")
     private String positionList;
@@ -132,11 +132,11 @@ public class ApplicationUri {
     @Value("${employee.base.uri}")
     private String employeeBaseUri;
 
-    @Value("${employee.find-project-by-id}")
-    private String employeeFindProjectById;
+    @Value("${employee.find-by-ssn}")
+    private String employeeFindBySsn;
 
-    @Value("${employee.find-project-by-email}")
-    private String employeeFindProjectByEmail;
+    @Value("${employee.find-by-email}")
+    private String employeeFindByEmail;
 
     @Value("${employee.list}")
     private String employeeList;
@@ -150,11 +150,11 @@ public class ApplicationUri {
     @Value("${employee.delete}")
     private String employeeDelete;
 
-    @Value("${employee.find-employee-project}")
-    private String employeeFindEmployeeProject;
+    @Value("${employee.find-employee-projects}")
+    private String employeeFindEmployeeProjects;
 
-    @Value("${employee.list-employee-project}")
-    private String employeeListEmployeeProject;
+    @Value("${employee.list-employees-projects}")
+    private String employeeListEmployeesProjects;
 
     @Value("${employee.create-employee-project}")
     private String employeeCreateEmployeeProject;

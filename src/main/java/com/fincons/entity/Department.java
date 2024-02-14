@@ -1,12 +1,25 @@
 package com.fincons.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
+
 import java.util.List;
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "department")
 public class Department {
@@ -14,6 +27,10 @@ public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "department_code")
+    private String departmentCode;
+
     @Column
     private String name;
     @Column
@@ -24,68 +41,26 @@ public class Department {
     @OneToMany(
             mappedBy = "department",
             fetch = FetchType.LAZY)
-    @JsonManagedReference(value = "department-employee")
-    @JsonIgnore
     private List<Employee> employees;
-    public Department() {
+
+
+    public Department(Long id, String name, String address) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
     }
 
-    public Department(Long id, String name, String address, String city) {
-        this.id = id;
+    public Department(String name, String address, String city) {
         this.name = name;
         this.address = address;
         this.city = city;
     }
 
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
+    public Department(Long id, String departmentCode, String name, String address, String city) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+        this.departmentCode = departmentCode;
         this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
         this.city = city;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Department that)) return false;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName()) && Objects.equals(getAddress(), that.getAddress()) && Objects.equals(getCity(), that.getCity()) && Objects.equals(getEmployees(), that.getEmployees());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName(), getAddress(), getCity(), getEmployees());
     }
 }

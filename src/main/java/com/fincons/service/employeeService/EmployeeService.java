@@ -1,28 +1,30 @@
 package com.fincons.service.employeeService;
 
+import com.fincons.dto.EmployeeDTO;
 import com.fincons.entity.Employee;
 import com.fincons.dto.EmployeeProjectDTO;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import com.fincons.entity.Project;
+import java.util.List;
 
-@Service
 public interface EmployeeService {
 
-    ResponseEntity<Object> getEmployeeById(long id);
-    ResponseEntity<Object> getEmployeeByEmail(String email);
-    ResponseEntity<Object> getAllEmployees();
-    ResponseEntity<Object> createEmployee(Employee employee);
-    ResponseEntity<Object> updateEmployeeById(long id, Employee employee) throws Exception;
-    ResponseEntity<Object> deleteEmployeeById(long id);
-    ResponseEntity<Object> findAllEmployeeProjects(long id);
-    ResponseEntity<Object> getAllEmployeeProject();
-    ResponseEntity<Object> addEmployeeProject(long idEmployee, long idProject);
-    ResponseEntity<Object> updateEmployeeProject(long idEmployee, long idProject, EmployeeProjectDTO employeeProjectDTO);
-    ResponseEntity<Object> deleteEmployeeProject(long idEmployee, long idProject);
+    Employee getEmployeeBySsn(String ssn);
+    Employee getEmployeeByEmail(String email);
+    List<Employee> getAllEmployees();
+    Employee createEmployee(EmployeeDTO employeeDTO);
+    Employee updateEmployeeBySsn(String ssn, EmployeeDTO employeeDTO);
+    void deleteEmployeeBySsn(String ssn);
+    List<Project> findAllEmployeeProjects(String ssn);
+    List<EmployeeProjectDTO> getAllEmployeeProject();
+    EmployeeProjectDTO addEmployeeProject(String ssn, String idProject);
+    EmployeeProjectDTO updateEmployeeProject(String ssn, String idProject, EmployeeProjectDTO employeeProjectDTO);
+    void deleteEmployeeProject(String ssn, String idProject);
 
     //aggiunti questi due metodi per evitare validazioni e controlli già implementati in questo service perché
     //vanno in contrasto con i miei validator e controlli
     boolean  employeeExists(Employee employee);
+
+    void deleteEmployee(Employee employee);
 
     Employee addEmployeeFromFile(Employee employee);
 

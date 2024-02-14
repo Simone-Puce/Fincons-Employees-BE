@@ -11,7 +11,7 @@ public interface FileServiceApi {
 
     FileDTO viewFile(Long id);
 
-    File uploadFile(FileDTO newFile);
+    FileDTO uploadFile(FileDTO newFile);
 
     ResponseEntity<byte[]> downloadFile(Long id) throws IOException;
 

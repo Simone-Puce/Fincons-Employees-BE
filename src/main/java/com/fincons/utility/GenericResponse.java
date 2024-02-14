@@ -1,5 +1,8 @@
 package com.fincons.utility;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +22,26 @@ public class GenericResponse<T>  {
     private String message;
     private T data;
 
+
+    public static <T> GenericResponse<T> empty(String message, HttpStatus status) {
+        return success(null, message, status);
+    }
+
+    public static <T> GenericResponse<T> success(T data, String message, HttpStatus status) {
+        return GenericResponse.<T>builder()
+                .message(message)
+                .data(data)
+                .status(status)
+                .success(true)
+                .build();
+    }
+    public static <T> GenericResponse<T> error(String message, HttpStatus status) {
+        return GenericResponse.<T>builder()
+                .message(message)
+                .status(status)
+                .success(false)
+                .build();
+    }
     public GenericResponse(HttpStatus status, boolean success, String message) {
         this.status = status;
         this.success = success;

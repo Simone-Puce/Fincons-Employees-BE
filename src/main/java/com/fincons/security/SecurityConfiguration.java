@@ -57,20 +57,28 @@ public class SecurityConfiguration {
 
     @Value("${employee.base.uri}")
     private String employeeBaseUri;
+
     @Value("${position.base.uri}")
     private String positionUri;
+
     @Value("${project.base.uri}")
     private String projectBaseUri;
+
     @Value("${modify.user}")
     private String modifyUser;
+
     @Value("${file.base.uri}")
     private String fileBaseUri;
+
     @Value("${email.sender.base.uri}")
     private String emailSenderUri;
+
     @Value("${update.user.password}")
     private String updateUserPassword;
+
     @Value("${registered.users}")
     private String registeredUsers;
+
     @Value("${login.base.uri}")
     private String loginBaseUri;
 
