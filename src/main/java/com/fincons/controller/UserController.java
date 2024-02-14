@@ -218,14 +218,21 @@ public class UserController {
                             .success(true)
                             .message("User deleted succesfully!!")
                             .build());
-        }catch( EmailException ednee){
+        }catch( EmailException emailException){
             return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<Boolean>builder()
                             .status(HttpStatus.CONFLICT)
                             .success(false)
-                            .message(ednee.getMessage())
+                            .message(emailException.getMessage())
                             .build());
 
+        } catch (RoleException roleException) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    GenericResponse.<Boolean>builder()
+                            .status(HttpStatus.UNAUTHORIZED)
+                            .success(false)
+                            .message(roleException.getMessage())
+                            .build());
         }
 
     }

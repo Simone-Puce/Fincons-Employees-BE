@@ -18,10 +18,9 @@ public interface UserService {
 
     User updateUser(String email, UserDTO userModified, String passwordForAdmin) throws Exception;
 
-
     User updateUserPassword(String email, String currentPassword, String newPassword) throws EmailException, PasswordException;
 
     List<User> findAllUsers();
 
-    void deleteUserByEmail(String email) throws EmailException, EmailException;
+    void deleteUserByEmail(String email) throws EmailException, RoleException;
 }

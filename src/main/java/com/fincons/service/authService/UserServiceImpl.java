@@ -150,10 +150,15 @@ public class UserServiceImpl  implements UserService{
     }
 
     @Override
-    public void deleteUserByEmail(String email) throws EmailException {
+    public void deleteUserByEmail(String email) throws EmailException, RoleException {
         User userToRemove = userRepo.findByEmail(email);
         if(userToRemove==null){
             throw new EmailException(EmailException.emailInvalidOrExist());
+        }
+        if(userToRemove.getRoles()
+                .stream()
+                .anyMatch(role -> role.getName().equals("ROLE_ADMIN"))){
+            throw new RoleException("User with role admin can't be deleted!");
         }
         userRepo.delete(userToRemove);
     }
