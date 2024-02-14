@@ -34,7 +34,6 @@ public class EmployeeDTO {
     private List<FileDTO> fileList;
     private long rowNum;
 
-    private long rowNum;
 
 
     public EmployeeDTO(String firstName, String lastName, String gender, LocalDate birthDate, String email, LocalDate startDate, LocalDate endDate, Department department, Position position) {
@@ -45,8 +44,6 @@ public class EmployeeDTO {
         this.birthDate = birthDate;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.department = department;
-        this.position = position;
     }
 
 
