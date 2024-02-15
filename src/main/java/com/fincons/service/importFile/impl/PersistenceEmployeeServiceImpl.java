@@ -39,17 +39,22 @@ public class PersistenceEmployeeServiceImpl implements PersistenceEmployeeServic
        //TODO - contatori
         long nRow = employeeDTO.getRowNum();
 
-        boolean employeeExists = employeeService.employeeExists(employeeEntity);
+        boolean employeeExistsByEmail = employeeService.employeeExistsByEmail(employeeEntity);
+        boolean employeeExistsBySsn = employeeService.employeeExistsBySsn(employeeEntity);
 
-        if (!employeeExists) {
+        if (!employeeExistsByEmail && !employeeExistsBySsn) {
             Employee insertedEmployee = employeeService.addEmployeeFromFile(employeeEntity);
             //SE DOPO LA VALIDAZIONE E LA CONFERMA CHE IL DIPENDENTE NON è PRESENTE NEL DB,
             //CREO UN ACCOUNT CON PASSWORD TEMPORANEA PER PERMETTERE ALL'UTENTE DI ESSERE REGISTRATO AUTOMATICAMENTE
             //AL PORTALE E SFRUTTARE LA PIATTAFORMA DOPO UN CAMBIO DELLA PASSWORD
             User newUser = new User(employeeEntity.getEmail(), employeeEntity.getFirstName(), employeeEntity.getLastName(), "Password!");
             userService.addNewUser(newUser);
-        } else {
-            duplicatedResultList.add(new ErrorDetailDTO(nRow, "Email: " + employeeDTO.getEmail(), ErrorCode.EMPLOYEE_ALREADY_EXISTS));
+        } else if (employeeExistsByEmail && employeeExistsBySsn){
+            duplicatedResultList.add(new ErrorDetailDTO(nRow, "Nome: " + employeeDTO.getFirstName() +"Cognome: "+ employeeDTO.getLastName(), ErrorCode.EMPLOYEE_ALREADY_EXISTS_GENERIC));
+        } else if (employeeExistsByEmail){
+            duplicatedResultList.add(new ErrorDetailDTO(nRow, "Email: " + employeeDTO.getEmail(), ErrorCode.EMPLOYEE_ALREADY_EXISTS_WITH_EMAIL));
+        } else if( employeeExistsBySsn){
+            duplicatedResultList.add(new ErrorDetailDTO(nRow, "Ssn: " + employeeDTO.getSsn(), ErrorCode.EMPLOYEE_ALREADY_EXISTS_WITH_SSN));
         }
     }
 

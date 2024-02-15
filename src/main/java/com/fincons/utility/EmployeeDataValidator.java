@@ -23,10 +23,10 @@ public class EmployeeDataValidator {
         List<ErrorDetailDTO> validationResultList = new ArrayList<>();
 
 
-        //controllo sui campi fondamentali: Nome,Cognome ed Email
-        if ( (!isValidEmail(employeeToValidate.getEmail())) && (!isValidNameSurname(employeeToValidate.getFirstName())) && (!isValidNameSurname(employeeToValidate.getLastName())) ) {
-            //se tutti e tre i campi non sono validi, aggiungi l'errore bloccante di riga interamente errata
-            validationResultList.add(new ErrorDetailDTO(employeeToValidate.getRowNum(), "Name,Surname,Email", ErrorCode.INVALID_ROW));
+        //controllo sui campi fondamentali: Nome,Cognome, Email,Ssn
+        if ( (!isValidEmail(employeeToValidate.getEmail())) && (!isValidNameSurname(employeeToValidate.getFirstName())) && (!isValidNameSurname(employeeToValidate.getLastName())) && (!isValidFiscalCode(employeeToValidate.getSsn()))) {
+            //se tutti e quattro i campi fondamentali non sono validi, aggiungi l'errore bloccante di riga interamente errata
+            validationResultList.add(new ErrorDetailDTO(employeeToValidate.getRowNum(), "Name,Surname,Email,Ssn", ErrorCode.INVALID_ROW));
             return validationResultList;
         }
 
@@ -48,6 +48,11 @@ public class EmployeeDataValidator {
         //Validazione genere
         if (!isValidGenre(employeeToValidate.getGender())) {
             validationResultList.add(new ErrorDetailDTO(employeeToValidate.getRowNum(), "Genere", ErrorCode.INVALID_GENRE));
+        }
+
+        //Validazione Fiscal Code
+        if (!isValidFiscalCode(employeeToValidate.getSsn())) {
+            validationResultList.add(new ErrorDetailDTO(employeeToValidate.getRowNum(), "Ssn", ErrorCode.INVALID_FISCAL_CODE));
         }
 
 
@@ -146,6 +151,18 @@ public class EmployeeDataValidator {
         }
 
 
+    }
+    private static boolean isValidFiscalCode(String cf){
+        //Controllo lunghezza
+        if(cf.length()!= 16){
+            return false;
+        }
+        // Controllo dei caratteri
+        if (!cf.matches("[A-Z0-9]+")) {
+            return false;
+        }
+
+        return true;
     }
 
 

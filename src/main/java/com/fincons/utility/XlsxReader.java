@@ -118,20 +118,22 @@ public class XlsxReader implements ImportFileReader {
                     }
 
                     String dep = getCellValue(row.getCell(EmployeeHeaderXlsx.Dipartimento.getIndex()));
-
                     Department dipartimento = new Department();
                     dipartimento.setDepartmentCode(dep);
 
-                    //Department dipartimento = departmentServiceImpl.validateDepartmentByCode(dep);
+
 
 
                     String pos = getCellValue(row.getCell(EmployeeHeaderXlsx.Posizione.getIndex()));
                     Position posizione = new Position();
                     posizione.setPositionCode(pos);
 
+                    String ssn = getCellValue(row.getCell(EmployeeHeaderXlsx.Ssn.getIndex()));
+                    //TODO - VALIDAZIONE
+
 
                     // Crea un oggetto EmployeeDto con i valori ottenuti
-                    EmployeeDTO employeeDto = new EmployeeDTO(nome, cognome, genere,email, dataDiNascita, dataDiInizio,dataDiFine,dipartimento.getDepartmentCode(),posizione.getPositionCode());
+                    EmployeeDTO employeeDto = new EmployeeDTO(nome, cognome, genere,email, dataDiNascita, dataDiInizio,dataDiFine,dipartimento.getDepartmentCode(),posizione.getPositionCode(),ssn);
                     employeeDto.setRowNum(row.getRowNum() + 1);
                     // Aggiungi l'oggetto EmployeeDto alla lista
                     employeeToAdd.add(employeeDto);

@@ -12,7 +12,8 @@ public enum EmployeeHeaderXlsx {
     DataDiInizio(5),
     DataDiFine(6),
     Dipartimento(7),
-    Posizione(8);
+    Posizione(8),
+    Ssn(9);
 
 
     private final int index;

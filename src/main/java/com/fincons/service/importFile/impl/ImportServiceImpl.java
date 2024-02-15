@@ -12,8 +12,6 @@ import com.fincons.enums.Gravity;
 import com.fincons.enums.ProcessingStatus;
 import com.fincons.repository.DepartmentRepository;
 import com.fincons.repository.PositionRepository;
-import com.fincons.service.employeeService.EmployeeService;
-import com.fincons.service.employeeService.impl.DepartmentServiceImpl;
 import com.fincons.service.importFile.ImportFileReader;
 import com.fincons.service.importFile.ImportService;
 import com.fincons.service.importFile.PersistenceEmployeeService;
