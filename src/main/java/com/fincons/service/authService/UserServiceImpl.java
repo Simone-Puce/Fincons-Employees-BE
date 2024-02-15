@@ -1,16 +1,17 @@
 package com.fincons.service.authService;
 
-
 import com.fincons.dto.UserDTO;
 import com.fincons.entity.Role;
 import com.fincons.entity.User;
 import com.fincons.exception.EmailException;
 import com.fincons.exception.PasswordException;
 import com.fincons.exception.ResourceNotFoundException;
+import com.fincons.exception.RoleException;
 import com.fincons.jwt.JwtTokenProvider;
 import com.fincons.jwt.LoginDto;
 import com.fincons.mapper.UserAndRoleMapper;
 import com.fincons.utility.PasswordValidator;
+import com.fincons.utility.RoleValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,15 +50,13 @@ public class UserServiceImpl  implements UserService{
     private UserRepository userRepo;
     private PasswordEncoder passwordEncoder;
 
-
     @Autowired
     private UserAndRoleMapper userAndRoleMapper;
-    private JwtTokenProvider jwtTokenProvider;
 
+    private JwtTokenProvider jwtTokenProvider;
 
     @Value("${admin.password}")
     private String passwordAdmin;
-
 
     @Override
     public User registerNewUser(UserDTO userDTO, String passwordForAdmin) throws EmailException, PasswordException {
@@ -85,7 +84,6 @@ public class UserServiceImpl  implements UserService{
             User userSaved = userRepo.save(userToSave);
 
             return userSaved;
-                    //userAndRoleMapper.userToUserDto(userSaved);
     }
 
     @Override
@@ -97,11 +95,10 @@ public class UserServiceImpl  implements UserService{
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             return jwtTokenProvider.generateToken(authentication);
-
     }
 
     @Override
-    public User updateUser(String email, UserDTO userModified, String passwordForAdmin) {
+    public User updateUser(String email, UserDTO userModified, String passwordForAdmin) throws PasswordException, RoleException {
         if (email.isEmpty() && !EmailValidator.isValidEmail(email)) {
             throw new ResourceNotFoundException("Invalid email!");
         }
@@ -111,9 +108,12 @@ public class UserServiceImpl  implements UserService{
             }
             userFound.setFirstName(userModified.getFirstName());
             userFound.setLastName(userModified.getLastName());
+            if(!PasswordValidator.isValidPassword(userModified.getPassword())){
+                throw new PasswordException(PasswordException.passwordDoesNotRespectRegexException());
+            }
             userFound.setPassword(passwordEncoder.encode(userModified.getPassword()));
             if (passwordForAdmin != null && passwordForAdmin.equals(passwordAdmin)) {
-
+                if(RoleValidator.isValidRole(String.valueOf(userModified.getRoles().get(0)))) throw new RoleException(RoleException.roleDoesNotRespectRegex());
                 userFound.setRoles(userModified.getRoles()
                         .stream()
                         .map(role -> userAndRoleMapper.dtoToRole(role))
@@ -124,16 +124,14 @@ public class UserServiceImpl  implements UserService{
     }
 
     @Override
-    public User updateUserPassword(String email, String password, String newPassword) throws EmailException, PasswordException {
+    public User updateUserPassword(String email, String currentPassword, String newPassword) throws EmailException, PasswordException {
 
-        //if email exist
-        if(userRepo.findByEmail(email) == null && !EmailValidator.isValidEmail(email)) {
+        if(userRepo.findByEmail(email) == null || !EmailValidator.isValidEmail(email)) {
             throw new EmailException(EmailException.emailInvalidOrExist());
         }
 
         User userToModify = userRepo.findByEmail(email);
-
-        boolean passwordMatch = passwordEncoder.matches(password , userToModify.getPassword());
+        boolean passwordMatch = passwordEncoder.matches(currentPassword , userToModify.getPassword());
 
         if(!passwordMatch){
             throw new PasswordException(PasswordException.invalidPasswordException());
@@ -149,27 +147,31 @@ public class UserServiceImpl  implements UserService{
 
     }
 
+
     @Override
-    public void deleteUserByEmail(String email) throws EmailException {
+    public List<User> findAllUsers() {
+        return  userRepo.findAll();
+    }
+
+    @Override
+    public void deleteUserByEmail(String email) throws EmailException, RoleException {
         User userToRemove = userRepo.findByEmail(email);
         if(userToRemove==null){
             throw new EmailException(EmailException.emailInvalidOrExist());
         }
+        if(userToRemove.getRoles()
+                .stream()
+                .anyMatch(role -> role.getName().equals("ROLE_ADMIN"))){
+            throw new RoleException("User with role admin can't be deleted!");
+        }
         userRepo.delete(userToRemove);
     }
 
-
-    @Override
-    public List<UserDTO> getAllUsers() {
-        List<User> users = userRepo.findAll();
-        if(users.isEmpty()){
-            return List.of();
-        }else{
-            return users.stream().map(user -> userAndRoleMapper.userToUserDto(user)).toList();
-        }
-    }
     @Override
     public User getUserDtoByEmail(String email) {
+        if(userRepo.findByEmail(email)==null){
+            throw new ResourceNotFoundException("User with this email doesn't exist");
+        }
         return userRepo.findByEmail(email);
     }
 

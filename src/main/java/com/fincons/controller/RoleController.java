@@ -1,6 +1,5 @@
 package com.fincons.controller;
 
-
 import com.fincons.dto.RoleDTO;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.exception.RoleException;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 
 @CrossOrigin("*")
@@ -35,7 +33,6 @@ public class RoleController {
     @Autowired
     private UserAndRoleMapper userAndRoleMapper;
 
-    // /company-employee-management/v1/role/list
     @GetMapping("${role.list}")
         public ResponseEntity<GenericResponse<List<RoleDTO>>> getAllRoles () {
 
@@ -52,8 +49,7 @@ public class RoleController {
                         .build());
     }
 
-
-    @GetMapping("${role.find-by-id}/{roleId}")  //  /v1/role/find-by-id   application.properties role.find-by-id.uri=("${role.uri}/find-by-id")    role.uri = {base.version.uri}/role    ApplicationUri -> roleFindByIdUri
+    @GetMapping("${role.find-by-id}/{roleId}")
     public ResponseEntity<GenericResponse<RoleDTO>> getRoleById(@PathVariable long roleId) {
         try{
             RoleDTO roleDTO = userAndRoleMapper.roleToRoleDto(roleService.getRoleById(roleId));
@@ -65,8 +61,8 @@ public class RoleController {
                     .data(roleDTO)
                     .build());
         }catch(ResourceNotFoundException rnfe){
-            return ResponseEntity.status(200).body(GenericResponse.<RoleDTO>builder()
-                    .status(HttpStatus.resolve(404))
+            return ResponseEntity.ok().body(GenericResponse.<RoleDTO>builder()
+                    .status(HttpStatus.NOT_FOUND)
                     .success(false)
                     .message(rnfe.getMessage())
                     .build());
@@ -78,7 +74,7 @@ public class RoleController {
     public ResponseEntity<GenericResponse<RoleDTO>> createRole(@RequestBody RoleDTO roleDTO) {
         try{
             RoleDTO newRole = userAndRoleMapper.roleToRoleDto(roleService.createRole(roleDTO));
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok().body(
                     GenericResponse.<RoleDTO>builder()
                     .status(HttpStatus.OK)
                     .success(true)
@@ -86,8 +82,8 @@ public class RoleController {
                     .data(newRole)
                     .build());
         }catch(RoleException re ){
-            return ResponseEntity.status(200).body(GenericResponse.<RoleDTO>builder()
-                    .status(HttpStatus.resolve(409))
+            return ResponseEntity.ok().body(GenericResponse.<RoleDTO>builder()
+                    .status(HttpStatus.CONFLICT)
                     .success(false)
                     .message(re.getMessage())
                     .build());
@@ -96,52 +92,52 @@ public class RoleController {
 
     @PutMapping("${role.put}/{roleId}")
     /*
-    I'm going to testing when I change roleName of ROLE_ADMIN then I navigate on another endPoint also if I use the Bearer token,
+    When I change roleName of ROLE_ADMIN, then I navigate on another end point also if I use the Bearer token,
     I will not have permission anymore.
-    Okay Tested it work, or better, it's right if I change roleName the permission change, so I'll not be able to navigate,
-    So if it happens you need to register new admin, after you can go to modify again a roleName.
-     How to manage this error "Duplicate entry 'secondoAdmin@gmail.com' for key 'users.UK_6dotkott2kjsp8vw4d0m25fb7'"
+    So if it happens, you need to register new admin, after you can go to modify again a roleName.
      */
-    // TODO modify permission an admin can modify a roleName but can't modify a ROLE_ADMIN
-    public ResponseEntity<GenericResponse<RoleDTO>> updateRole(@PathVariable long roleId, @RequestBody RoleDTO roleModifiedDTO) {
+    public ResponseEntity<GenericResponse<RoleDTO>> updateRole
+            (@PathVariable long roleId, @RequestBody RoleDTO roleModifiedDTO) {
         try{
             RoleDTO updatedRole  = userAndRoleMapper.roleToRoleDto(roleService.updateRole(roleId,roleModifiedDTO));
-            return ResponseEntity.status(200).body(GenericResponse.<RoleDTO>builder()
+            return ResponseEntity.ok().body(GenericResponse.<RoleDTO>builder()
                     .status(HttpStatus.OK)
                     .success(true)
                     .message("Role updated Succesfully!!!")
                     .data(updatedRole)
                     .build());
         }catch(RoleException re){
-            return ResponseEntity.status(200).body(GenericResponse.<RoleDTO>builder()
-                    .status(HttpStatus.resolve(409))
+            return ResponseEntity.ok().body(GenericResponse.<RoleDTO>builder()
+                    .status(HttpStatus.CONFLICT)
                     .success(false)
                     .message(re.getMessage())
                     .build());
+        }catch(ResourceNotFoundException resourseException){
+            return ResponseEntity.ok().body(GenericResponse.<RoleDTO>builder()
+                    .status(HttpStatus.NOT_FOUND)
+                    .success(false)
+                    .message(resourseException.getMessage())
+                    .build());
         }
     }
-
 
     @DeleteMapping("${delete.role}/{roleId}")
     public ResponseEntity<GenericResponse<String>> deleteRole(
             @PathVariable long roleId,
             @RequestParam (name = "deleteUsers" , required = false) boolean deleteUsers) {
-
         try{
-
             String roleDeleted = roleService.deleteRole(roleId,deleteUsers);
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok().body(
                     GenericResponse.<String>builder()
-                            .status(HttpStatus.resolve(200))
+                            .status(HttpStatus.OK)
                             .success(true)
                             .message(roleDeleted)
                             .build()
             );
-
         }catch(ResourceNotFoundException | RoleException re){
-            return ResponseEntity.status(200).body(
+            return ResponseEntity.ok().body(
                     GenericResponse.<String>builder()
-                            .status(HttpStatus.resolve(409))
+                            .status(HttpStatus.CONFLICT)
                             .success(false)
                             .message(re.getMessage())
                             .build()

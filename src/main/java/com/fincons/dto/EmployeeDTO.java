@@ -36,6 +36,18 @@ public class EmployeeDTO {
 
 
 
+    public EmployeeDTO(String firstName, String lastName, String gender, LocalDate birthDate, String email, LocalDate startDate, LocalDate endDate, Department department, Position position) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.email = email;
+        this.birthDate = birthDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+
+
     public EmployeeDTO(String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, List<FileDTO> fileList) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -67,5 +79,13 @@ public class EmployeeDTO {
         this.endDate = endDate;
         this.departmentCode = departmentCode;
         this.positionCode = positionCode;
+    }
+
+    public long getRowNum() {
+        return rowNum;
+    }
+
+    public void setRowNum(long rowNum) {
+        this.rowNum = rowNum;
     }
 }

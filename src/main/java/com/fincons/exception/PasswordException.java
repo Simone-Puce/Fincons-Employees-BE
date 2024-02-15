@@ -2,7 +2,8 @@ package com.fincons.exception;
 
 public class PasswordException extends Exception{
 
-    public PasswordException(String s) {
+    public PasswordException(String message) {
+        super(message);
     }
 
 

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/company-employee-management")
 public class EmployeeController {
 
