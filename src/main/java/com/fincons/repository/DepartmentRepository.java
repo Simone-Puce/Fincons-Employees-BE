@@ -11,7 +11,9 @@ import java.util.List;
 
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
-    Department findDepartmentByDepartmentCode(String idDepartment);
+    Department findDepartmentByDepartmentCode(String departmentCode);
+    Department findDepartmentByName(String departmentName);
+
 
     @Query(
         "SELECT NEW com.fincons.dto.EmployeeDepartmentDTO(d.name, e.lastName) " +

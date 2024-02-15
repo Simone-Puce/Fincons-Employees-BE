@@ -12,8 +12,8 @@ public interface PositionService {
 
     Position getPositionByCode(String positionCode);
     List<Position> getAllPositions();
-    Position createPosition(PositionDTO positionDTO);
-    Position updatePositionByCode(String positionCode, PositionDTO positionDTO);
+    Position createPosition(Position position);
+    Position updatePositionByCode(String positionCode, Position position);
     void deletePositionByCode(String positionCode);
-
+    void validatePositionFields(PositionDTO positionDTO);
 }

@@ -11,8 +11,8 @@ import java.util.List;
 public interface ProjectService {
     Project getProjectById(String projectId);
     List<Project> getAllProjects();
-    Project createProject(ProjectDTO projectDTO);
-    Project updateProjectById(String projectId, ProjectDTO projectDTO);
+    Project createProject(Project project);
+    Project updateProjectById(String projectId, Project project);
     void deleteProjectById(String projectId);
-
+    void validateProjectFields(ProjectDTO projectDTO);
 }

@@ -36,7 +36,6 @@ public class Employee {
     @Column(name = "last_name")
     private String lastName;
 
-
     @Column(name = "gender")
     private String gender;
 

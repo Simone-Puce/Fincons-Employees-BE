@@ -14,7 +14,8 @@ import com.fincons.mapper.EmployeeProjectMapper;
 import com.fincons.repository.EmployeeRepository;
 import com.fincons.repository.ProjectRepository;
 import com.fincons.service.employeeService.EmployeeService;
-import com.fincons.utility.ValidateSingleField;
+import com.fincons.utility.EmployeeDataValidator;
+import com.fincons.utility.ValidateFields;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,9 +35,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private ProjectRepository projectRepository;
 
     @Autowired
-    private EmployeeMapper modelMapperEmployee;
-
-    @Autowired
     private EmployeeProjectMapper employeeProjectMapper;
 
     @Autowired
@@ -51,13 +49,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee getEmployeeBySsn(String ssn) {
-        ValidateSingleField.validateSingleField(ssn);
         return validateEmployeeBySsn(ssn);
     }
 
     @Override
     public Employee getEmployeeByEmail(String email) {
-        ValidateSingleField.validateSingleField(email);
         return validateEmployeeByEmail(email);
     }
 
@@ -67,21 +63,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee createEmployee(EmployeeDTO employeeDTO) {
+    public Employee createEmployee(Employee employee) {
 
-        //Condition for not have null attributes
-        validateEmployeeFields(employeeDTO);
 
-        List<Employee> employees = employeeRepository.findAll();
-        //Condition if there are employee with same firstName && lastName && birthDate
-        checkForDuplicateEmployee(employeeDTO, employees);
+        checkForDuplicateEmployee(employee.getSsn(), employee.getEmail());
 
-        Employee employee = modelMapperEmployee.mapToEntity(employeeDTO);
-
-        Department department = departmentServiceImpl.validateDepartmentByCode(employeeDTO.getDepartmentCode());
+        Department department = departmentServiceImpl.validateDepartmentByCode(employee.getDepartment().getDepartmentCode());
         employee.setDepartment(department);
 
-        Position position = positionServiceImpl.validatePositionByCode(employeeDTO.getPositionCode());
+        Position position = positionServiceImpl.validatePositionByCode(employee.getPosition().getPositionCode());
         employee.setPosition(position);
 
         employeeRepository.save(employee);
@@ -90,16 +80,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee updateEmployeeBySsn(String ssn, EmployeeDTO employeeDTO) {
-
-        ValidateSingleField.validateSingleField(ssn);
-        //Condition for not have null attributes
-        validateEmployeeFields(employeeDTO);
+    public Employee updateEmployeeBySsn(String ssn, Employee employee) {
 
         List<Employee> employees = employeeRepository.findAll();
 
         //Check if the specified Ssn exists
-        Employee employee = validateEmployeeBySsn(ssn);
+        Employee employeeExisting = validateEmployeeBySsn(ssn);
 
 
         List<Employee> employeesWithoutSsnChosed = new ArrayList<>();
@@ -110,44 +96,42 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
         }
 
-        employee.setSsn(employeeDTO.getSsn());
-        employee.setFirstName(employeeDTO.getFirstName());
-        employee.setLastName(employeeDTO.getLastName());
-        employee.setGender(employeeDTO.getGender());
-        employee.setEmail(employeeDTO.getEmail());
-        employee.setBirthDate(employeeDTO.getBirthDate());
-        employee.setStartDate(employeeDTO.getStartDate());
-        employee.setEndDate(employeeDTO.getEndDate());
+        employeeExisting.setSsn(employee.getSsn());
+        employeeExisting.setFirstName(employee.getFirstName());
+        employeeExisting.setLastName(employee.getLastName());
+        employeeExisting.setGender(employee.getGender());
+        employeeExisting.setEmail(employee.getEmail());
+        employeeExisting.setBirthDate(employee.getBirthDate());
+        employeeExisting.setStartDate(employee.getStartDate());
+        employeeExisting.setEndDate(employee.getEndDate());
 
 
         Department department;
-        department = departmentServiceImpl.validateDepartmentByCode(employeeDTO.getDepartmentCode());
-        employee.setDepartment(department);
+        department = departmentServiceImpl.validateDepartmentByCode(employee.getDepartment().getDepartmentCode());
+        employeeExisting.setDepartment(department);
 
         Position position;
-        position = positionServiceImpl.validatePositionByCode(employeeDTO.getPositionCode());
-        employee.setPosition(position);
+        position = positionServiceImpl.validatePositionByCode(employee.getPosition().getPositionCode());
+        employeeExisting.setPosition(position);
 
         if (employeesWithoutSsnChosed.isEmpty()) {
-            employeeRepository.save(employee);
-        }
-        else {
+            employeeRepository.save(employeeExisting);
+        } else {
             for (Employee e : employeesWithoutSsnChosed) {
                 //If one of the two fields has already been assigned, it throws an exception.
-                if (e.getSsn().equals(employee.getSsn())) {
-                    throw new DuplicateException("This SSN " + employeeDTO.getSsn() + " already taken");
-                } else if (e.getEmail().equals(employee.getEmail())) {
-                    throw new DuplicateException("This email " + employeeDTO.getEmail() + " already taken");
+                if (e.getSsn().equals(employeeExisting.getSsn())) {
+                    throw new DuplicateException("This SSN " + employee.getSsn() + " already taken");
+                } else if (e.getEmail().equals(employeeExisting.getEmail())) {
+                    throw new DuplicateException("This email " + employee.getEmail() + " already taken");
                 }
             }
-            employeeRepository.save(employee);
+            employeeRepository.save(employeeExisting);
         }
-        return employee;
+        return employeeExisting;
     }
 
     @Override
     public void deleteEmployeeBySsn(String ssn) {
-        ValidateSingleField.validateSingleField(ssn);
         Employee employee = validateEmployeeBySsn(ssn);
         employeeRepository.deleteById(employee.getId());
     }
@@ -155,7 +139,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<Project> findAllEmployeeProjects(String ssn) {
 
-        ValidateSingleField.validateSingleField(ssn);
         validateEmployeeBySsn(ssn);
         List<Project> projects = employeeRepository.findProjectsByEmployeeSsn(ssn);
         if (projects.isEmpty()) {
@@ -172,8 +155,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeProjectDTO addEmployeeProject(String ssn, String projectId) {
 
-        ValidateSingleField.validateSingleField(ssn);
-        ValidateSingleField.validateSingleField(projectId);
+        ValidateFields.validateSingleField(ssn);
+        ValidateFields.validateSingleField(projectId);
         Employee existingEmployee = validateEmployeeBySsn(ssn);
 
         Project existingProject = projectServiceImpl.validateProjectById(projectId);
@@ -194,8 +177,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeProjectDTO updateEmployeeProject(String ssn, String projectId, EmployeeProjectDTO employeeProjectDTO) {
 
         //Check if the fields are correct
-        ValidateSingleField.validateSingleField(ssn);
-        ValidateSingleField.validateSingleField(projectId);
+        ValidateFields.validateSingleField(ssn);
+        ValidateFields.validateSingleField(projectId);
         validateEmployeeProjectFields(employeeProjectDTO);
 
         //Check if the relationship ssn+projectId exist
@@ -232,8 +215,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployeeProject(String ssn, String projectId) {
 
         //Check if the relationship ssn+projectId exist
-        ValidateSingleField.validateSingleField(ssn);
-        ValidateSingleField.validateSingleField(projectId);
+        ValidateFields.validateSingleField(ssn);
+        ValidateFields.validateSingleField(projectId);
         validateEmployeeProjectRelationship(ssn, projectId);
 
         //Delete relationship
@@ -280,7 +263,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return existingEmployee;
     }
 
-    private void validateEmployeeFields(EmployeeDTO employeeDTO) {
+    public void validateEmployeeFields(EmployeeDTO employeeDTO) {
         //In this conditional miss "endDate" because can be null
         //If one field is true run Exception
         if (Strings.isEmpty(employeeDTO.getFirstName()) ||
@@ -296,14 +279,22 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-    private void checkForDuplicateEmployee(EmployeeDTO employeeDTO, List<Employee> employees) {
-        for (Employee employee : employees) {
-            if (employee.getEmail().equals(employeeDTO.getEmail())) {
-                throw new DuplicateException("Employee with this email is already taken.");
-            } else if (employee.getSsn().equals(employeeDTO.getSsn())) {
-                throw new DuplicateException("Employee with this SSN is already taken.");
-            }
-        } //Manage in feature email
+    private void checkForDuplicateEmployee(String ssn, String email) {
+        Employee employeeBySsn = employeeRepository.findEmployeeBySsn(ssn);
+        Employee employeeByEmail = employeeRepository.findByEmail(email);
+        if (employeeBySsn != null) {
+            throw new DuplicateException("Employee with this SSN already taken.");
+        }
+        if (employeeByEmail != null) {
+            throw new DuplicateException("Employee with this email is already taken.");
+        }
+    }
+
+    public void validateGender(String gender) {
+        boolean validateGender = EmployeeDataValidator.isValidGenre(gender);
+        if (!validateGender) {
+            throw new IllegalArgumentException("The field gender is not valid, You must write only M, F, O.");
+        }
     }
 
     @Override
@@ -318,11 +309,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void deleteEmployee(Employee employee) {
-       employeeRepository.delete(employee);
+        employeeRepository.delete(employee);
     }
-
 
     public Employee addEmployeeFromFile(Employee employee) {
         return employeeRepository.save(employee);
     }
 }
+

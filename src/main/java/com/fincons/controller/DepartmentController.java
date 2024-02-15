@@ -1,6 +1,7 @@
 package com.fincons.controller;
 
 
+import com.fincons.service.employeeService.impl.DepartmentServiceImpl;
 import com.fincons.utility.GenericResponse;
 import com.fincons.dto.DepartmentDTO;
 import com.fincons.dto.EmployeeDepartmentDTO;
@@ -10,6 +11,7 @@ import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.DepartmentMapper;
 import com.fincons.service.employeeService.DepartmentService;
+import com.fincons.utility.ValidateFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +29,22 @@ public class DepartmentController {
     private DepartmentService departmentService;
 
     @Autowired
-    private DepartmentMapper modelMapperDepartment;
+    public DepartmentMapper modelMapperDepartment;
+
+
+
+
+    public DepartmentController(DepartmentService departmentService, DepartmentMapper modelMapperDepartment) {
+        this.departmentService = departmentService;
+        this.modelMapperDepartment = modelMapperDepartment;
+    }
+
 
     @GetMapping(value = "${department.find-by-code}")
-    public ResponseEntity<GenericResponse<DepartmentDTO>> getDepartmentByCode(@RequestParam String departmentCode){
+    public ResponseEntity<GenericResponse<DepartmentDTO>> getDepartmentByCode(@RequestParam String departmentCode) {
 
         try {
+            ValidateFields.validateSingleField(departmentCode);
             Department department = departmentService.getDepartmentByCode(departmentCode);
             DepartmentDTO departmentDTO = modelMapperDepartment.mapToDTO(department);
 
@@ -42,16 +54,14 @@ public class DepartmentController {
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);
-        }
-        catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
                             HttpStatus.BAD_REQUEST
                     )
             );
-        }
-        catch (ResourceNotFoundException rnfe) {
+        } catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.empty(
                             rnfe.getMessage(),
@@ -81,7 +91,11 @@ public class DepartmentController {
     @PostMapping(value = "${department.create}")
     public ResponseEntity<GenericResponse<DepartmentDTO>> createDepartment(@RequestBody DepartmentDTO departmentDTO) {
         try {
-            Department department = departmentService.createDepartment(departmentDTO);
+            departmentService.validateDepartmentFields(departmentDTO);
+
+            Department departmentMapped = modelMapperDepartment.mapToEntity(departmentDTO);
+
+            Department department = departmentService.createDepartment(departmentMapped);
 
             DepartmentDTO departmentDTO2 = modelMapperDepartment.mapToDTO(department);
 
@@ -111,7 +125,13 @@ public class DepartmentController {
     @PutMapping(value = "${department.update}")
     public ResponseEntity<GenericResponse<DepartmentDTO>> updateDepartmentByCode(@RequestParam String departmentCode, @RequestBody DepartmentDTO departmentDTO) {
         try {
-            Department department = departmentService.updateDepartmentByCode(departmentCode, departmentDTO);
+            ValidateFields.validateSingleField(departmentCode);
+
+            departmentService.validateDepartmentFields(departmentDTO);
+
+            Department departmentMappedForService = modelMapperDepartment.mapToEntity(departmentDTO);
+
+            Department department = departmentService.updateDepartmentByCode(departmentCode, departmentMappedForService);
 
             DepartmentDTO departmentDTO2 = modelMapperDepartment.mapToDTO(department);
 
@@ -148,6 +168,7 @@ public class DepartmentController {
     @DeleteMapping(value = "${department.delete}")
     public ResponseEntity<GenericResponse<DepartmentDTO>> deleteDepartmentByCode(@RequestParam String departmentCode) {
         try {
+            ValidateFields.validateSingleField(departmentCode);
             departmentService.deleteDepartmentByCode(departmentCode);
             GenericResponse<DepartmentDTO> response = GenericResponse.empty(
                     "Success: Department with code: " + departmentCode + " has been successfully deleted! ",
@@ -155,16 +176,14 @@ public class DepartmentController {
             );
 
             return ResponseEntity.ok(response);
-        }
-        catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
                             HttpStatus.BAD_REQUEST
                     )
             );
-        }
-        catch (ResourceNotFoundException rnfe) {
+        } catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
@@ -185,16 +204,14 @@ public class DepartmentController {
 
             return ResponseEntity.ok(response);
 
-        }
-        catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
                             HttpStatus.BAD_REQUEST
                     )
             );
-        }
-        catch (ResourceNotFoundException rnfe) {
+        } catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),

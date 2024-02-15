@@ -4,6 +4,7 @@ import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Project;
 import com.fincons.mapper.ProjectMapper;
 import com.fincons.dto.ImportResultDTO;
+import com.fincons.service.employeeService.impl.EmployeeServiceImpl;
 import com.fincons.utility.GenericResponse;
 import com.fincons.dto.EmployeeDTO;
 import com.fincons.entity.Employee;
@@ -16,6 +17,7 @@ import com.fincons.enums.ProcessingStatus;
 import com.fincons.exception.EmailException;
 import com.fincons.service.employeeService.EmployeeService;
 import com.fincons.service.importFile.ImportService;
+import com.fincons.utility.ValidateFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +46,7 @@ public class EmployeeController {
     @GetMapping(value = "${employee.find-by-ssn}")
     public ResponseEntity<GenericResponse<EmployeeDTO>> getEmployeeBySsn(@RequestParam String ssn) {
         try {
+            ValidateFields.validateSingleField(ssn);
             Employee employee = employeeService.getEmployeeBySsn(ssn);
             EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTO(employee);
 
@@ -75,6 +78,7 @@ public class EmployeeController {
     @GetMapping(value = "${employee.find-by-email}")
     public ResponseEntity<GenericResponse<EmployeeDTO>> getDepartmentByEmail(@RequestParam String email) {
         try {
+            ValidateFields.validateSingleField(email);
             Employee employee = employeeService.getEmployeeByEmail(email);
             EmployeeDTO employeeDTO = modelMapperEmployee.mapToDTO(employee);
 
@@ -124,7 +128,12 @@ public class EmployeeController {
     @PostMapping(value = "${employee.create}")
     public ResponseEntity<GenericResponse<EmployeeDTO>> createEmployee(@RequestBody EmployeeDTO employeeDTO) {
         try {
-            Employee employee = employeeService.createEmployee(employeeDTO);
+            employeeService.validateEmployeeFields(employeeDTO);
+            employeeService.validateGender(employeeDTO.getGender());
+
+            Employee employeeMapped = modelMapperEmployee.mapToEntity(employeeDTO);
+
+            Employee employee = employeeService.createEmployee(employeeMapped);
 
             EmployeeDTO employeeDTO2 = modelMapperEmployee.mapToDTO(employee);
 
@@ -161,7 +170,14 @@ public class EmployeeController {
     @PutMapping(value = "${employee.update}")
     public ResponseEntity<Object> updateEmployeeBySsn(@RequestParam String ssn, @RequestBody EmployeeDTO employeeDTO) {
         try {
-            Employee employee = employeeService.updateEmployeeBySsn(ssn, employeeDTO);
+            ValidateFields.validateSingleField(ssn);
+            employeeService.validateEmployeeFields(employeeDTO);
+            employeeService.validateGender(employeeDTO.getGender());
+
+            Employee employeeMappedForService = modelMapperEmployee.mapToEntity(employeeDTO);
+
+            Employee employee = employeeService.updateEmployeeBySsn(ssn, employeeMappedForService);
+
             EmployeeDTO employeeDTO2 = modelMapperEmployee.mapToDTO(employee);
 
             GenericResponse<EmployeeDTO> response = GenericResponse.success(
@@ -197,6 +213,7 @@ public class EmployeeController {
     @DeleteMapping(value = "${employee.delete}")
     public ResponseEntity<GenericResponse<EmployeeDTO>> deleteEmployeeBySsn(@RequestParam String ssn) {
         try {
+            ValidateFields.validateSingleField(ssn);
             employeeService.deleteEmployeeBySsn(ssn);
             GenericResponse<EmployeeDTO> response = GenericResponse.empty(
                     "Success: Department with SSN " + ssn + " has been successfully deleted! ",
@@ -225,6 +242,7 @@ public class EmployeeController {
             @RequestParam(value = "ssn") String ssn
     ) {
         try {
+            ValidateFields.validateSingleField(ssn);
             List<Project> projects = employeeService.findAllEmployeeProjects(ssn);
 
             List<ProjectDTO> projectsDTO = new ArrayList<>();

@@ -9,5 +9,5 @@ public interface ProjectRepository extends JpaRepository <Project, Long> {
 
     Project findProjectByProjectId(String idProject);
 
-
+    Project findProjectByName(String projectName);
 }

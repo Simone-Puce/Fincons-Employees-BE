@@ -1,5 +1,6 @@
 package com.fincons.controller;
 
+import com.fincons.service.employeeService.impl.PositionServiceImpl;
 import com.fincons.utility.GenericResponse;
 import com.fincons.dto.PositionDTO;
 import com.fincons.entity.Position;
@@ -8,6 +9,7 @@ import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.PositionMapper;
 import com.fincons.service.employeeService.PositionService;
+import com.fincons.utility.ValidateFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +30,10 @@ public class PositionController {
     private PositionMapper modelMapperPosition;
 
     @GetMapping(value = "${position.find-position-by-code}")
-    public ResponseEntity<GenericResponse<PositionDTO>> getPositionByCode(@RequestParam String positionCode){
+    public ResponseEntity<GenericResponse<PositionDTO>> getPositionByCode(@RequestParam String positionCode) {
 
         try {
+            ValidateFields.validateSingleField(positionCode);
             Position position = positionService.getPositionByCode(positionCode);
             PositionDTO positionDTO = modelMapperPosition.mapToDTO(position);
             GenericResponse<PositionDTO> response = GenericResponse.success(
@@ -39,16 +42,14 @@ public class PositionController {
                     HttpStatus.OK);
 
             return ResponseEntity.ok(response);
-        }
-        catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
                             HttpStatus.BAD_REQUEST
                     )
             );
-        }
-        catch (ResourceNotFoundException rnfe) {
+        } catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
@@ -77,9 +78,13 @@ public class PositionController {
 
     @PostMapping(value = "${position.create}")
     public ResponseEntity<Object> createPosition(@RequestBody PositionDTO positionDTO) {
-
         try {
-            Position position = positionService.createPosition(positionDTO);
+            positionService.validatePositionFields(positionDTO);
+
+            Position positionMapped = modelMapperPosition.mapToEntity(positionDTO);
+
+            Position position = positionService.createPosition(positionMapped);
+
             PositionDTO positionDTO2 = modelMapperPosition.mapToDTO(position);
 
             GenericResponse<PositionDTO> response = GenericResponse.success(
@@ -88,8 +93,7 @@ public class PositionController {
                     HttpStatus.OK);
             return ResponseEntity.ok(response);
 
-        }
-        catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
@@ -106,13 +110,19 @@ public class PositionController {
         }
     }
 
-
     @PutMapping(value = "${position.update}")
     public ResponseEntity<Object> updatePositionByCode(@RequestParam String positionCode, @RequestBody PositionDTO positionDTO) {
         try {
-            Position position = positionService.updatePositionByCode(positionCode, positionDTO);
+            ValidateFields.validateSingleField(positionCode);
+
+            positionService.validatePositionFields(positionDTO);
+
+            Position positionMappedForService = modelMapperPosition.mapToEntity(positionDTO);
+
+            Position position = positionService.updatePositionByCode(positionCode, positionMappedForService);
 
             PositionDTO positionDTO2 = modelMapperPosition.mapToDTO(position);
+
             GenericResponse<PositionDTO> response = GenericResponse.success(
                     positionDTO2,
                     "Success: Position with code: " + positionCode + " has been successfully updated!",
@@ -146,22 +156,21 @@ public class PositionController {
     @DeleteMapping(value = "${position.delete}")
     public ResponseEntity<GenericResponse<PositionDTO>> deletePositionByCode(@RequestParam String positionCode) {
         try {
+            ValidateFields.validateSingleField(positionCode);
             positionService.deletePositionByCode(positionCode);
             GenericResponse<PositionDTO> response = GenericResponse.empty(
                     "Success: Position with code: " + positionCode + " has been successfully deleted! ",
                     HttpStatus.OK);
 
             return ResponseEntity.ok(response);
-        }
-        catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
                             HttpStatus.BAD_REQUEST
                     )
             );
-        }
-        catch (ResourceNotFoundException rnfe) {
+        } catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),

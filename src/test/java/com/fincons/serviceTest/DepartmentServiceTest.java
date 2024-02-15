@@ -1,135 +1,117 @@
 package com.fincons.serviceTest;
 
-import com.fincons.controller.DepartmentController;
 import com.fincons.dto.DepartmentDTO;
 import com.fincons.entity.Department;
 import com.fincons.exception.DuplicateException;
 import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
-import com.fincons.mapper.DepartmentMapper;
 import com.fincons.repository.DepartmentRepository;
 import com.fincons.service.employeeService.impl.DepartmentServiceImpl;
-import com.fincons.utility.ValidateSingleField;
-import org.junit.jupiter.api.BeforeEach;
+import com.fincons.utilityTest.Builder;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static com.fincons.utilityTest.Builder.getDepartment;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.BDDAssumptions.given;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-@ContextConfiguration(classes = DepartmentServiceTest.TestConfig.class)
 public class DepartmentServiceTest {
 
-
-    static class TestConfig {
-    }
-
-    private DepartmentController departmentController;
+    @Autowired
     private DepartmentServiceImpl departmentServiceImpl;
-    @Mock
+
+    @MockBean
     private DepartmentRepository departmentRepository;
-    @Spy
-    private DepartmentMapper modelMapperDepartment;
 
-
-    @BeforeEach
-    void init() {
-        departmentRepository = mock(DepartmentRepository.class);
-
-        // Initialize the service with mocks
-        departmentServiceImpl = new DepartmentServiceImpl(departmentRepository, modelMapperDepartment);
-
-    }
     @Test
-    void testValidateDepartmentById(){
-        String departmentId = "UUID-TEST";
-        when(departmentRepository.findDepartmentByDepartmentCode(departmentId)).thenReturn(null);
-        //Assert exception
+    void testGetDepartmentByCodeSuccess() {
+        Department departmentMocked = getDepartment();
+        String departmentCode = "code1";
+        when(departmentRepository.findDepartmentByDepartmentCode(departmentCode)).thenReturn(departmentMocked);
+        Department department = departmentServiceImpl.getDepartmentByCode(departmentCode);
+
+        Assertions.assertNotNull(department);
+        assertThat(departmentMocked.getId()).isEqualTo(department.getId());
+        assertThat(departmentMocked.getDepartmentCode()).isEqualTo(department.getDepartmentCode());
+        assertThat(departmentMocked.getName()).isEqualTo(department.getName());
+        assertThat(departmentMocked.getAddress()).isEqualTo(department.getAddress());
+        assertThat(departmentMocked.getCity()).isEqualTo(department.getCity());
+    }
+
+    @Test
+    void testGetDepartmentByCodeFailed() {
+
+        String departmentCode = "code1";
+
+        when(departmentRepository.findDepartmentByDepartmentCode(departmentCode)).thenReturn(null);
+        assertThatThrownBy(() -> departmentServiceImpl.getDepartmentByCode(departmentCode))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void testValidateDepartmentByCode() {
+        String departmentCode = "code1";
+        when(departmentRepository.findDepartmentByDepartmentCode(departmentCode)).thenReturn(null);
+
         assertThrows(ResourceNotFoundException.class, () -> {
-            // Finally run the method from service and save response
-            departmentServiceImpl.getDepartmentByCode(departmentId);
+            departmentServiceImpl.getDepartmentByCode(departmentCode);
         });
     }
+
     @Test
     void testValidateDepartmentFields() {
         //This test checks for all other methods, so you don't need to test it again in the other fields
-        DepartmentDTO departmentInput1 = new DepartmentDTO("", "", "");
+        //TEST for verify empty fields
+        DepartmentDTO departmentInput1 = new DepartmentDTO("", "", "", "");
         assertThrows(IllegalArgumentException.class, () -> {
             departmentServiceImpl.validateDepartmentFields(departmentInput1);
         });
+        //TEST for verify null fields
         DepartmentDTO departmentInput2 = new DepartmentDTO(null, null, null, null);
         assertThrows(IllegalArgumentException.class, () -> {
             departmentServiceImpl.validateDepartmentFields(departmentInput2);
         });
     }
+
     @Test
     void testCheckForDuplicateDepartment() {
-        List<Department> departmentsRep = new ArrayList<>(2);
-        Department department1 = new Department(1L, "uuid", "name1", "address1", "city1");
-        Department department2 = new Department(2L, "uuid", "name2", "address2", "city2");
-        DepartmentDTO departmentInput = new DepartmentDTO("uuid", "name2", "address3", "city3");
-        departmentsRep.add(department1);
-        departmentsRep.add(department2);
+
+        List<Department> departments = Builder.getDepartments();
+
+        DepartmentDTO departmentInputForCode = new DepartmentDTO("code1", "name3", "address3", "city3");
+        DepartmentDTO departmentInputForName = new DepartmentDTO("code3", "name1", "address3", "city3");
+
+        doReturn(departments.get(0)).when(departmentRepository).findDepartmentByDepartmentCode("code1");
+        doReturn(departments.get(1)).when(departmentRepository).findDepartmentByName("name1");
+
         assertThrows(DuplicateException.class, () -> {
-            departmentServiceImpl.checkForDuplicateDepartment(departmentInput, departmentsRep);
+            departmentServiceImpl.checkForDuplicateDepartment(departmentInputForCode.getDepartmentCode(), departmentInputForName.getName());
         });
+        assertThrows(DuplicateException.class, () -> {
+            departmentServiceImpl.checkForDuplicateDepartment(departmentInputForCode.getDepartmentCode(), departmentInputForName.getName());
+        });
+
+        //verify(departmentRepository, times(2)).findDepartmentByDepartmentCode();
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @Test
-    void testServiceGetDepartmentById() {
-        DepartmentDTO departmentDTO = new DepartmentDTO("uuid-1234", "name", "address", "city");
-        ValidateSingleField.validateSingleField(departmentDTO.getDepartmentCode());
-        assertThrows(ResourceNotFoundException.class, () -> {
-            departmentServiceImpl.validateDepartmentFields(departmentDTO);
-        });
-    }
-
-    @Test
-    void testServiceGetDepartmentByIdWrongUUID() {
-        DepartmentDTO departmentDTO = new DepartmentDTO("uuid-1234", "name", "address", "city");
-        ValidateSingleField.validateSingleField(departmentDTO.getDepartmentCode());
-        assertThrows(ResourceNotFoundException.class, () -> {
-            departmentServiceImpl.validateDepartmentFields(departmentDTO);
-        });
-    }
 }
     /*
     @Test
@@ -243,4 +225,5 @@ public class DepartmentServiceTest {
 
     }
      */
+
 
