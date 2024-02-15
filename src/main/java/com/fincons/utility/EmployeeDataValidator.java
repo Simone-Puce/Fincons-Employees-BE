@@ -54,8 +54,6 @@ public class EmployeeDataValidator {
         if (!isValidFiscalCode(employeeToValidate.getSsn())) {
             validationResultList.add(new ErrorDetailDTO(employeeToValidate.getRowNum(), "Ssn", ErrorCode.INVALID_FISCAL_CODE));
         }
-
-
         return validationResultList;
     }
 
