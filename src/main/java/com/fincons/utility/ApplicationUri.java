@@ -49,9 +49,6 @@ public class ApplicationUri {
     @Value("${modify.user}")
     private String modifyUser;
 
-    @Value("${update.user.password}")
-    private String updateUserPassword;
-
     //ROLE
     @Value("${role.base.uri}")
     private String roleBaseUri;

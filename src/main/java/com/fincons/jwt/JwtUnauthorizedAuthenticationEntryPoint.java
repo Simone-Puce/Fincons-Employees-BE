@@ -29,7 +29,7 @@ public class JwtUnauthorizedAuthenticationEntryPoint implements AuthenticationEn
         response.setContentType("application/json");
         Map<String, Object> data = new HashMap<>();
         data.put("Status","UNAUTHORIZED");
-        data.put("Message","Probably you have not permission to this resource.");
+        data.put("Message","You have not permission to this resource.");
         data.put("Success","false");
         response.getOutputStream()
                 .println(objectMapper.writeValueAsString(data));

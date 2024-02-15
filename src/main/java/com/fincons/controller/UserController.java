@@ -111,63 +111,17 @@ public class UserController {
         }
     }
 
-    @PutMapping("${modify.user}")
-    public ResponseEntity<GenericResponse<UserDTO>> updateUserByEmail
+    @PutMapping("${modify.user}/{email}")
+    public ResponseEntity<GenericResponse<UserDTO>> updateUser
             (
-                    @RequestParam(name = "email") String email,
+                    @PathVariable String email,
                     @RequestBody UserDTO userModified,
-                    @RequestParam(name = "admin", required = false) String passwordForAdmin
-            ) throws Exception {
-        try {
-            UserDTO updatedUser = userAndRoleMapper.userToUserDto(userService.updateUser(email, userModified, passwordForAdmin));
-
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    GenericResponse.<UserDTO>builder()
-                            .status(HttpStatus.OK)
-                            .success(true)
-                            .message("User modified succesfully!")
-                            .data(updatedUser).build()
-            );
-        } catch (RoleException roleException) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    GenericResponse.<UserDTO>builder()
-                            .status(HttpStatus.FORBIDDEN)
-                            .success(false)
-                            .message(roleException.getMessage())
-                            .build());
-        } catch (ResourceNotFoundException resourceNotFoundException) {
-            return ResponseEntity.ok().body(
-                    GenericResponse.<UserDTO>builder()
-                            .status(HttpStatus.NOT_FOUND)
-                            .success(false)
-                            .message(resourceNotFoundException.getMessage())
-                            .build()
-            );
-        }catch(PasswordException passwordException){
-            return ResponseEntity.ok().body(
-                    GenericResponse.<UserDTO>builder()
-                            .status(HttpStatus.CONFLICT)
-                            .success(false)
-                            .message(passwordException.getMessage())
-                            .build());
-    }catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                    GenericResponse.<UserDTO>builder()
-                            .status(HttpStatus.CONFLICT)
-                            .success(false)
-                            .message(e.getMessage())
-                            .build()
-            );
-        }
-    }
-
-    @PutMapping("${update.user.password}")
-    public ResponseEntity<GenericResponse<UserDTO>> updateUserPassword(
-            @RequestParam String email,
-            @RequestParam  String currentPassword,
-            @RequestParam String newPassword){
+                    @RequestParam(value = "admin", required = false) String passwordForAdmin,
+                    @RequestParam(value = "currentPassword", required = false) String currentPassword
+            )
+    {
         try{
-            UserDTO userDTO =userAndRoleMapper.userToUserDto(userService.updateUserPassword(email, currentPassword, newPassword));
+            UserDTO userDTO = userAndRoleMapper.userToUserDto(userService.updateUser(email, userModified, passwordForAdmin, currentPassword));
             return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<UserDTO>builder()
                             .status(HttpStatus.OK)
@@ -176,14 +130,15 @@ public class UserController {
                             .data(userDTO)
                             .build()
             );
-        }catch(EmailException | PasswordException emailOrPasswordException){
+        }catch(EmailException | PasswordException | RoleException emailOrPasswordExceptionOrRoleException){
             return ResponseEntity.status(HttpStatus.OK).body(
                     GenericResponse.<UserDTO>builder()
                             .status(HttpStatus.CONFLICT)
                             .success(false)
-                            .message(emailOrPasswordException.getMessage()).build());
+                            .message(emailOrPasswordExceptionOrRoleException.getMessage()).build());
         }
     }
+
 
 
     @GetMapping("${detail.userdto}")

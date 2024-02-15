@@ -91,11 +91,6 @@ public class RoleController {
     }
 
     @PutMapping("${role.put}/{roleId}")
-    /*
-    When I change roleName of ROLE_ADMIN, then I navigate on another end point also if I use the Bearer token,
-    I will not have permission anymore.
-    So if it happens, you need to register new admin, after you can go to modify again a roleName.
-     */
     public ResponseEntity<GenericResponse<RoleDTO>> updateRole
             (@PathVariable long roleId, @RequestBody RoleDTO roleModifiedDTO) {
         try{

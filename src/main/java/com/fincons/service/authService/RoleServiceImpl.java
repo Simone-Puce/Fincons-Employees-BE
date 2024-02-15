@@ -69,6 +69,9 @@ public class RoleServiceImpl implements RoleService{
 
         String roleDTONameToConfront = roleModifiedDTO.getName().toUpperCase();
 
+        if(roleRepository.findByName(roleModifiedDTO.getName().toUpperCase())!= null) {
+            throw new RoleException(RoleException.roleExistException());
+        }
         if(!RoleValidator.isValidRole(roleDTONameToConfront)){
             throw new RoleException(RoleException.roleDoesNotRespectRegex());
         }
@@ -86,9 +89,7 @@ public class RoleServiceImpl implements RoleService{
         Role roleToModify = roleFound.get();
 
         roleToModify.setName(roleModifiedDTO.getName().toUpperCase());
-        if(roleRepository.findByName(roleModifiedDTO.getName().toUpperCase())!= null) {
-            throw new RoleException(RoleException.roleExistException());
-        }
+
 
         return roleRepository.save(roleToModify);
     }

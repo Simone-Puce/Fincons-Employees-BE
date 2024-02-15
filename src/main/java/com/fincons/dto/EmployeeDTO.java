@@ -63,6 +63,7 @@ public class EmployeeDTO {
         this.gender = gender;
         this.email = email;
         this.birthDate = birthDate;
+
         this.startDate = startDate;
         this.endDate = endDate;
         this.departmentCode = departmentCode;

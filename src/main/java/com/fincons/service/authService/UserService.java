@@ -12,15 +12,15 @@ public interface UserService {
 
     User registerNewUser(UserDTO newUserDTO, String passwordForAdmin) throws EmailException, PasswordException;
 
+    User updateUser(String email, UserDTO userModified, String passwordForAdmin, String currentPassword) throws EmailException, PasswordException,  RoleException;
+
     User getUserDtoByEmail(String email);
 
     String login(LoginDto loginDto);
 
-    User updateUser(String email, UserDTO userModified, String passwordForAdmin) throws Exception;
-
-    User updateUserPassword(String email, String currentPassword, String newPassword) throws EmailException, PasswordException;
-
     List<User> findAllUsers();
 
     void deleteUserByEmail(String email) throws EmailException, RoleException;
+
+
 }
