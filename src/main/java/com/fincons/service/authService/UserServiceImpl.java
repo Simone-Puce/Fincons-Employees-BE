@@ -28,6 +28,7 @@ import com.fincons.utility.EmailValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -148,10 +149,18 @@ public class UserServiceImpl  implements UserService{
             return userRepo.save(userFound);
         }
 
-        //  password per l'amministratore valorizzata ?, verifica e aggiorna i ruoli
+        //  password per l'amministratore valorizzata ?, verifica e aggiorna il ruolo
         if (passwordForAdmin != null && passwordForAdmin.equals(passwordAdmin)) {
             if (RoleValidator.isValidRole(String.valueOf(userModified.getRoles().get(0)))) {
                 throw new RoleException(RoleException.roleDoesNotRespectRegex());
+            }
+            List<User> usersWithRoleAdmin = userRepo.findAll()
+                    .stream()
+                    .filter(user -> Arrays.toString(user.getRoles().toArray()).contains("ROLE_ADMIN"))
+                    .toList();
+
+            if(usersWithRoleAdmin.size() < 2 ){
+                throw new RoleException("Can't modify the only admin remained!");
             }
             List<Role> list = new ArrayList<>();
             for (RoleDTO role : userModified.getRoles()) {
@@ -170,15 +179,12 @@ public class UserServiceImpl  implements UserService{
             userFound.setLastName(userModified.getLastName());
         }
 
-        if(userModified.getPassword()==null){
-            userFound.setPassword(userFound.getPassword());
-        }else{
-            if (!PasswordValidator.isValidPassword(userModified.getPassword())) {
-                throw new PasswordException("New Password is not valid!");
-            }
-
-            userFound.setPassword(passwordEncoder.encode(userModified.getPassword()));
+        if(userModified.getPassword() != null &&  !PasswordValidator.isValidPassword(userModified.getPassword()) ){
+            throw new PasswordException("New Password does not respect regex");
         }
+        userFound.setPassword(userModified.getPassword());
+
+        userFound.setPassword(passwordEncoder.encode(userModified.getPassword()));
 
         // salvataggio e restituzione dell'utente aggiornato
         return userRepo.save(userFound);

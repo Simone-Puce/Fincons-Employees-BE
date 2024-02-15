@@ -111,8 +111,7 @@ public class SecurityConfiguration {
                 new Endpoint(appContext + emailSenderUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
                 new Endpoint(appContext + employeeBaseUri + "/**", Arrays.asList(RoleEndpoint.ADMIN,RoleEndpoint.USER)),
                 new Endpoint(appContext + registeredUsers , List.of(RoleEndpoint.ADMIN)),
-                new Endpoint(appContext + deleteUserByEmail + "/**", List.of(RoleEndpoint.ADMIN)),
-                new Endpoint(appContext + modifyUser + "/**", List.of(RoleEndpoint.ADMIN))
+                new Endpoint(appContext + deleteUserByEmail + "/**", List.of(RoleEndpoint.ADMIN))
                 );
 
         http.authorizeHttpRequests(authz -> {
