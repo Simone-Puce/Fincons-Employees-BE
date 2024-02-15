@@ -1,5 +1,6 @@
 package com.fincons.service.authService;
 
+import com.fincons.dto.RoleDTO;
 import com.fincons.dto.UserDTO;
 import com.fincons.entity.Role;
 import com.fincons.entity.User;
@@ -26,8 +27,11 @@ import com.fincons.repository.UserRepository;
 import com.fincons.utility.EmailValidator;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @Service
 public class UserServiceImpl  implements UserService{
@@ -117,7 +121,7 @@ public class UserServiceImpl  implements UserService{
     @Override
     public User updateUser(String email, UserDTO userModified, String passwordForAdmin, String currentPassword) throws EmailException, PasswordException,  RoleException {
 
-        //se la mail non esiste si genera un'eccezione
+        // verifico che l'email sia valida
         if (email.isEmpty() || !EmailValidator.isValidEmail(email)) {
             throw new EmailException(EmailException.emailInvalidOrExist());
         }
@@ -128,39 +132,41 @@ public class UserServiceImpl  implements UserService{
             throw new ResourceNotFoundException("There isn't an user with this email!");
         }
 
-        // modifica solo password è valorizzato ?
+        // password valorizzata ?
         if (currentPassword != null) {
             if (!passwordEncoder.matches(currentPassword, userFound.getPassword())) {
                 throw new PasswordException("The password entered does not match the user's password");
             }
 
+            // Verifico che la nuova password rispetti la regex
             if (!PasswordValidator.isValidPassword(userModified.getPassword())) {
                 throw new PasswordException("The new password does not respect regex!");
             }
 
+            //se nuova password valida l'aggiorno
             userFound.setPassword(passwordEncoder.encode(userModified.getPassword()));
             return userRepo.save(userFound);
         }
 
+        //  password per l'amministratore valorizzata ?, verifica e aggiorna i ruoli
         if (passwordForAdmin != null && passwordForAdmin.equals(passwordAdmin)) {
             if (RoleValidator.isValidRole(String.valueOf(userModified.getRoles().get(0)))) {
                 throw new RoleException(RoleException.roleDoesNotRespectRegex());
             }
-            userFound.setRoles(userModified.getRoles()
-                    .stream()
-                    .map(role -> userAndRoleMapper.dtoToRole(role))
-                    .collect(Collectors.toList()));
+            List<Role> list = new ArrayList<>();
+            for (RoleDTO role : userModified.getRoles()) {
+                Role dtoToRole = userAndRoleMapper.dtoToRole(role);
+                list.add(dtoToRole);
+            }
+            userFound.setRoles(list);
         }
 
-        if(userModified.getFirstName()==null){
-           userFound.setFirstName(userFound.getFirstName());
-        }else{
+        // Aggiorno altri campi dell'utente se sono stati forniti
+        if (userModified.getFirstName() != null) {
             userFound.setFirstName(userModified.getFirstName());
         }
 
-        if(userModified.getLastName()==null){
-            userFound.setFirstName(userFound.getFirstName());
-        }else{
+        if (userModified.getLastName() != null) {
             userFound.setLastName(userModified.getLastName());
         }
 
@@ -171,9 +177,10 @@ public class UserServiceImpl  implements UserService{
                 throw new PasswordException("New Password is not valid!");
             }
 
-            userFound.setLastName(passwordEncoder.encode(userModified.getPassword()));
+            userFound.setPassword(passwordEncoder.encode(userModified.getPassword()));
         }
 
+        // salvataggio e restituzione dell'utente aggiornato
         return userRepo.save(userFound);
     }
 
