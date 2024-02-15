@@ -125,17 +125,20 @@ public class CsvReader implements ImportFileReader {
 
                 String dep = record.get(EmployeeHeaderCsv.Dipartimento);
                 Department dipartimento= new Department();
-                dipartimento.setId(Long.parseLong(dep));
+                dipartimento.setDepartmentCode(dep);
 
                 String pos= record.get(EmployeeHeaderCsv.Posizione);
-
                 Position posizione = new Position();
-                posizione.setId(Long.parseLong(pos));
+                posizione.setPositionCode(pos);
+
+
+                String ssn= record.get(EmployeeHeaderCsv.Ssn);
+                //TODO - SSN VALIDATOR
 
 
                 //CREATE EMPLOYEE DTO
 
-                EmployeeDTO personToAdd = new EmployeeDTO(nome, cognome, genere,email, dataDiNascita, dataDiInizio,dataDiFine,dipartimento.getDepartmentCode() , posizione.getPositionCode());
+                EmployeeDTO personToAdd = new EmployeeDTO(nome, cognome, genere,email, dataDiNascita, dataDiInizio,dataDiFine,dipartimento.getDepartmentCode() , posizione.getPositionCode(),ssn);
                 personToAdd.setRowNum(record.getRecordNumber() + 1);
 
                 //ADD EMPLOYEE TO LIST

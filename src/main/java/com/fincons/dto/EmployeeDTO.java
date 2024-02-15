@@ -57,7 +57,7 @@ public class EmployeeDTO {
         this.endDate = endDate;
     }
 
-    public EmployeeDTO(String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, String departmentCode, String positionCode) {
+    public EmployeeDTO(String firstName, String lastName, String gender, String email, LocalDate birthDate, LocalDate startDate, LocalDate endDate, String departmentCode, String positionCode, String ssn) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -67,5 +67,6 @@ public class EmployeeDTO {
         this.endDate = endDate;
         this.departmentCode = departmentCode;
         this.positionCode = positionCode;
+        this.ssn= ssn;
     }
 }

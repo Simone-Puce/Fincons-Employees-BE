@@ -3,7 +3,9 @@ package com.fincons.utility;
 import com.fincons.dto.EmployeeDTO;
 import com.fincons.dto.ErrorDetailDTO;
 import com.fincons.enums.ErrorCode;
+import com.fincons.service.employeeService.impl.DepartmentServiceImpl;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,6 +13,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class EmployeeDataValidator {
+
+
     private EmployeeDataValidator() {
 
     }
@@ -19,10 +23,10 @@ public class EmployeeDataValidator {
         List<ErrorDetailDTO> validationResultList = new ArrayList<>();
 
 
-        //controllo sui campi fondamentali: Nome,Cognome ed Email
-        if ( (!isValidEmail(employeeToValidate.getEmail())) && (!isValidNameSurname(employeeToValidate.getFirstName())) && (!isValidNameSurname(employeeToValidate.getLastName())) ) {
-            //se tutti e tre i campi non sono validi, aggiungi l'errore bloccante di riga interamente errata
-            validationResultList.add(new ErrorDetailDTO(employeeToValidate.getRowNum(), "Name,Surname,Email", ErrorCode.INVALID_ROW));
+        //controllo sui campi fondamentali: Nome,Cognome, Email,Ssn
+        if ( (!isValidEmail(employeeToValidate.getEmail())) && (!isValidNameSurname(employeeToValidate.getFirstName())) && (!isValidNameSurname(employeeToValidate.getLastName())) && (!isValidFiscalCode(employeeToValidate.getSsn()))) {
+            //se tutti e quattro i campi fondamentali non sono validi, aggiungi l'errore bloccante di riga interamente errata
+            validationResultList.add(new ErrorDetailDTO(employeeToValidate.getRowNum(), "Name,Surname,Email,Ssn", ErrorCode.INVALID_ROW));
             return validationResultList;
         }
 
@@ -46,6 +50,10 @@ public class EmployeeDataValidator {
             validationResultList.add(new ErrorDetailDTO(employeeToValidate.getRowNum(), "Genere", ErrorCode.INVALID_GENRE));
         }
 
+        //Validazione Fiscal Code
+        if (!isValidFiscalCode(employeeToValidate.getSsn())) {
+            validationResultList.add(new ErrorDetailDTO(employeeToValidate.getRowNum(), "Ssn", ErrorCode.INVALID_FISCAL_CODE));
+        }
         return validationResultList;
     }
 
@@ -66,7 +74,6 @@ public class EmployeeDataValidator {
         }
 
     }
-
     private static boolean isValidNameSurname(String nameSurname) {
         if (!StringUtils.hasText(nameSurname)) {
             return false;
@@ -81,8 +88,6 @@ public class EmployeeDataValidator {
         }
 
     }
-
-
     private static boolean isValidGenre(String genre) {
         if (!StringUtils.hasText(genre)) {
             return false;
@@ -95,8 +100,6 @@ public class EmployeeDataValidator {
         }
 
     }
-
-
     public static boolean isValidDate(String date) {
 
         // Implementazione della validazione della data
@@ -147,5 +150,19 @@ public class EmployeeDataValidator {
 
 
     }
+    private static boolean isValidFiscalCode(String cf){
+        //Controllo lunghezza
+        if(cf.length()!= 16){
+            return false;
+        }
+        // Controllo dei caratteri
+        if (!cf.matches("[A-Z0-9]+")) {
+            return false;
+        }
+
+        return true;
+    }
+
+
 
 }

@@ -4,10 +4,14 @@ import com.fincons.dto.EmployeeDTO;
 import com.fincons.dto.ErrorDetailDTO;
 import com.fincons.dto.ImportFileDTO;
 import com.fincons.dto.ImportResultDTO;
+import com.fincons.entity.Department;
+import com.fincons.entity.Employee;
+import com.fincons.entity.Position;
 import com.fincons.enums.ErrorCode;
 import com.fincons.enums.Gravity;
 import com.fincons.enums.ProcessingStatus;
-import com.fincons.service.employeeService.EmployeeService;
+import com.fincons.repository.DepartmentRepository;
+import com.fincons.repository.PositionRepository;
 import com.fincons.service.importFile.ImportFileReader;
 import com.fincons.service.importFile.ImportService;
 import com.fincons.service.importFile.PersistenceEmployeeService;
@@ -33,6 +37,12 @@ public class ImportServiceImpl implements ImportService {
     private static final Logger logger = LoggerFactory.getLogger(ImportServiceImpl.class);
     @Autowired
     private PersistenceEmployeeService persistenceEmployeeService;
+
+    @Autowired
+    private DepartmentRepository departmentRepo;
+
+    @Autowired
+    private PositionRepository positionRepository;
 
     @Value("${file.max.rows}")
     private int MAX_ROWS;
@@ -106,9 +116,9 @@ public class ImportServiceImpl implements ImportService {
             ImportErrorUtility.emptyFile(errorList, importResult);
         } else { //SE NON è VUOTA  SI CONTINUA CON TUTTO IL PROCESSO
             //--------ITERAZIONE SULLA LISTA DEI DIPENDENTI PER VALIDARE I RISPETTIVI CAMPI RIPORTANDO EVENTUALI ERRORI NELL'APPOSITA LISTA--------
-            for (EmployeeDTO employee : employeeList)
-                errorList.addAll(EmployeeDataValidator.isValidEmployee(employee));
-
+            for (EmployeeDTO employee : employeeList) {
+              errorList.addAll(EmployeeDataValidator.isValidEmployee(employee));
+            }
             // CONTROLLO DELLA PRESENZA DI ERRORI BLOCCANTI, SE PRESENTI, VENGONO RIMOSSI I RECORD INTERESSATI
             Iterator<EmployeeDTO> iterator = employeeList.iterator();
             while (iterator.hasNext()) {
@@ -131,7 +141,18 @@ public class ImportServiceImpl implements ImportService {
 
                 for(EmployeeDTO employee : employeeList){
                    try{
-                       persistenceEmployeeService.addIfNotPresent(employee, duplicatedEmployee);
+                       Department department= departmentRepo.findDepartmentByDepartmentCode(employee.getDepartmentCode());
+                       Position position= positionRepository.findPositionByPositionCode(employee.getPositionCode());
+                        if(department!=null && position!=null){
+                            Employee employeeEntity= EmployeeMapper.convertToEntity(employee);
+                            employeeEntity.setDepartment(department);
+                            employeeEntity.setPosition(position);
+                            persistenceEmployeeService.addIfNotPresent(employeeEntity,employee, duplicatedEmployee);
+                        }
+
+                        if(department== null){errorList.add(new ErrorDetailDTO(employee.getRowNum(), "Department: "+ employee.getDepartmentCode(), ErrorCode.DEPARTMENT_NOT_EXIST_OR_INVALID));}
+
+                        if(position==null){errorList.add(new ErrorDetailDTO(employee.getRowNum(), "Position: "+ employee.getPositionCode(), ErrorCode.POSITION_NOT_EXIST_OR_INVALID));}
                    }catch (DataIntegrityViolationException dataIntegrityViolationException){
                        duplicatedUser.add(new ErrorDetailDTO(employee.getRowNum(), "Email: "+ employee.getEmail(), ErrorCode.USER_ALREADY_EXISTS));
                    }catch(RuntimeException e){

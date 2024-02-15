@@ -22,7 +22,10 @@ public interface EmployeeService {
 
     //aggiunti questi due metodi per evitare validazioni e controlli già implementati in questo service perché
     //vanno in contrasto con i miei validator e controlli
-    boolean  employeeExists(Employee employee);
+    boolean  employeeExistsByEmail(Employee employee);
+
+    public boolean employeeExistsBySsn(Employee employee);
+
 
     void deleteEmployee(Employee employee);
 

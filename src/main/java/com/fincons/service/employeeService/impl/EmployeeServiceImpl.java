@@ -307,15 +307,26 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public boolean employeeExists(Employee employee) {
-        boolean employeeExists = employeeRepository.existsByEmail(employee.getEmail());
-        if (employeeExists) {
+    public boolean employeeExistsByEmail(Employee employee) {
+        boolean employeeExistsByEmail = employeeRepository.existsByEmail(employee.getEmail());
+
+        if (employeeExistsByEmail) {
             return true;
         } else {
             return false;
         }
     }
 
+    @Override
+    public boolean employeeExistsBySsn(Employee employee) {
+        boolean employeeExistsBySsn= employeeRepository.existsBySsn(employee.getSsn());
+
+        if (employeeExistsBySsn) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     @Override
     public void deleteEmployee(Employee employee) {
        employeeRepository.delete(employee);

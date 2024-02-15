@@ -7,6 +7,7 @@ import com.fincons.entity.Department;
 import com.fincons.entity.Position;
 import com.fincons.enums.EmployeeHeaderXlsx;
 import com.fincons.enums.ErrorCode;
+import com.fincons.service.employeeService.impl.DepartmentServiceImpl;
 import com.fincons.service.importFile.ImportFileReader;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -15,6 +16,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class XlsxReader implements ImportFileReader {
+
 
     private InputStream xlsxInputStream;
     private Reader xlsxReader;
@@ -115,15 +119,21 @@ public class XlsxReader implements ImportFileReader {
 
                     String dep = getCellValue(row.getCell(EmployeeHeaderXlsx.Dipartimento.getIndex()));
                     Department dipartimento = new Department();
-                    dipartimento.setId(Math.round(Double.parseDouble(dep)));
+                    dipartimento.setDepartmentCode(dep);
+
+
+
 
                     String pos = getCellValue(row.getCell(EmployeeHeaderXlsx.Posizione.getIndex()));
                     Position posizione = new Position();
-                    posizione.setId(Math.round(Double.parseDouble(dep)));
+                    posizione.setPositionCode(pos);
+
+                    String ssn = getCellValue(row.getCell(EmployeeHeaderXlsx.Ssn.getIndex()));
+                    //TODO - VALIDAZIONE
 
 
                     // Crea un oggetto EmployeeDto con i valori ottenuti
-                    EmployeeDTO employeeDto = new EmployeeDTO(nome, cognome, genere,email, dataDiNascita, dataDiInizio,dataDiFine,dipartimento.getDepartmentCode(),posizione.getPositionCode());
+                    EmployeeDTO employeeDto = new EmployeeDTO(nome, cognome, genere,email, dataDiNascita, dataDiInizio,dataDiFine,dipartimento.getDepartmentCode(),posizione.getPositionCode(),ssn);
                     employeeDto.setRowNum(row.getRowNum() + 1);
                     // Aggiungi l'oggetto EmployeeDto alla lista
                     employeeToAdd.add(employeeDto);
