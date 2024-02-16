@@ -1,8 +1,6 @@
 package com.fincons.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fincons.entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -14,10 +12,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleDTO {
+
     private long id;
 
     private String name;
 
+    @JsonIgnoreProperties("roles")
     private List<UserDTO> users;
 
 

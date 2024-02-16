@@ -21,9 +21,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    /*
-    https://www.baeldung.com/spring-enablemethodsecurity   To SEE !!!
-     */
     @Override
     public UserDetails loadUserByUsername(String email)  throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);

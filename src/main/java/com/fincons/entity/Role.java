@@ -1,7 +1,7 @@
 package com.fincons.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,8 +9,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.util.List;
+import java.util.Objects;
 
-@Getter
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -26,6 +27,7 @@ public class Role {
     @Column(unique = true, nullable = false)
     private String name;
 
+
     @ManyToMany(mappedBy="roles")
     private List<User> users;
 
@@ -36,15 +38,25 @@ public class Role {
         }
     }
 
-    public void setId(long id) {
-        this.id = id;
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", users=" + users +
+                '}';
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return id == role.id && Objects.equals(name, role.name) && Objects.equals(users, role.users);
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, users);
     }
 }

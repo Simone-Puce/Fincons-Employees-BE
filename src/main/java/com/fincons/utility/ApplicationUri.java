@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationUri {
 
-    // TODO Script for transform every UPPER CASE to CamelCase in python/Java
-    // APPLICATION CONTEXT
+
     @Value("${application.context}")
     private String appContext;
 
@@ -49,9 +48,6 @@ public class ApplicationUri {
 
     @Value("${modify.user}")
     private String modifyUser;
-
-    @Value("${update.user.password}")
-    private String updateUserPassword;
 
     //ROLE
     @Value("${role.base.uri}")

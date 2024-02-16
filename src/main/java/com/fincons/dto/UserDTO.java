@@ -1,6 +1,6 @@
 package com.fincons.dto;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
+
     private long id;
 
     private String firstName;
@@ -21,7 +22,7 @@ public class UserDTO {
     private String email;
 
     private String password;
-
+    @JsonIgnoreProperties("users")
     private List<RoleDTO> roles;
 
     private boolean generatedPassword;
