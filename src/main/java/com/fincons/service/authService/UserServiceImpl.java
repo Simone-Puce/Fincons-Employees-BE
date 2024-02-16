@@ -111,66 +111,33 @@ public class UserServiceImpl  implements UserService{
         if(userToRemove==null){
             throw new EmailException(EmailException.emailInvalidOrExist());
         }
-        if(userToRemove.getRoles()
+
+        List<User> usersWithRoleAdmin = userRepo.findAll()
                 .stream()
-                .anyMatch(role -> role.getName().equals("ROLE_ADMIN"))){
-            throw new RoleException("User with role admin can't be deleted!");
+                .filter(user -> user.getRoles()
+                        .stream()
+                        .anyMatch(role -> role.getName().equals("ROLE_ADMIN")))
+                .toList();
+
+        if(usersWithRoleAdmin.size() < 2 ){
+            throw new RoleException("Can't modify the only admin remained!");
         }
         userRepo.delete(userToRemove);
     }
 
     @Override
-    public User updateUser(String email, UserDTO userModified, String passwordForAdmin, String currentPassword) throws EmailException, PasswordException,  RoleException {
+    public User updateUser(String email, UserDTO userModified, String passwordForAdmin, String currentPassword) throws EmailException, PasswordException, RoleException {
 
+        //Se email esiste
         // verifico che l'email sia valida
-        if (email.isEmpty() || !EmailValidator.isValidEmail(email)) {
+        if (email.isEmpty() || !EmailValidator.isValidEmail(email) || !userRepo.existsByEmail(email) ) {
             throw new EmailException(EmailException.emailInvalidOrExist());
         }
 
-        //trovo l'user e vedo se esiste altrimenti eccezione
+        //Se passa i controlli lo assegno a userFound
         User userFound = userRepo.findByEmail(email);
-        if (userFound == null) {
-            throw new ResourceNotFoundException("There isn't an user with this email!");
-        }
 
-        // password valorizzata ?
-        if (currentPassword != null) {
-            if (!passwordEncoder.matches(currentPassword, userFound.getPassword())) {
-                throw new PasswordException("The password entered does not match the user's password");
-            }
-
-            // Verifico che la nuova password rispetti la regex
-            if (!PasswordValidator.isValidPassword(userModified.getPassword())) {
-                throw new PasswordException("The new password does not respect regex!");
-            }
-
-            //se nuova password valida l'aggiorno
-            userFound.setPassword(passwordEncoder.encode(userModified.getPassword()));
-            return userRepo.save(userFound);
-        }
-
-        //  password per l'amministratore valorizzata ?, verifica e aggiorna il ruolo
-        if (passwordForAdmin != null && passwordForAdmin.equals(passwordAdmin)) {
-            if (RoleValidator.isValidRole(String.valueOf(userModified.getRoles().get(0)))) {
-                throw new RoleException(RoleException.roleDoesNotRespectRegex());
-            }
-            List<User> usersWithRoleAdmin = userRepo.findAll()
-                    .stream()
-                    .filter(user -> Arrays.toString(user.getRoles().toArray()).contains("ROLE_ADMIN"))
-                    .toList();
-
-            if(usersWithRoleAdmin.size() < 2 ){
-                throw new RoleException("Can't modify the only admin remained!");
-            }
-            List<Role> list = new ArrayList<>();
-            for (RoleDTO role : userModified.getRoles()) {
-                Role dtoToRole = userAndRoleMapper.dtoToRole(role);
-                list.add(dtoToRole);
-            }
-            userFound.setRoles(list);
-        }
-
-        // Aggiorno altri campi dell'utente se sono stati forniti
+        //Modificare i campi se valorizzati
         if (userModified.getFirstName() != null) {
             userFound.setFirstName(userModified.getFirstName());
         }
@@ -179,16 +146,60 @@ public class UserServiceImpl  implements UserService{
             userFound.setLastName(userModified.getLastName());
         }
 
-        if(userModified.getPassword() != null &&  !PasswordValidator.isValidPassword(userModified.getPassword()) ){
-            throw new PasswordException("New Password does not respect regex");
+        // password valorizzata e matcha con la password dell'utente  ?
+        if (currentPassword != null && !passwordEncoder.matches(currentPassword, userFound.getPassword()) ) {
+            throw new PasswordException("The password entered does not match the user's password");
         }
-        userFound.setPassword(userModified.getPassword());
+
+		// Se non è stata inserita la current password e l'utente iserisce la nuova password genera l'eccezione
+		if(currentPassword == null && userModified.getPassword() != null){
+			throw new PasswordException("The user must enter the current password of user before update it");
+		}
+
+
+        if(!PasswordValidator.isValidPassword(userModified.getPassword())){
+            throw new PasswordException("The new password does not respect regex!");
+        }
+
+        // password per l'amministratore valorizzata ?, verifica e aggiorna il ruolo
+        if (passwordForAdmin != null && passwordForAdmin.equals(passwordAdmin)) {
+
+            if (RoleValidator.isValidRole(String.valueOf(userModified.getRoles().get(0)))) {
+                throw new RoleException(RoleException.roleDoesNotRespectRegex());
+            }
+
+            // Se il nome del ruolo dell'user da modificare è "ROLE_ADMIN" e Il nome del nuovo ruolo è diverso da admin controllo che ci sia un altro admin
+            if(userFound.getRoles().get(0).getName().equals("ROLE_ADMIN") && !userModified.getRoles().get(0).getName().equals("ROLE_ADMIN")){
+
+                //count numbers of admins
+                List<User> usersWithRoleAdmin = userRepo.findAll()
+                        .stream()
+                        .filter(user -> user.getRoles()
+                                .stream()
+                                .anyMatch(role -> role.getName().equals("ROLE_ADMIN")))
+                        .toList();
+
+                if(usersWithRoleAdmin.size() < 2 ){
+                    throw new RoleException("Can't modify the only admin remained!");
+                }
+
+                userFound.setRoles(List.of(roleToAssign("ROLE_ADMIN")));
+
+            }else{
+
+                // se ruolo diverso da admin, se esiste nella role repository prendilo e assegnalo, se non esiste crealo nel db e poi settalo
+               userFound.setRoles(List.of(roleToAssign(userModified.getRoles().get(0).getName())));
+
+            }
+
+        }
 
         userFound.setPassword(passwordEncoder.encode(userModified.getPassword()));
 
-        // salvataggio e restituzione dell'utente aggiornato
         return userRepo.save(userFound);
+
     }
+
 
     @Override
     public User getUserDtoByEmail(String email) {
