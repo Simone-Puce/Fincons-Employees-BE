@@ -1,6 +1,5 @@
 package com.fincons.utility;
 
-import com.fincons.entity.Role;
 import com.fincons.enums.RoleEndpoint;
 import lombok.AllArgsConstructor;
 import lombok.Data;

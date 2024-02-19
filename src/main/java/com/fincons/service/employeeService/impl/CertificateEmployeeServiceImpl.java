@@ -5,8 +5,7 @@ import com.fincons.entity.CertificateEmployee;
 import com.fincons.mapper.CertificateEmployeeMapper;
 import com.fincons.repository.CertificateEmployeeRepository;
 import com.fincons.service.employeeService.CertificateEmployeeService;
-import com.fincons.service.pdfCertificate.IPdfCertificateEmployee;
-import jakarta.servlet.http.HttpServletResponse;
+import com.fincons.service.pdfCertificate.IPdfGeneratorApi;
 import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,9 +27,7 @@ public class CertificateEmployeeServiceImpl implements CertificateEmployeeServic
     @Autowired
     private CertificateEmployeeMapper certificateEmployeeMapper;
     @Autowired
-    private IPdfCertificateEmployee iPdfCertificateEmployee;
-    @Autowired
-    private HttpServletResponse httpServletResponse;
+    private IPdfGeneratorApi iPdfGeneratorApi;
 
     @Override
     public List<CertificateEmployeeDTO> getAllCertificatesEmployees() throws RuntimeException{
@@ -75,27 +68,20 @@ public class CertificateEmployeeServiceImpl implements CertificateEmployeeServic
     }
 
     @Override
-    public List<CertificateEmployeeDTO> listCertificateEmployeeByPreviousMonth(LocalDate dateFrom, LocalDate dateTo){
+    public List<CertificateEmployee> listCertificateEmployeeByPreviousMonth(LocalDate dateFrom, LocalDate dateTo){
         logger.info("{}-------------{}", dateFrom, dateTo);
         List<CertificateEmployee> list = certificateEmployeeRepository.listCertificateEmployeeByDateRange(dateFrom, dateTo);
         logger.info("-------------- {}",  list.size());
-        return certificateEmployeeMapper.mapCertificateEmployeeListToCertificateEmployeeDtoList(list);
+        return list;
     }
 
     @Override
-    public void downloadListCertificateEmployeeByPreviousMonth(LocalDate dateFrom, LocalDate dateTo) throws ServiceException, IOException {
-        httpServletResponse.setContentType("application/pdf");
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss");
-        String currentDateTime = dateFormat.format(new Date());
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=listMonth" + currentDateTime + ".pdf";
-        httpServletResponse.setHeader(headerKey, headerValue);
+    public byte[] downloadListCertificateEmployeeByPreviousMonth(LocalDate dateFrom, LocalDate dateTo) throws ServiceException, IOException {
         List<CertificateEmployee> list = certificateEmployeeRepository.listCertificateEmployeeByDateRange(dateFrom, dateTo);
         if (list.isEmpty()) {
             throw new ServiceException("CertificationEmployee is empty for previous month");
         }
-        List<CertificateEmployeeDTO> certificateEmployeeList = certificateEmployeeMapper.mapCertificateEmployeeListToCertificateEmployeeDtoList(list);
-        iPdfCertificateEmployee.generate(certificateEmployeeList);
+        return iPdfGeneratorApi.generate(list);
     }
 
 }

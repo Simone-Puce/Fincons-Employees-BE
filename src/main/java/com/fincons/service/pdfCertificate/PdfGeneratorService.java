@@ -1,31 +1,22 @@
 package com.fincons.service.pdfCertificate;
 
-import com.fincons.dto.CertificateEmployeeDTO;
+import com.fincons.entity.CertificateEmployee;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 @Service
-public class PdfCertificateEmployee implements IPdfCertificateEmployee{
-
-    @Autowired
-    private HttpServletResponse response;
+public class PdfGeneratorService implements IPdfGeneratorApi {
 
     @Override
-    public void generate(List<CertificateEmployeeDTO> certificateEmployeeDTOSList) throws DocumentException, IOException {
-        Path path = Paths.get("C:\\Users\\carlo.vitto\\Desktop\\Fincons-Employees-BE\\src\\main\\resources\\images\\logo.png");
+    public byte[] generate(List<CertificateEmployee> certificateEmployeeList) throws DocumentException {
         Document document = new Document(PageSize.A4);
-        PdfWriter.getInstance(document, response.getOutputStream());
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, stream);
         document.open();
-        Image img = Image.getInstance(path.toAbsolutePath().toString());
-        img.scaleToFit(70, 70);
-        document.add(img);
 
         PdfDate pdfDate =  new PdfDate();
         pdfDate.getW3CDate();
@@ -39,7 +30,7 @@ public class PdfCertificateEmployee implements IPdfCertificateEmployee{
         Font font = FontFactory.getFont(FontFactory.TIMES_ROMAN);
         font.setSize(15);
 
-        for (CertificateEmployeeDTO certificateEmployee: certificateEmployeeDTOSList){
+        for (CertificateEmployee certificateEmployee: certificateEmployeeList){
             Paragraph paragraph = new Paragraph();
             paragraph.add(new Phrase("Employee: ", font));
             paragraph.add(new Phrase(certificateEmployee.getEmployee().getFirstName(), font));
@@ -56,5 +47,6 @@ public class PdfCertificateEmployee implements IPdfCertificateEmployee{
             document.add(paragraph);
         }
         document.close();
+        return stream.toByteArray();
     }
 }

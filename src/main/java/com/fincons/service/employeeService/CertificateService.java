@@ -1,20 +1,23 @@
 package com.fincons.service.employeeService;
 
 import com.fincons.dto.CertificateDTO;
+import com.fincons.entity.Certificate;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@Service
+import java.util.List;
 public interface CertificateService {
 
-    ResponseEntity<Object> getAllCertificates();
+    List<CertificateDTO> getAllCertificates();
 
-    ResponseEntity<Object> getCertificateById(Long id) throws ServiceException;
+    List<CertificateDTO> getAllCertificateActivate();
 
-    ResponseEntity<Object> addCertificate(CertificateDTO certificateDTO);
+    CertificateDTO getCertificateById(Long id) throws ServiceException;
 
-    ResponseEntity<Object> updateCertificate(Long id, CertificateDTO certificateDTO);
+    Certificate addCertificate(CertificateDTO certificateDTO);
 
-    ResponseEntity<Object> deleteCertificate(Long id) throws ServiceException;
+    Certificate updateCertificate(Long id, CertificateDTO certificateDTO);
+
+    void deleteCertificate(Long id) throws ServiceException;
 }

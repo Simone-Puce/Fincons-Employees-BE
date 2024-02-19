@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 @RestController
-@RequestMapping("${email.uri}")
+@RequestMapping("/company-employee-management")
 public class EmailController {
 
     @Autowired
@@ -34,7 +34,7 @@ public class EmailController {
         jobScheduler.emailSenderHire();
         return ResponseEntity.ok("Anniversary emails have been sent successfully");
     }
-    @PostMapping("/emailPdf")
+    @PostMapping("${email.sender.pdf}")
     public ResponseEntity<String> emailSenderPdf() throws IOException {
         jobScheduler.emailSenderPdf();
         return ResponseEntity.ok("Pdf emails have been sent successfully");

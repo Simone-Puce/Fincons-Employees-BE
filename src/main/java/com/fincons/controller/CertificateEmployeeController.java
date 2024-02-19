@@ -1,10 +1,15 @@
 package com.fincons.controller;
 
 import com.fincons.dto.CertificateEmployeeDTO;
+import com.fincons.entity.CertificateEmployee;
 import com.fincons.mapper.CertificateEmployeeMapper;
 import com.fincons.service.employeeService.CertificateEmployeeService;
+import com.fincons.service.employeeService.ICreateRandomCertificateEmployee;
+import com.fincons.service.pdfCertificate.PdfGeneratorService;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,16 +19,16 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("${certificateEmployee.uri}")
+@RequestMapping("/company-employee-management")
 public class CertificateEmployeeController {
-    @Autowired
-    private CertificateEmployeeService certificateEmployeeService;
     @Autowired
     private CertificateEmployeeMapper certificateEmployeeMapper;
     @Autowired
-    private PdfCertificateEmployee pdfCertificateEmployee;
+    private PdfGeneratorService pdfGeneratorService;
     @Autowired
     private ICreateRandomCertificateEmployee iCreateRandomCertificateEmployee;
+    @Autowired
+    private CertificateEmployeeService certificateEmployeeService;
 
     @GetMapping("${certificate-employee.list}")
     public List<CertificateEmployeeDTO> getAllCertificateEmployee(){
@@ -42,31 +47,28 @@ public class CertificateEmployeeController {
         return certificateEmployeeService.updateCertificateEmployee(id, certificateEmployeeDTO);
     }
 
-    @DeleteMapping("${certificate-employee.delete.uri}/{id}")
+    @DeleteMapping("${certificate-employee.delete}/{id}")
     public void deleteCertificateEmployee(@PathVariable Long id){
         certificateEmployeeService.deleteCertificateEmployee(id);
     }
 
-
-
-    @GetMapping("${certificate-employee.list-month-previous.uri}")
-    public List<CertificateEmployeeDTO> listMonthPrevious(LocalDate dateFrom, LocalDate dateTo){
+    @GetMapping("${certificate-employee.list-month-previous}")
+    public List<CertificateEmployee> listMonthPrevious(@RequestParam LocalDate dateFrom, @RequestParam LocalDate dateTo){
         return certificateEmployeeService.listCertificateEmployeeByPreviousMonth(dateFrom, dateTo);
     }
 
-    @GetMapping("${certificate-employee.export-to-pdf.uri}")
-    public void generatePdfFile(@RequestParam LocalDate dateFrom,@RequestParam LocalDate dateTo) throws DocumentException, IOException {
-        List<CertificateEmployeeDTO> listOfCertificateEmployee = certificateEmployeeService.listCertificateEmployeeByPreviousMonth(dateFrom, dateTo);
-        pdfCertificateEmployee.generate(listOfCertificateEmployee);
+    @GetMapping("${certificate-employee.export-to-pdf}")
+    public byte[] generatePdfFile(@RequestParam LocalDate dateFrom,@RequestParam LocalDate dateTo) {
+        List<CertificateEmployee> listOfCertificateEmployee = certificateEmployeeService.listCertificateEmployeeByPreviousMonth(dateFrom, dateTo);
+        return pdfGeneratorService.generate(listOfCertificateEmployee);
     }
 
-    @GetMapping("${certificate-employee.download-pdf.uri}")
-    public File generateFilePdf(LocalDate dateFrom, LocalDate dateTo) throws IOException {
-        certificateEmployeeService.downloadListCertificateEmployeeByPreviousMonth(dateFrom, dateTo);
-        return null;
+    @GetMapping("${certificate-employee.download-pdf}")
+    public byte[] generateFilePdf(@RequestParam LocalDate dateFrom, @RequestParam LocalDate dateTo) throws IOException {
+        return certificateEmployeeService.downloadListCertificateEmployeeByPreviousMonth(dateFrom, dateTo);
     }
 
-    @PostMapping("${certificate-employee.random-certificate-employee.uri}")
+    @PostMapping("${certificate-employee.random-certificate-employee}")
     public void generateRandomCertificateEmployee() {
         iCreateRandomCertificateEmployee.CreateCertificateEmployee();
     }

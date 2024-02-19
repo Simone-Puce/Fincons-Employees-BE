@@ -201,6 +201,9 @@ public class ApplicationUri {
     @Value("${email.sender.hire}")
     private String emailSenderHire;
 
+    @Value("${email.sender.pdf}")
+    private String emailSenderPdf;
+
     @Value("${new.employee.random}")
     private String newEmployeeRandom;
 
@@ -210,6 +213,9 @@ public class ApplicationUri {
 
     @Value("${certificate.list}")
     private String certificateList;
+
+    @Value("${certificate.list.activate}")
+    private String certificateListActivate;
 
     @Value("${certificate.add}")
     private String certificateAdd;

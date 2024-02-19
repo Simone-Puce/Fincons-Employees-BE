@@ -1,12 +1,10 @@
 package com.fincons.security;
 
 import com.fincons.enums.RoleEndpoint;
-import com.fincons.utility.ApplicationUri;
 import com.fincons.jwt.JwtAuthenticationEntryPoint;
 import com.fincons.jwt.JwtAuthenticationFilter;
 
 import com.fincons.utility.Endpoint;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -121,7 +119,7 @@ public class SecurityConfiguration {
                     .requestMatchers(appContext +registerBaseUri).permitAll()
                     .requestMatchers(appContext + errorBaseUri).permitAll()
                     .requestMatchers(appContext + modifyUser).authenticated()
-                    .anyRequest().authenticated();
+                    .anyRequest().permitAll();
         }).httpBasic(Customizer.withDefaults());
 
         http

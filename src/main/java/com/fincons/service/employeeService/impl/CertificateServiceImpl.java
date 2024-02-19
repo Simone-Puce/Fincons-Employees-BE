@@ -9,8 +9,6 @@ import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,51 +24,47 @@ public class CertificateServiceImpl implements CertificateService {
     private CertificateMapper certificateMapper;
 
     @Override
-    public ResponseEntity<Object> getAllCertificates() {
+    public List<CertificateDTO> getAllCertificates() {
         List<Certificate> certificates = certificateRepository.findAll();
-        List<CertificateDTO> certificateDTOs = certificateMapper.mapCertificateListToCertificateDtoList(certificates);
-        if(certificateDTOs.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(certificateDTOs, HttpStatus.OK);
+        return certificateMapper.mapCertificateListToCertificateDtoList(certificates);
+    }
+
+    @Override
+    public List<CertificateDTO> getAllCertificateActivate() {
+        List<Certificate> certificateActivate = certificateRepository.certificateListTrue();
+        return certificateMapper.mapCertificateListToCertificateDtoList(certificateActivate);
     }
     @Override
-    public ResponseEntity<Object> getCertificateById(Long id) throws ServiceException {
+    public CertificateDTO getCertificateById(Long id) throws ServiceException {
+        Certificate findCertificate = certificateRepository.findById(id).orElse(null);
+        if (findCertificate == null) {
+            throw new ServiceException("Certificate not found for this id");
+        }
+        return certificateMapper.mapCertificateToCertificateDto(findCertificate);
+    }
+
+    @Override
+    public Certificate addCertificate(CertificateDTO certificateDTO) {
+        Certificate certificate = certificateMapper.mapCertificateDtoToCertificate(certificateDTO);
+        return certificateRepository.save(certificate);
+    }
+
+    @Override
+    public Certificate updateCertificate(Long id, CertificateDTO certificateDTO) {
         Certificate findCertificate = certificateRepository.findById(id).orElse(null);
         if (findCertificate == null){
             throw new ServiceException("Certificate not found for this id");
         }
-        CertificateDTO certificateDTO = certificateMapper.mapCertificateToCertificateDto(findCertificate);
-        return new ResponseEntity<>(certificateDTO, HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Object> addCertificate(CertificateDTO certificateDTO) {
         Certificate certificate = certificateMapper.mapCertificateDtoToCertificate(certificateDTO);
-        certificate = certificateRepository.save(certificate);
-        CertificateDTO responseDTO = certificateMapper.mapCertificateToCertificateDto(certificate);
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        return certificateRepository.save(certificate);
     }
 
     @Override
-    public ResponseEntity<Object> updateCertificate(Long id, CertificateDTO certificateDTO) {
-        Certificate findCertificate = certificateRepository.findById(id).orElse(null);
-        if (findCertificate == null){
-            throw new ServiceException("Certificate not found for this id");
-        }
-        Certificate certificate = certificateMapper.mapCertificateDtoToCertificate(certificateDTO);
-        certificate = certificateRepository.save(certificate);
-        CertificateDTO responseDTO = certificateMapper.mapCertificateToCertificateDto(certificate);
-        return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Object> deleteCertificate(Long id) throws ServiceException {
+    public void deleteCertificate(Long id) throws ServiceException {
         Certificate findCertificate = certificateRepository.findById(id).orElse(null);
         if (findCertificate == null){
             throw new ServiceException("Certificate not found for this id");
         }
         certificateRepository.delete(findCertificate);
-        return new ResponseEntity<>("Certificate employee deleted", HttpStatus.OK);
     }
 }

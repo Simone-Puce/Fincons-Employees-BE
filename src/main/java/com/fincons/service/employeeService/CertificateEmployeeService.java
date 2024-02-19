@@ -2,11 +2,9 @@ package com.fincons.service.employeeService;
 
 import com.fincons.dto.CertificateEmployeeDTO;
 import com.fincons.entity.CertificateEmployee;
-import jakarta.servlet.http.HttpServletResponse;
 import org.hibernate.service.spi.ServiceException;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,7 +18,7 @@ public interface CertificateEmployeeService {
 
     void deleteCertificateEmployee(Long id);
 
-    List<CertificateEmployeeDTO> listCertificateEmployeeByPreviousMonth(LocalDate dateFrom, LocalDate dateTo) throws ServiceException;
+    List<CertificateEmployee> listCertificateEmployeeByPreviousMonth(LocalDate dateFrom, LocalDate dateTo) throws ServiceException;
 
-    void downloadListCertificateEmployeeByPreviousMonth(LocalDate dateFrom, LocalDate dateTo) throws IOException;
+    byte[] downloadListCertificateEmployeeByPreviousMonth(LocalDate dateFrom, LocalDate dateTo) throws IOException;
 }
