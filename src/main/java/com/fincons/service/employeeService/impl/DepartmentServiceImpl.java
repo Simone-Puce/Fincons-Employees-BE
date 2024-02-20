@@ -74,9 +74,9 @@ public class DepartmentServiceImpl implements DepartmentService {
         } else {
             for (Department d : departmentsWithoutDepartmentCodeChosed) {
                 if (d.getDepartmentCode().equals(departmentExisting.getDepartmentCode())) {
-                    throw new DuplicateException("This code: " + department.getDepartmentCode() + " is already taken");
+                    throw new DuplicateException("code: " + departmentCode, "code: " + department.getDepartmentCode());
                 } else if (d.getName().equals(departmentExisting.getName())) {
-                    throw new DuplicateException("This name: " + department.getName() + " is already taken");
+                    throw new DuplicateException("name: " + departmentExisting.getName(), "name: " + department.getName());
                 }
             }
             departmentRepository.save(departmentExisting);
@@ -102,7 +102,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         Department existingDepartment = departmentRepository.findDepartmentByDepartmentCode(departmentCode);
 
         if (Objects.isNull(existingDepartment)) {
-            throw new ResourceNotFoundException("Department with code: " + departmentCode + " not found");
+            throw new ResourceNotFoundException("Error: Department with code " + departmentCode + " not found");
         }
         return existingDepartment;
     }
@@ -113,7 +113,7 @@ public class DepartmentServiceImpl implements DepartmentService {
                 Strings.isEmpty(departmentDTO.getName()) ||
                 Strings.isEmpty(departmentDTO.getAddress()) ||
                 Strings.isEmpty(departmentDTO.getCity())) {
-            throw new IllegalArgumentException("The fields of the Department can't be null or empty");
+            throw new IllegalArgumentException("Error: The fields of the Department can't be null or empty");
         }
     }
 
@@ -121,11 +121,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Department departmentByCode = departmentRepository.findDepartmentByDepartmentCode(departmentCode);
         Department departmentByName = departmentRepository.findDepartmentByName(departmentName);
-        if (departmentByCode != null) {
-            throw new DuplicateException("Department with the same code, already exists");
+        if (!Objects.isNull(departmentByCode)) {
+            throw new DuplicateException("code: " + departmentCode, "code: " + departmentByCode.getDepartmentCode());
         }
-        if (departmentByName != null) {
-            throw new DuplicateException("Department with the same name, already exists");
+        if (!Objects.isNull(departmentByName)) {
+            throw new DuplicateException("name: " + departmentName, "name: "+ departmentByName.getName());
         }
     }
 }

@@ -67,9 +67,9 @@ public class PositionServiceImpl implements PositionService {
         } else {
             for (Position p : positionsWithoutPositionCodeChosed) {
                 if (p.getPositionCode().equals(positionExisting.getPositionCode())) {
-                    throw new DuplicateException("This code: " + position.getPositionCode() + " is already taken");
+                    throw new DuplicateException("code: " + positionCode, "code: " + position.getPositionCode());
                 } else if (p.getName().equals(positionExisting.getName())) {
-                    throw new DuplicateException("The name: " + position.getName() + " is already taken");
+                    throw new DuplicateException("name: " + positionExisting.getName(), "name: " + position.getName());
                 }
             }
             positionRepository.save(positionExisting);
@@ -87,7 +87,7 @@ public class PositionServiceImpl implements PositionService {
         Position position = positionRepository.findPositionByPositionCode(positionCode);
 
         if (position == null) {
-            throw new ResourceNotFoundException("Position with code: " + positionCode + " not found");
+            throw new ResourceNotFoundException("Error: Position with code: " + positionCode + " not found");
         }
         return position;
     }
@@ -97,18 +97,18 @@ public class PositionServiceImpl implements PositionService {
         if (Strings.isEmpty(positionDTO.getPositionCode()) ||
                 Strings.isEmpty(positionDTO.getName()) ||
                 Objects.isNull(positionDTO.getSalary())) {
-            throw new IllegalArgumentException("The fields of the Position can't be null or empty");
+            throw new IllegalArgumentException("Error: The fields of the Position can't be null or empty");
         }
     }
 
     private void checkForDuplicatePosition(String positionCode, String positionName) {
         Position positionByCode = positionRepository.findPositionByPositionCode(positionCode);
         Position positionByName = positionRepository.findPositionByName(positionName);
-        if (positionByCode != null) {
-            throw new DuplicateException("Position with the same code, already exists");
+        if (!Objects.isNull(positionByCode)) {
+            throw new DuplicateException("code: " + positionByCode, "code: " + positionByCode.getPositionCode());
         }
-        if (positionByName != null) {
-            throw new DuplicateException("Position with the same name, already exists");
+        if (!Objects.isNull(positionByName)) {
+            throw new DuplicateException("name: " + positionCode, "name: "+ positionByName.getName());
 
         }
     }

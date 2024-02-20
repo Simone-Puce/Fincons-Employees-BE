@@ -7,7 +7,7 @@ import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.repository.DepartmentRepository;
 import com.fincons.service.employeeService.impl.DepartmentServiceImpl;
-import com.fincons.utilityTest.Builder;
+import com.fincons.utilityTest.DepartmentBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,16 +15,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 
-import static com.fincons.utilityTest.Builder.getDepartment;
+import static com.fincons.utilityTest.DepartmentBuilder.getDepartment;
+import static com.fincons.utilityTest.DepartmentBuilder.getDepartmentWithoutId;
+import static com.fincons.utilityTest.DepartmentBuilder.getDepartments;
+import static com.fincons.utilityTest.DepartmentBuilder.getDepartmentsEmpty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.BDDAssumptions.given;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -38,13 +40,16 @@ public class DepartmentServiceTest {
     private DepartmentServiceImpl departmentServiceImpl;
 
     @MockBean
+    private DepartmentRepository departmentRepositoryMocked;
+    
+    @Autowired
     private DepartmentRepository departmentRepository;
 
     @Test
     void testGetDepartmentByCodeSuccess() {
         Department departmentMocked = getDepartment();
         String departmentCode = "code1";
-        when(departmentRepository.findDepartmentByDepartmentCode(departmentCode)).thenReturn(departmentMocked);
+        when(departmentRepositoryMocked.findDepartmentByDepartmentCode(departmentCode)).thenReturn(departmentMocked);
         Department department = departmentServiceImpl.getDepartmentByCode(departmentCode);
 
         Assertions.assertNotNull(department);
@@ -54,21 +59,66 @@ public class DepartmentServiceTest {
         assertThat(departmentMocked.getAddress()).isEqualTo(department.getAddress());
         assertThat(departmentMocked.getCity()).isEqualTo(department.getCity());
     }
-
     @Test
     void testGetDepartmentByCodeFailed() {
 
         String departmentCode = "code1";
 
-        when(departmentRepository.findDepartmentByDepartmentCode(departmentCode)).thenReturn(null);
+        when(departmentRepositoryMocked.findDepartmentByDepartmentCode(departmentCode)).thenReturn(null);
         assertThatThrownBy(() -> departmentServiceImpl.getDepartmentByCode(departmentCode))
-                .isInstanceOf(ResourceNotFoundException.class);
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining(departmentCode);
     }
+    @Test
+    void testGetAllDepartmentSuccess() {
+        when(departmentRepositoryMocked.findAll()).thenReturn(getDepartments());
+        List<Department> departments = departmentServiceImpl.getAllDepartment();
+        //Assert is not empty
+        assertThat(departments.size()).isNotZero();
+    }
+    @Test
+    void testGetAllDepartmentFailed() {
+        when(departmentRepositoryMocked.findAll()).thenReturn(getDepartmentsEmpty());
+        List<Department> departments = departmentServiceImpl.getAllDepartment();
+        assertThat(departments.size()).isZero();
+    }
+    @Test
+    void testCreateDepartmentSuccess(){
+
+        Department department = departmentServiceImpl.createDepartment(getDepartment());
+
+        assertThat(department.getDepartmentCode()).isEqualTo(getDepartment().getDepartmentCode());
+        assertThat(department.getName()).isEqualTo(getDepartment().getName());
+        assertThat(department.getAddress()).isEqualTo(getDepartment().getAddress());
+        assertThat(department.getCity()).isEqualTo(getDepartment().getCity());
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Test
     void testValidateDepartmentByCode() {
         String departmentCode = "code1";
-        when(departmentRepository.findDepartmentByDepartmentCode(departmentCode)).thenReturn(null);
+        when(departmentRepositoryMocked.findDepartmentByDepartmentCode(departmentCode)).thenReturn(null);
 
         assertThrows(ResourceNotFoundException.class, () -> {
             departmentServiceImpl.getDepartmentByCode(departmentCode);
@@ -93,13 +143,13 @@ public class DepartmentServiceTest {
     @Test
     void testCheckForDuplicateDepartment() {
 
-        List<Department> departments = Builder.getDepartments();
+        List<Department> departments = DepartmentBuilder.getDepartments();
 
         DepartmentDTO departmentInputForCode = new DepartmentDTO("code1", "name3", "address3", "city3");
         DepartmentDTO departmentInputForName = new DepartmentDTO("code3", "name1", "address3", "city3");
 
-        doReturn(departments.get(0)).when(departmentRepository).findDepartmentByDepartmentCode("code1");
-        doReturn(departments.get(1)).when(departmentRepository).findDepartmentByName("name1");
+        doReturn(departments.get(0)).when(departmentRepositoryMocked).findDepartmentByDepartmentCode("code1");
+        doReturn(departments.get(1)).when(departmentRepositoryMocked).findDepartmentByName("name1");
 
         assertThrows(DuplicateException.class, () -> {
             departmentServiceImpl.checkForDuplicateDepartment(departmentInputForCode.getDepartmentCode(), departmentInputForName.getName());
@@ -107,8 +157,6 @@ public class DepartmentServiceTest {
         assertThrows(DuplicateException.class, () -> {
             departmentServiceImpl.checkForDuplicateDepartment(departmentInputForCode.getDepartmentCode(), departmentInputForName.getName());
         });
-
-        //verify(departmentRepository, times(2)).findDepartmentByDepartmentCode();
     }
 
 
@@ -138,7 +186,7 @@ public class DepartmentServiceTest {
         ResponseEntity<Object> response = departmentService.getDepartmentById(departmentId);
 
         // Verify if they have been called 1 time
-        verify(departmentRepository, times(1)).findById(departmentId);
+        verify(departmentRepositoryMocked, times(1)).findById(departmentId);
 
         //Verifico che l'ID chiesto dall'utente corrisponda con l'ID dell'oggetto in repository
         Assertions.assertThat(existingDepartment.getId()).isEqualTo(departmentId);
@@ -160,11 +208,11 @@ public class DepartmentServiceTest {
         departments.add(department1);
         departments.add(department2);
 
-        when(departmentRepository.findAll()).thenReturn(departments);
+        when(departmentRepositoryMocked.findAll()).thenReturn(departments);
 
         ResponseEntity<Object> response = departmentService.getAllDepartment();
 
-        verify(departmentRepository, times(1)).findAll();
+        verify(departmentRepositoryMocked, times(1)).findAll();
 
         assertTrue(response.getStatusCode().is2xxSuccessful());
     }
@@ -178,10 +226,10 @@ public class DepartmentServiceTest {
         departments.add(department1);
         departments.add(department2);
 
-        when(departmentRepository.findAll()).thenReturn(departments);
+        when(departmentRepositoryMocked.findAll()).thenReturn(departments);
         ResponseEntity<Object> response = departmentService.createDepartment(department3);
 
-        verify(departmentRepository, times(1)).findAll();
+        verify(departmentRepositoryMocked, times(1)).findAll();
         assertTrue(response.getStatusCode().is2xxSuccessful());
     }
     @Test
@@ -194,9 +242,9 @@ public class DepartmentServiceTest {
         departments.add(department2);
 
         Long departmentId = 1L;
-        when(departmentRepository.findById(departmentId)).thenReturn(Optional.of(department1));
+        when(departmentRepositoryMocked.findById(departmentId)).thenReturn(Optional.of(department1));
 
-        when(departmentRepository.findAll()).thenReturn(departments);
+        when(departmentRepositoryMocked.findAll()).thenReturn(departments);
         ResponseEntity<Object> response = departmentService.createDepartment(department3);
 
     }

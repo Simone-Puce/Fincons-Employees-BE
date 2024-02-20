@@ -71,7 +71,7 @@ public class ProjectServiceImpl implements ProjectService {
             for (Project p : projectsWithoutProjectIdChosed) {
                 if (p.getName().equals(projectExisting.getName())
                 ) {
-                    throw new IllegalArgumentException("The project existing yet");
+                    throw new DuplicateException("name: " + projectExisting.getName(), "name: " + project.getName());
                 }
             }
             projectRepository.save(projectExisting);
@@ -88,7 +88,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Project validateProjectById(String projectId) {
         Project project = projectRepository.findProjectByProjectId(projectId);
         if (project == null) {
-            throw new ResourceNotFoundException("Project with ID: " + projectId + " not found");
+            throw new ResourceNotFoundException("Error: Project with ID: " + projectId + " not found");
         }
         return project;
     }
@@ -98,15 +98,15 @@ public class ProjectServiceImpl implements ProjectService {
         if (Strings.isEmpty(projectDTO.getName()) ||
                 Strings.isEmpty(projectDTO.getArea()) ||
                 Strings.isEmpty(projectDTO.getPriority())) {
-            throw new IllegalArgumentException("The fields of the Project can't be null or empty");
+            throw new IllegalArgumentException("Error: The fields of the Project can't be null or empty");
         }
 
     }
 
     private void checkForDuplicateProject(String projectName) {
         Project projectByName = projectRepository.findProjectByName(projectName);
-        if (projectByName != null) {
-            throw new DuplicateException("Project with the same name, already exists");
+        if (!Objects.isNull(projectByName)) {
+            throw new DuplicateException("name: " + projectName, "name: " + projectByName.getName());
         }
     }
 }

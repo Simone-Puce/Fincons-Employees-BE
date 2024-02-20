@@ -24,8 +24,8 @@ public interface EmployeeService {
 
     void validateGender(String gender);
 
-    //aggiunti questi due metodi per evitare validazioni e controlli già implementati in questo service perché
-    //vanno in contrasto con i miei validator e controlli
+    //added these two methods to avoid validations and checks already implemented in
+    // this service because they conflict with my validators and checks
     boolean  employeeExists(Employee employee);
 
     void deleteEmployee(Employee employee);

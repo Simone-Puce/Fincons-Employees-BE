@@ -18,12 +18,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
 import java.util.Objects;
 
-import static com.fincons.utilityTest.Builder.getDepartment;
+import static com.fincons.utilityTest.DepartmentBuilder.getDepartment;
+import static com.fincons.utilityTest.DepartmentBuilder.getDepartments;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.when;
 
@@ -56,6 +57,72 @@ public class DepartmentControllerTest {
         Assertions.assertNotNull(response.getBody());
         Assertions.assertEquals(HttpStatus.OK, response.getBody().getStatus());
     }
+    @Test
+    public void testGetDepartmentByCodeFailedBadRequest() {
+
+        String departmentCodeEmpty = "";
+        ResponseEntity<GenericResponse<DepartmentDTO>> response = departmentController.getDepartmentByCode(departmentCodeEmpty);
+        Assertions.assertNotNull(response.getBody());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getBody().getStatus());
+
+        String departmentCodeNull = null;
+        ResponseEntity<GenericResponse<DepartmentDTO>> response2 = departmentController.getDepartmentByCode(departmentCodeNull);
+        Assertions.assertNotNull(response2.getBody());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getBody().getStatus());
+    }
+    @Test
+    public void testGetDepartmentByCodeFailedNotFound() {
+
+        String departmentCode = "code1";
+        when(departmentRepository.findDepartmentByDepartmentCode(departmentCode)).thenReturn(null);
+        ResponseEntity<GenericResponse<DepartmentDTO>> response = departmentController.getDepartmentByCode(departmentCode);
+        Assertions.assertNotNull(response.getBody());
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getBody().getStatus());
+    }
+    @Test
+    public void testGetAllDepartmentSuccess() {
+        when(departmentRepository.findAll()).thenReturn(getDepartments());
+        ResponseEntity<GenericResponse<List<DepartmentDTO>>> response = departmentController.getAllDepartment();
+
+        List<DepartmentDTO> departmentDTOs = response.getBody().getData().stream().toList();
+
+        assertThat(getDepartments().size()).isEqualTo(departmentDTOs.size());
+
+        int iterations = 0;
+        for (int i = 0; i < departmentDTOs.size(); i++) {
+            assertThat(getDepartments().get(i).getDepartmentCode()).isEqualTo(departmentDTOs.get(i).getDepartmentCode());
+            assertThat(getDepartments().get(i).getName()).isEqualTo(departmentDTOs.get(i).getName());
+            assertThat(getDepartments().get(i).getCity()).isEqualTo(departmentDTOs.get(i).getCity());
+            iterations++;
+        }
+        System.out.println(iterations + " iterations");
+        System.out.println(getDepartments().size() + " departments");
+        System.out.println(departmentDTOs.size() + " DTOS");
+
+        assertThat(iterations).isEqualTo(departmentDTOs.size());
+        assertThat(iterations).isEqualTo(getDepartments().size());
+        Assertions.assertNotNull(response.getBody());
+        Assertions.assertEquals(HttpStatus.OK, response.getBody().getStatus());
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Test
     public void testGetDepartmentByCodeBadRequest() {
         ResponseEntity<GenericResponse<DepartmentDTO>> response1 = departmentController.getDepartmentByCode("");

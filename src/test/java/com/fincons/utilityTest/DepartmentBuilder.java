@@ -5,7 +5,7 @@ import com.fincons.entity.Department;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Builder {
+public class DepartmentBuilder {
     public static List<Department> getDepartments() {
         List<Department> departments = new ArrayList<>();
         departments.add(new Department(1L, "code1", "name1", "address1", "city1"));
@@ -14,6 +14,12 @@ public class Builder {
         return departments;
     }
     public static Department getDepartment() {
-        return new Department(1L, "code1", "name1", "address1", "city1");
+        return new Department(3L, "code1", "name1", "address1", "city1");
+    }
+    public static Department getDepartmentWithoutId() {
+        return new Department("code1", "name1", "address1", "city1");
+    }
+    public static List<Department> getDepartmentsEmpty() {
+        return new ArrayList<>();
     }
 }

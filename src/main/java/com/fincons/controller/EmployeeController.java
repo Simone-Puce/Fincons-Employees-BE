@@ -145,6 +145,7 @@ public class EmployeeController {
             );
             return ResponseEntity.ok(response);
         }
+        //This Exception assert if Department or Position exist
         catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(

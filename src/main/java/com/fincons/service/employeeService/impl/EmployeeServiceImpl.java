@@ -120,9 +120,9 @@ public class EmployeeServiceImpl implements EmployeeService {
             for (Employee e : employeesWithoutSsnChosed) {
                 //If one of the two fields has already been assigned, it throws an exception.
                 if (e.getSsn().equals(employeeExisting.getSsn())) {
-                    throw new DuplicateException("This SSN " + employee.getSsn() + " already taken");
+                    throw new DuplicateException("SSN: " + ssn, "SSN: " + employee.getSsn());
                 } else if (e.getEmail().equals(employeeExisting.getEmail())) {
-                    throw new DuplicateException("This email " + employee.getEmail() + " already taken");
+                    throw new DuplicateException("email: " + employeeExisting.getEmail(), "email: " +  employee.getEmail());
                 }
             }
             employeeRepository.save(employeeExisting);
@@ -142,7 +142,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         validateEmployeeBySsn(ssn);
         List<Project> projects = employeeRepository.findProjectsByEmployeeSsn(ssn);
         if (projects.isEmpty()) {
-            throw new IllegalArgumentException("The SSN " + ssn + " doesn't work in any project.");
+            throw new IllegalArgumentException("Error: The SSN " + ssn + " doesn't work in any project.");
         }
         return projects;
     }
@@ -161,11 +161,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Project existingProject = projectServiceImpl.validateProjectById(projectId);
 
-        List<EmployeeProjectDTO> employeeProject = employeeRepository.getAllEmployeeProject();
+        List<EmployeeProjectDTO> employeesProjectDTOS = employeeRepository.getAllEmployeeProject();
 
-        for (EmployeeProjectDTO employeeProjectDTO : employeeProject) {
-            if (Objects.equals(ssn, employeeProjectDTO.getSsn()) && (Objects.equals(projectId, employeeProjectDTO.getProjectId()))) {
-                throw new DuplicateException("The relationship already exists");
+        for (int i = 0; i < employeesProjectDTOS.size(); i++) {
+            EmployeeProjectDTO employeeProjectDTOs = employeesProjectDTOS.get(i);
+            if (Objects.equals(ssn, employeeProjectDTOs.getSsn()) && Objects.equals(projectId, employeeProjectDTOs.getProjectId())) {
+                throw new DuplicateException("SSN: " + ssn + " project ID: " + projectId,
+                        "SSN: " + employeesProjectDTOS.get(i).getSsn() + " project ID: " + employeesProjectDTOS.get(i).getNameProject());
             }
         }
         existingEmployee.getProjects().add(existingProject);
@@ -184,11 +186,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         //Check if the relationship ssn+projectId exist
         List<EmployeeProjectDTO> employeesProjectDTOS = validateEmployeeProjectRelationship(ssn, projectId);
 
+
         //Check if the relationship employeeProjectDTO exist
-        for (EmployeeProjectDTO employeeProject : employeesProjectDTOS) {
-            if (Objects.equals(employeeProject.getSsn(), employeeProjectDTO.getSsn()) &&
-                    Objects.equals(employeeProject.getProjectId(), employeeProjectDTO.getProjectId())) {
-                throw new DuplicateException("The relationship with SSN employee: " + employeeProjectDTO.getSsn() + " and ID project: " + employeeProjectDTO.getProjectId() + " already exists.");
+        for (int i = 0; i < employeesProjectDTOS.size(); i++) {
+            EmployeeProjectDTO employeeProjectDTOs = employeesProjectDTOS.get(i);
+            if (Objects.equals(employeeProjectDTOs.getSsn(), employeeProjectDTO.getSsn()) &&
+                    Objects.equals(employeeProjectDTOs.getProjectId(), employeeProjectDTO.getProjectId())) {
+                throw new DuplicateException("SSN: " + ssn + " project ID: " + projectId,
+                        "SSN: " + employeesProjectDTOS.get(i).getSsn() + " project ID: " + employeesProjectDTOS.get(i).getNameProject());
             }
         }
 
@@ -228,8 +233,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
     private void validateEmployeeProjectFields(EmployeeProjectDTO employeeProjectDTO) {
-        if (employeeProjectDTO.getSsn() == null || employeeProjectDTO.getProjectId() == null) {
-            throw new IllegalArgumentException("The fields of the employee can't be null or empty.");
+        if (Objects.isNull(employeeProjectDTO.getSsn()) || Objects.isNull(employeeProjectDTO.getProjectId())) {
+            throw new IllegalArgumentException("Error: The fields of the employee can't be null or empty.");
         }
     }
 
@@ -242,14 +247,14 @@ public class EmployeeServiceImpl implements EmployeeService {
                 return employeesProjects;
             }
         }
-        throw new ResourceNotFoundException("Relationship with Ssn Employee: " + ssn + " and ID Project: " + projectId + " don't exists.");
+        throw new ResourceNotFoundException("Error: Relationship with Ssn Employee: " + ssn + " and ID Project: " + projectId + " don't exists.");
     }
 
     public Employee validateEmployeeBySsn(String ssn) {
         Employee existingEmployee = employeeRepository.findEmployeeBySsn(ssn);
 
-        if (existingEmployee == null) {
-            throw new ResourceNotFoundException("Employee with SSN: " + ssn + " not found.");
+        if (Objects.isNull(existingEmployee)) {
+            throw new ResourceNotFoundException("Error: Employee with SSN: " + ssn + " not found.");
         }
         return existingEmployee;
     }
@@ -257,8 +262,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private Employee validateEmployeeByEmail(String email) {
         Employee existingEmployee = employeeRepository.findByEmail(email);
 
-        if (existingEmployee == null) {
-            throw new ResourceNotFoundException("Employee with Email: " + email + " not found.");
+        if (Objects.isNull(existingEmployee)) {
+            throw new ResourceNotFoundException("Error: Employee with Email: " + email + " not found.");
         }
         return existingEmployee;
     }
@@ -275,25 +280,25 @@ public class EmployeeServiceImpl implements EmployeeService {
                 Objects.isNull(employeeDTO.getStartDate()) ||
                 Objects.isNull(employeeDTO.getDepartmentCode()) ||
                 Objects.isNull(employeeDTO.getPositionCode())) {
-            throw new IllegalArgumentException("The fields of the employee can't be null or empty.");
+            throw new IllegalArgumentException("Error: The fields of the employee can't be null or empty.");
         }
     }
 
     private void checkForDuplicateEmployee(String ssn, String email) {
         Employee employeeBySsn = employeeRepository.findEmployeeBySsn(ssn);
         Employee employeeByEmail = employeeRepository.findByEmail(email);
-        if (employeeBySsn != null) {
-            throw new DuplicateException("Employee with this SSN already taken.");
+        if (!Objects.isNull(employeeBySsn)) {
+            throw new DuplicateException("SSN: " + ssn, "SSN: " + employeeBySsn.getSsn());
         }
-        if (employeeByEmail != null) {
-            throw new DuplicateException("Employee with this email is already taken.");
+        if (!Objects.isNull(employeeByEmail)) {
+            throw new DuplicateException("email: " + email, "email: " + employeeByEmail.getEmail());
         }
     }
 
     public void validateGender(String gender) {
         boolean validateGender = EmployeeDataValidator.isValidGenre(gender);
         if (!validateGender) {
-            throw new IllegalArgumentException("The field gender is not valid, You must write only M, F, O.");
+            throw new IllegalArgumentException("Error: The field gender is not valid, You must write only M, F, O.");
         }
     }
 

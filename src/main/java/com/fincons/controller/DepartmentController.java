@@ -32,9 +32,6 @@ public class DepartmentController {
     @Autowired
     public DepartmentMapper modelMapperDepartment;
 
-
-
-
     public DepartmentController(DepartmentService departmentService, DepartmentMapper modelMapperDepartment) {
         this.departmentService = departmentService;
         this.modelMapperDepartment = modelMapperDepartment;
