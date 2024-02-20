@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface PositionRepository extends JpaRepository <Position, Long> {
 
     Position findPositionByPositionCode(String idPosition);
+
+    Position findPositionByName(String positionName);
 }

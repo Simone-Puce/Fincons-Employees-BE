@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,8 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -28,7 +28,7 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "department_code")
+    @Column(name = "department_code", nullable = false)
     private String departmentCode;
 
     @Column
@@ -58,6 +58,12 @@ public class Department {
 
     public Department(Long id, String departmentCode, String name, String address, String city) {
         this.id = id;
+        this.departmentCode = departmentCode;
+        this.name = name;
+        this.address = address;
+        this.city = city;
+    }
+    public Department(String departmentCode, String name, String address, String city) {
         this.departmentCode = departmentCode;
         this.name = name;
         this.address = address;

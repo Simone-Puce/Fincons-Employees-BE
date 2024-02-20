@@ -83,7 +83,7 @@ public class EmployeeDataValidator {
     }
 
 
-    private static boolean isValidGenre(String genre) {
+    public static boolean isValidGenre(String genre) {
         if (!StringUtils.hasText(genre)) {
             return false;
         }

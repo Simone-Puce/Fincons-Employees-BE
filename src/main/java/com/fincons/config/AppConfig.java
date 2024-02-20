@@ -32,7 +32,6 @@ public class AppConfig {
     }
 
 
-
     @Bean
     public ModelMapper modelMapperStandard() {
         ModelMapper modelMapper = new ModelMapper();

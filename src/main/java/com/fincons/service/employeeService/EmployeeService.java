@@ -11,8 +11,8 @@ public interface EmployeeService {
     Employee getEmployeeBySsn(String ssn);
     Employee getEmployeeByEmail(String email);
     List<Employee> getAllEmployees();
-    Employee createEmployee(EmployeeDTO employeeDTO);
-    Employee updateEmployeeBySsn(String ssn, EmployeeDTO employeeDTO);
+    Employee createEmployee(Employee employee);
+    Employee updateEmployeeBySsn(String ssn, Employee employee);
     void deleteEmployeeBySsn(String ssn);
     List<Project> findAllEmployeeProjects(String ssn);
     List<EmployeeProjectDTO> getAllEmployeeProject();
@@ -20,12 +20,17 @@ public interface EmployeeService {
     EmployeeProjectDTO updateEmployeeProject(String ssn, String idProject, EmployeeProjectDTO employeeProjectDTO);
     void deleteEmployeeProject(String ssn, String idProject);
 
-    //aggiunti questi due metodi per evitare validazioni e controlli già implementati in questo service perché
-    //vanno in contrasto con i miei validator e controlli
+    void validateEmployeeFields(EmployeeDTO employeeDTO);
+
+    void validateGender(String gender);
+
+    //added these two methods to avoid validations and checks already implemented in
+    // this service because they conflict with my validators and checks
     boolean  employeeExists(Employee employee);
 
     void deleteEmployee(Employee employee);
 
     Employee addEmployeeFromFile(Employee employee);
+
 
 }

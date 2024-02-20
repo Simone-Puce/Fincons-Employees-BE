@@ -10,11 +10,9 @@ import java.util.List;
 public interface DepartmentService {
     Department getDepartmentByCode(String departmentCode);
     List<Department> getAllDepartment();
-    Department createDepartment(DepartmentDTO departmentDTO);
-    Department updateDepartmentByCode(String departmentCode, DepartmentDTO departmentDTO);
+    Department createDepartment(Department department);
+    Department updateDepartmentByCode(String departmentCode, Department department);
     void deleteDepartmentByCode(String departmentCode);
     List<EmployeeDepartmentDTO> getDepartmentEmployeesFindByCodeDepartment(String departmentCode);
-
-
-
+    void validateDepartmentFields(DepartmentDTO departmentDTO);
 }

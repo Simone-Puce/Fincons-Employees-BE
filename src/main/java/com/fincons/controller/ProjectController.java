@@ -1,5 +1,6 @@
 package com.fincons.controller;
 
+import com.fincons.service.employeeService.impl.ProjectServiceImpl;
 import com.fincons.utility.GenericResponse;
 import com.fincons.dto.ProjectDTO;
 import com.fincons.entity.Project;
@@ -8,6 +9,7 @@ import com.fincons.exception.IllegalArgumentException;
 import com.fincons.exception.ResourceNotFoundException;
 import com.fincons.mapper.ProjectMapper;
 import com.fincons.service.employeeService.ProjectService;
+import com.fincons.utility.ValidateFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,7 @@ public class ProjectController {
     @GetMapping(value = "${project.find-project-by-id}")
     public ResponseEntity<Object> getProjectById(@RequestParam String projectId) {
         try {
+            ValidateFields.validateSingleField(projectId);
             Project project = projectService.getProjectById(projectId);
             ProjectDTO projectDTO = modelMapperProject.mapToDTO(project);
 
@@ -39,16 +42,14 @@ public class ProjectController {
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);
-        }
-        catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
                             HttpStatus.BAD_REQUEST
                     )
             );
-        }
-        catch (ResourceNotFoundException rnfe) {
+        } catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
@@ -59,7 +60,6 @@ public class ProjectController {
 
     @GetMapping(value = "${project.list}")
     public ResponseEntity<Object> getAllProjects() {
-
 
         List<Project> projects = projectService.getAllProjects();
 
@@ -81,7 +81,11 @@ public class ProjectController {
     @PostMapping(value = "${project.create}")
     public ResponseEntity<GenericResponse<ProjectDTO>> createProject(@RequestBody ProjectDTO projectDTO) {
         try {
-            Project project = projectService.createProject(projectDTO);
+            projectService.validateProjectFields(projectDTO);
+
+            Project projectMapped = modelMapperProject.mapToEntity(projectDTO);
+
+            Project project = projectService.createProject(projectMapped);
 
             ProjectDTO projectDTO2 = modelMapperProject.mapToDTO(project);
 
@@ -91,8 +95,7 @@ public class ProjectController {
                     HttpStatus.OK);
             return ResponseEntity.ok(response);
 
-        }
-        catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
@@ -113,7 +116,13 @@ public class ProjectController {
     @PutMapping(value = "${project.update}")
     public ResponseEntity<Object> updateProjectById(@RequestParam String projectId, @RequestBody ProjectDTO projectDTO) {
         try {
-            Project project = projectService.updateProjectById(projectId, projectDTO);
+            ValidateFields.validateSingleField(projectId);
+
+            projectService.validateProjectFields(projectDTO);
+
+            Project projectMappedForService = modelMapperProject.mapToEntity(projectDTO);
+
+            Project project = projectService.updateProjectById(projectId, projectMappedForService);
 
             ProjectDTO projectDTO2 = modelMapperProject.mapToDTO(project);
 
@@ -123,16 +132,14 @@ public class ProjectController {
                     HttpStatus.OK
             );
             return ResponseEntity.ok(response);
-        }
-        catch (ResourceNotFoundException rfe) {
+        } catch (ResourceNotFoundException rfe) {
             return ResponseEntity.status(200).body(
                     GenericResponse.error(
                             rfe.getMessage(),
                             HttpStatus.NOT_FOUND
                     )
             );
-        }
-        catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
@@ -152,22 +159,21 @@ public class ProjectController {
     @DeleteMapping(value = "${project.delete}")
     public ResponseEntity<Object> deleteProjectById(@RequestParam String projectId) {
         try {
+            ValidateFields.validateSingleField(projectId);
             projectService.deleteProjectById(projectId);
             GenericResponse<ProjectDTO> response = GenericResponse.empty(
                     "Success: project with id: " + projectId + " has been successfully deleted! ",
                     HttpStatus.OK);
 
             return ResponseEntity.ok(response);
-        }
-        catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException iae) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             iae.getMessage(),
                             HttpStatus.BAD_REQUEST
                     )
             );
-        }
-        catch (ResourceNotFoundException rnfe) {
+        } catch (ResourceNotFoundException rnfe) {
             return ResponseEntity.ok(
                     GenericResponse.error(
                             rnfe.getMessage(),
